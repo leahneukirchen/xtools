@@ -1,0 +1,20 @@
+# xtools - a few helpers for working with XBPS
+
+These are a few small utilities for use with XBPS:
+https://github.com/voidlinux/xbps
+
+  xdiff [DIR] - merge XBPS .new-* files
+  xgrep PATTERN PKGS... - search files limited to XBPS package contents
+  xlg PKG - open short commit log for XBPS template
+  xlocate PATTERN - locate files in all XBPS packages
+  xlog PKG - open commit log for XBPS template
+  xls PKGS... - list files contained in PKGS (including binpkgs)
+  xq PKGS... - query information about XBPS package
+  xsrc PKG - list source files for XBPS template
+
+A few tools assume xbps-packages is checked out at ~/xbps-packages.
+
+To the extent possible under law, Christian Neukirchen has waived
+all copyright and related or neighboring rights to this work.
+
+http://creativecommons.org/publicdomain/zero/1.0/

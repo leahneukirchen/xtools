@@ -1,0 +1,12 @@
+#!/bin/sh
+# xls PKGS... - list files contained in PKGS (including binpkgs)
+
+BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+
+for pkg; do
+	xbps-query \
+		--repository=hostdir/binpkgs/$BRANCH \
+		--repository=../hostdir/binpkgs/$BRANCH \
+		--repository=../../hostdir/binpkgs/$BRANCH \
+		-f $pkg
+done

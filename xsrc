@@ -1,0 +1,6 @@
+#!/bin/sh
+# xsrc PKG - list source files for XBPS template
+
+~/xbps-packages/xbps-src show "$1" | sed -n '/distfiles:/s/[^:]*:[\t]*//p'
+find ~/xbps-packages/srcpkgs/$1/files 2>/dev/null
+find ~/xbps-packages/srcpkgs/$1/patches 2>/dev/null

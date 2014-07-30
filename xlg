@@ -1,0 +1,5 @@
+#!/bin/sh
+# xlg PKG - open short commit log for XBPS template
+
+cd ~/xbps-packages/srcpkgs
+git log --date=short --pretty='%cd %h%d %s' "$@"

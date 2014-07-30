@@ -1,0 +1,5 @@
+#!/bin/sh
+# xlog PKG - open commit log for XBPS template
+
+cd ~/xbps-packages/srcpkgs
+git log -p "$@"
