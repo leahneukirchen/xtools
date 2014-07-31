@@ -1,0 +1,44 @@
+#!/bin/bash
+# gensum [-i] TEMPLATE - update SHA256 sums in templates
+
+case "$1" in
+	-i*) i=$1; shift
+esac
+
+if [ -f $1 ]; then
+	. "$1"
+elif [ -f $1/template ]; then
+	exec "$0" $i "$1/template"
+elif [ -f template ]; then
+	exec "$0" $i template
+else
+	echo Usage: gensum TEMPLATE
+fi
+
+if [ -d ../../hostdir/sources ]; then
+	XBPS_SRCDISTDIR=../../hostdir/sources
+elif [ -d ../hostdir/sources ]; then
+	XBPS_SRCDISTDIR=../hostdir/sources
+elif [ -d hostdir/sources ]; then
+	XBPS_SRCDISTDIR=hostdir/sources
+else
+	XBPS_SRCDISTDIR=~/xbps-packages/hostdir/sources/
+fi
+
+srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
+
+$XBPS_SRCDISTDIR/../../xbps-src -I fetch $pkgname
+
+sums=""
+for f in $distfiles; do
+	curfile=$(basename "${f#*>}")
+	distfile="$srcdir/$curfile"
+	sum=$(sha256sum $distfile)
+	sums+="${sum%  *}\n "
+done
+
+sed $i -e "/^checksum=/,/^[^ \t]/{
+		/^[ \t]/d
+		s/^checksum=.*/checksum=\"${sums%\n }\"/
+		/^checksum=\"[^ ]*\"/s/\"//g
+	}" "$1"

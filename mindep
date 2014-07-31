@@ -1,0 +1,33 @@
+#!/bin/sh
+# mindep PKGS... - minimize list of PKGS by removing implicit dependencies
+
+rdeps() {
+	for pkg; do
+		echo "$pkg>=0"
+		xbps-query -Rx $pkg
+	done | xargs -d'\n' -rn1 xbps-uhelper getpkgdepname | sort -u
+}
+
+RDEPS="$@"
+ORDEPS=
+
+while [ "$RDEPS" != "$ORDEPS" ]; do
+	ORDEPS=$RDEPS
+	RDEPS=$(rdeps $RDEPS)
+	echo RDEPS $RDEPS
+done	
+
+ORDEPS=
+while [ "$RDEPS" != "$ORDEPS" ]; do
+	ORDEPS=$RDEPS
+	SAT=
+	for pkg in $RDEPS; do
+		SAT=$({
+		printf '%s\n' $SAT
+		rdeps $pkg | grep -vx $pkg
+		} | sort -u)
+	done
+	RDEPS=$(echo "$RDEPS" | grep -Fvx -e "$SAT" | sort -u)
+done	
+
+echo $RDEPS
