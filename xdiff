@@ -1,9 +1,19 @@
 #!/bin/sh
-# xdiff [DIR] - merge XBPS .new-* files
+# xdiff [-u] [DIR] - merge XBPS .new-* files
+
+mergeutil() {
+	vimdiff "$1" "$2" && rm -vi "$1"
+}
+
+if [ "$1" = -u ]; then
+	shift
+	DIFF="diff -u"
+else
+	DIFF=mergeutil
+fi
 
 DIR=${1:-/etc}
 
 for newfile in $(find "$DIR" -name '*.new-*_*'); do
-	vimdiff "${newfile}" "${newfile%.new-*_*}" &&
-	rm -vi "${newfile}"
+	$DIFF "$newfile" "${newfile%.new-*_*}"
 done
