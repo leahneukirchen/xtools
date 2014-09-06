@@ -29,7 +29,7 @@ void_version=$(./xbps-src show "$1" | sed -n '/^version/s/[^:]*:[\t]*//p')
 			*github.com*)
 				githubname="$(echo $url | cut -d/ -f4,5)"
 				url="https://api.github.com/repos/$githubname/tags"
-				rx='"name":\s*"v?\K[^\d]*([\d\.]+)(?=")';;
+				rx='"name":\s*"(v|'"$pkgname"'-)?\K[^\d]*([\d\.]+)(?=")';;
 		esac
 
 		set -- $(grep "^${orig_pkgname} " xnuxnu-override)
