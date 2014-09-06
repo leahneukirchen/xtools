@@ -20,6 +20,8 @@ void_version=$(./xbps-src show "$1" | sed -n '/version/s/[^:]*:[\t]*//p')
 				url="http://sourceforge.net/projects/$pkgname/rss?limit=200";;
 			*code.google.com*|*googlecode*)
 				url="http://code.google.com/p/$pkgname/downloads/list";;
+			*launchpad.net*)
+				url="https://launchpad.net/$pkgname/+download";;
 			*cpan.*)
 				pkgname=${pkgname#perl-};;
 			*pypi.python.org*)
