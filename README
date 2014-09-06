@@ -11,6 +11,7 @@ https://github.com/voidlinux/xbps
   xlocate PATTERN - locate files in all XBPS packages
   xlog PKG - open commit log for XBPS template
   xls PKGS... - list files contained in PKGS (including binpkgs)
+  xnuxnu PKG - upstream version checker for XBPS templates
   xq PKGS... - query information about XBPS package
   xsrc PKG - list source files for XBPS template
 
