@@ -14,7 +14,7 @@ void_version=$(./xbps-src show "$1" | sed -n '/version/s/[^:]*:[\t]*//p')
 	sed -n '/distfiles:/{s/[^:]*:[\t]*//;s|/[^/]*$|/|p};
 		/Upstream URL/s/[^:]*:[\t]*//p' |
 	while read url; do
-		rx="\b$pkgname[-_]?((src|source)[-_])?\K([^-/_\s]*?\d[^-/_\s]*?)(?=(?:[-_.](?:src|source|orig))?\.(?:[jt]ar|t[bglx]z|tbz2|zip))\b"
+		rx="\b$pkgname[-_]?((src|source)[-_])?\K([^-/_\s]*?\d[^-/_\s]*?)(?=(?:[-_.](?:src|source|orig))?\.(?:[jt]ar|shar|t[bglx]z|tbz2|zip))\b"
 		case "$url" in
 			*sourceforge.net/sourceforge*)
 				url="http://sourceforge.net/projects/$pkgname/rss?limit=200";;
