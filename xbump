@@ -1,0 +1,10 @@
+#!/bin/sh
+# xbump PKGNAME [git commit options] - git commit a version bump
+
+cd ~/xbps-packages
+
+pkg=$1; shift
+version=$(./xbps-src show "$pkg" | sed -n '/version/s/[^:]*:[\t]*//p')
+
+git add srcpkgs/"$pkg" &&
+git commit -m "$pkg: update to $version." "$@" srcpkgs/"$pkg"
