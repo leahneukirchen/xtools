@@ -1,5 +1,5 @@
 #!/bin/sh
-# xnuxnu - upstream version checker for XBPS templates
+# xnuxnu PKG - upstream version checker for XBPS templates
 
 pkgname=$1
 orig_pkgname=$pkgname
