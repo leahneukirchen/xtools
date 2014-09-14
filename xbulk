@@ -1,0 +1,20 @@
+#!/bin/sh
+# xbulk [-n] [-k] [-xbps_src_flags] PKG... - simple XBPS bulk builder
+
+ARGS=
+MAKEARGS=
+
+{
+for pkg; do
+case $pkg in
+	-n|-k) MAKEARGS="$MAKEARGS $pkg";;
+	-*) ARGS="$ARGS $pkg";;
+	*)
+	echo all: pkg-$pkg
+	for dep in $(./xbps-src show-build-deps $pkg | sed '1d;s|[<>].*$||g'); do
+		echo pkg-$pkg: pkg-$dep
+	done
+esac
+done 
+printf '%s\n' pkg-%: "	pkg=\$@; ./xbps-src $ARGS pkg \$\${pkg#pkg-}"
+} | make -f - $MAKEARGS
