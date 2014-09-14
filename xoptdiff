@@ -1,0 +1,22 @@
+#!/bin/bash
+# xoptdiff [-q] [PKGS...] - show template options which differ from binary package
+
+# Defaults to list of installed packages with options.
+
+q="\t&"
+if [ "$1" = -q ]; then
+	shift
+	q=
+fi
+
+if [ $# = 0 ]; then
+	xbps-query -p build-options -s '' | sed 's/^\([^ ]*\)-.*/\1/'
+else
+	echo "$@"
+fi | while read pkg; do
+	comm -23 <(./xbps-src show-options $pkg 2>/dev/null |
+			sed -n '/\(ON\)/s/ *\([^ ]*\):.*/\1/p;
+			        /\(OFF\)/s/ *\([^ ]*\):.*/~\1/p;' | sort) \
+		 <(xbps-query -R -p build-options $pkg | tr ' ' '\n' | sort) |
+		tr '\n' ' ' | sed -n "s/^[^ ].*/$pkg$q\n/p"
+done
