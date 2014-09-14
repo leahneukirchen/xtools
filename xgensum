@@ -1,5 +1,5 @@
 #!/bin/bash
-# gensum [-i] TEMPLATE - update SHA256 sums in templates
+# xgensum [-i] TEMPLATE - update SHA256 sums in templates
 
 case "$1" in
 	-i*) i=$1; shift
