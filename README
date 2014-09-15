@@ -3,7 +3,7 @@
 These are a few small utilities for use with XBPS:
 https://github.com/voidlinux/xbps
 
-  xbulk [-n] [-k] [-xbps_src_flags] PKG... - simple XBPS bulk builder
+  xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
   xbump PKGNAME [git commit options] - git commit a version bump
   xdiff [-u] [DIR] - merge XBPS .new-* files
   xdistdir - figure out XBPS_DISTDIR

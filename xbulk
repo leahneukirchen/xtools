@@ -1,20 +1,33 @@
 #!/bin/sh
-# xbulk [-n] [-k] [-xbps_src_flags] PKG... - simple XBPS bulk builder
+# xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
 
 ARGS=
 MAKEARGS=
+PKGS=
+
+mainpkg() {
+	dir=$(readlink -f srcpkgs/"$1")
+	echo ${dir##*/}
+}
+
+for pkg; do
+	case $pkg in
+		-n|-k) MAKEARGS="$MAKEARGS $pkg";;
+		-*) ARGS="$ARGS $pkg";;
+		*) PKGS="$PKGS
+$(mainpkg $pkg)"
+	esac
+done
 
 {
-for pkg; do
-case $pkg in
-	-n|-k) MAKEARGS="$MAKEARGS $pkg";;
-	-*) ARGS="$ARGS $pkg";;
-	*)
+for pkg in $PKGS; do
 	echo all: pkg-$pkg
-	for dep in $(./xbps-src show-build-deps $pkg | sed '1d;s|[<>].*$||g'); do
-		echo pkg-$pkg: pkg-$dep
+	for dep in $(./xbps-src show-build-deps $pkg |
+			sed '1d;s|[<>].*$||g'); do
+		mainpkg $dep |
+		grep -Fx "$PKGS" |
+		sed 's/^/pkg-'$pkg': pkg-/'
 	done
-esac
 done
 printf '%s\n' pkg-%: "	pkg=\$@; ./xbps-src $ARGS pkg \$\${pkg#pkg-}"
 } | make -f - $MAKEARGS
