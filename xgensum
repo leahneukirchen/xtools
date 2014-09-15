@@ -15,19 +15,11 @@ else
 	echo Usage: gensum TEMPLATE
 fi
 
-if [ -d ../../hostdir/sources ]; then
-	XBPS_SRCDISTDIR=../../hostdir/sources
-elif [ -d ../hostdir/sources ]; then
-	XBPS_SRCDISTDIR=../hostdir/sources
-elif [ -d hostdir/sources ]; then
-	XBPS_SRCDISTDIR=hostdir/sources
-else
-	XBPS_SRCDISTDIR=~/xbps-packages/hostdir/sources/
-fi
-
+XBPS_DISTDIR=$(xdistdir)
+XBPS_SRCDISTDIR=$($XBPS_DISTDIR/xbps-src show-var XBPS_SRCDISTDIR | tail -1)
 srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
 
-$XBPS_SRCDISTDIR/../../xbps-src -I fetch $pkgname
+$XBPS_DISTDIR/xbps-src -I fetch $pkgname
 
 sums=""
 for f in $distfiles; do
