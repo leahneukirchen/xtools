@@ -15,6 +15,6 @@ case $pkg in
 		echo pkg-$pkg: pkg-$dep
 	done
 esac
-done 
+done
 printf '%s\n' pkg-%: "	pkg=\$@; ./xbps-src $ARGS pkg \$\${pkg#pkg-}"
 } | make -f - $MAKEARGS

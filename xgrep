@@ -3,6 +3,7 @@
 
 PATTERN=${1:?pattern missing}
 shift
+
 for pkg; do
 	xbps-query -f "$pkg"
 done | sed 's/ -> .*//' | xargs grep -d skip -e "$PATTERN"
