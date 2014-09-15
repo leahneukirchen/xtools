@@ -1,10 +1,19 @@
-#!/bin/sh
+#!/bin/sh -e
 # xbump PKGNAME [git commit options] - git commit a version bump
 
-cd ~/xbps-packages
+cd $(xdistdir)
 
 pkg=$1; shift
-version=$(./xbps-src show "$pkg" | sed -n '/version/s/[^:]*:[\t]*//p')
+version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[\t]*//p')
 
-git add srcpkgs/"$pkg" &&
-git commit -m "$pkg: update to $version." "$@" srcpkgs/"$pkg"
+if [ -n "$(git ls-files srcpkgs/"$pkg"/template)" ]; then
+	msg="$pkg: update to $version."
+else
+	msg="New package: $pkg-$version"
+fi
+
+dirs=$(./xbps-src show "$pkg" |
+	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')
+
+git add $dirs
+git commit -m "$msg" "$@" $dirs
