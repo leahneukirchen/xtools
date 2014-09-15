@@ -1,0 +1,19 @@
+#!/bin/sh
+# xdistdir - figure out XBPS_DISTDIR
+
+if [ -n "$XBPS_DISTDIR" ]; then
+	echo "$XBPS_DISTDIR"
+elif [ -x "$(command -v xbps-src)" ]; then
+	"$(readlink -f "$(command -v xbps-src)")" show-var XBPS_DISTDIR | tail -1
+elif [ -d ~/void-packages ]; then
+	echo ~/void-packages
+elif [ -d ~/xbps-packages ]; then
+	echo ~/xbps-packages
+elif [ -d ~/src/void-packages ]; then
+	echo ~/src/void-packages
+elif [ -d ~/src/xbps-packages ]; then
+	echo ~/src/xbps-packages
+else
+	echo "xdistdir: no idea, giving up" 1>&2
+	exit 111
+fi
