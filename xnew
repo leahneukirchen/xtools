@@ -1,0 +1,34 @@
+#!/bin/sh -e
+# xnew PKG - create XBPS template template
+
+PKG=${1?no package name given}
+srcdir=$(xdistdir)/srcpkgs
+
+mkdir $srcdir/$PKG
+
+cat >$srcdir/$PKG/template <<EOF
+# Template file for '$PKG'
+pkgname=$PKG
+version=
+revision=1
+#wrksrc=
+#create_wrksrc=yes
+#only_for_archs="i686 x86_64"
+build_style=gnu-configure
+#configure_args=""
+#make_build_args=""
+#make_install_args=""
+#conf_files=""
+#make_dirs="/var/log/dir 0755 root root"
+hostmakedepends=""
+makedepends=""
+depends=""
+short_desc=""
+maintainer="$(git config user.name) <$(git config user.email)>"
+license="GPL-3"
+homepage=""
+distfiles=""
+checksum=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb
+EOF
+
+exec ${EDITOR:-vim} +3 $srcdir/$PKG/template
