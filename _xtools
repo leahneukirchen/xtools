@@ -1,0 +1,74 @@
+#compdef xbulk xbump xdiff xgensum xgrep xlg xlog xls xmindep xnew xnuxnu xoptdiff xq xsrc
+
+_xbps  # force autoload
+
+_xtools_all_packages() {
+	compadd "$@" -- $(xdistdir)/srcpkgs/*(:t)
+}
+
+_xbulk() {
+	_arguments : \
+		'-n[dry-run]' \
+		'-k[keep going when a build fails]' \
+		'*:available templates:_xtools_all_packages'
+}
+
+_xtools_one_template() {
+	_arguments : \
+		':available templates:_xtools_all_packages'
+}
+
+_xdiff() {
+	_arguments : \
+		'-u[only display differences]' \
+		':directory:_files -/'
+}
+
+_xgensum() {
+	_arguments : \
+		'-i[substitute in-place]' \
+		':available templates:_xtools_all_packages'
+}
+
+_xgrep() {
+	_arguments : \
+		'1:pattern: ' \
+		'*:package:_xbps_installed_packages'
+}
+
+_xtools_just_packages() {
+	_arguments : \
+		'*:package:_xbps_all_packages'
+}
+
+_xoptdiff() {
+	_arguments : \
+		'-q[only list differing packages]' \
+		'*:package:_xbps_installed_packages'
+}
+
+_xq() {
+	_arguments : \
+		'-R[include remote information too]' \
+		'*:package:_xbps_all_packages'
+}
+
+_xtools() {
+        case "$service" in
+		xbulk) _xbulk "$@";;
+		xbump) _xtools_one_template "$@";;
+		xdiff) _xdiff "$@";;
+		xgensum) _xgensum "$@";;
+		xgrep) _xgrep "$@";;
+		xlg) _xtools_one_template "$@";;
+		xlog) _xtools_one_template "$@";;
+		xls) _xtools_just_packages "$@";;
+		xmindep) _xtools_just_packages "$@";;
+		xnuxnu) _xtools_one_template "$@";;
+		xoptdiff) _xoptdiff "$@";;
+		xq) _xq "$@";;
+		xsrc) _xtool_one_template "$@";;
+        esac
+}
+
+_xtools "$@"
