@@ -17,7 +17,7 @@ https://github.com/voidlinux/xbps
   xnew PKG - create XBPS template template
   xnuxnu PKG - upstream version checker for XBPS templates
   xoptdiff [-q] [PKGS...] - show template options which differ from binary package
-  xq PKGS... - query information about XBPS package
+  xq [-R] PKGS... - query information about XBPS package
   xsrc PKG - list source files for XBPS template
 
 Tools working on the void-packages tree use xdistdir to find it,
