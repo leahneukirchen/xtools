@@ -1,10 +1,6 @@
 #!/bin/sh
 # xq [-R] PKGS... - query information about XBPS package
 
-rmcol() {
-	sed 's/\x1b\[[0-9;]*[mG]//g'
-}
-
 totop() {
 	sed -n 's/^'"$1"'/&/p;tk;H;:k;${x;s/\n//;p};d'
 }
@@ -21,7 +17,7 @@ if [ $1 = -R ]; then
 fi
 
 for pkg; do
-	xbps-query $ADDREPO -S "$pkg" | rmcol |
+	xbps-query $ADDREPO -S "$pkg" |
 		totop short_desc |
 		totop pkgver
 	xbps-query $ADDREPO $R -x "$pkg" | sed 's/^/	/;1s/^/depends:\n/'
