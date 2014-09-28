@@ -4,6 +4,7 @@
 cd $(xdistdir)
 
 pkg=$1; shift
+[ -z "$pkg" ] && pkg=`basename $PWD`
 version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[\t]*//p')
 
 if [ -n "$(git ls-files srcpkgs/"$pkg"/template)" ]; then
