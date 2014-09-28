@@ -3,6 +3,7 @@
 
 PKG=${1?no package name given}
 srcdir=$(xdistdir)/srcpkgs
+shift
 
 mkdir $srcdir/$PKG
 
@@ -30,5 +31,33 @@ homepage=""
 distfiles=""
 checksum=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb
 EOF
+
+for subpkg; do
+	ln -sr -- "$srcdir/$PKG" "$srcdir/$subpkg"
+	cat >>$srcdir/$PKG/template <<EOF
+
+${subpkg}_package() {
+EOF
+	case $subpkg in
+	*-devel) cat >>$srcdir/$PKG/template <<EOF
+	depends="$PKG>=\${version}_\${revision}"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/pkgconfig
+		vmove "usr/lib/*.a"
+		vmove "usr/lib/*.so"
+	}
+EOF
+		;;
+	*) cat >>$srcdir/$PKG/template <<EOF
+	pkg_install() {
+		#vmove path
+	}
+EOF
+		;;
+	esac
+	echo "}" >>$srcdir/$PKG/template
+done
 
 exec ${EDITOR:-vim} +3 $srcdir/$PKG/template
