@@ -54,7 +54,7 @@ _xq() {
 }
 
 _xtools() {
-        case "$service" in
+	case "$service" in
 		xbulk) _xbulk "$@";;
 		xbump) _xtools_one_template "$@";;
 		xdiff) _xdiff "$@";;
@@ -68,7 +68,8 @@ _xtools() {
 		xoptdiff) _xoptdiff "$@";;
 		xq) _xq "$@";;
 		xsrc) _xtool_one_template "$@";;
-        esac
+		xsubpkg) _xtool_one_template "$@";;
+	esac
 }
 
 _xtools "$@"
