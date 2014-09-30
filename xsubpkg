@@ -1,0 +1,6 @@
+#!/bin/sh
+# xsubpkg PKG - lists all subpackages of a package
+
+PKG=$1
+cd `xdistdir`
+find -L srcpkgs -samefile srcpkgs/"$PKG"/template | cut -d/ -f 2
