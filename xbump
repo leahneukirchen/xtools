@@ -4,7 +4,7 @@
 cd $(xdistdir)
 
 pkg=$1; shift
-[ -z "$pkg" ] && pkg=`basename $PWD`
+[ -z "$pkg" ] && pkg=$(basename $PWD)
 version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[\t]*//p')
 
 if [ -n "$(git ls-files srcpkgs/"$pkg"/template)" ]; then
@@ -13,10 +13,10 @@ else
 	msg="New package: $pkg-$version"
 fi
 
-spkpattern=`xsubpkg "$pkg" | tr '\n' '|' | sed 's/\(.*\)|/^(\1)$/'`
-shlibs=`git diff common/shlibs | grep "^+[^+]" | \
-	sed "s/^+[^ ]\+ \(.*\)-[^-]\+_[0-9]\+$/\1/"`
-if [ -n "`echo "$shlibs" | grep -vE "$spkpattern"`" ]; then
+spkpattern=$(xsubpkg "$pkg" | tr '\n' '|' | sed 's/\(.*\)|/^(\1)$/')
+shlibs=$(git diff common/shlibs | grep "^+[^+]" | \
+	sed "s/^+[^ ]\+ \(.*\)-[^-]\+_[0-9]\+$/\1/")
+if [ -n "$(echo "$shlibs" | grep -vE "$spkpattern")" ]; then
 	echo "common/shlibs contains uncommitted changes for other packages." 2>&1
 	exit 1
 elif [ -n "$shlibs" ]; then
