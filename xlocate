@@ -1,4 +1,4 @@
 #!/bin/sh
 # xlocate PATTERN - locate files in all XBPS packages
 
-xbps-query --regex -Ro "$@" | sed 's/(http:.*)$//; s/-[^-]*:/\t/'
+xbps-query --regex -Ro "$@" | sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
