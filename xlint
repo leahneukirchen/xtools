@@ -1,0 +1,96 @@
+#!/bin/sh
+# xlint TEMPLATE - scan XBPS template for common mistakes
+
+scan() {
+	local rx=$1 msg=$2 limit=${3:-1}
+	grep -P -Hn -m$limit -e "$rx" "$template" |
+		sed "s/^\([^:]*:[^:]*:\)\(.*\)/\1 $msg/"
+}
+
+variables="#.*
+_.*
+.*_descr
+.*_homedir
+.*_shell
+CFLAGS
+CPPFLAGS
+CXXFLAGS
+LDFLAGS
+XBPS_FETCH_COMMAND
+bootstrap
+broken
+build_options
+build_style
+build_wrksrc
+checksum
+conf_files
+configure_args
+configure_script
+conflicts
+create_wrksrc
+depends
+desc_option_.*
+disable_parallel_build
+distfiles
+dkms_modules
+force_debug_pkgs
+font_dirs
+homepage
+hostmakedepends
+keep_libtool_archives
+lib32disabled
+lib32mode
+license
+maintainer
+make_build_args
+make_build_args
+make_dirs
+make_install_args
+make_install_target
+makedepends
+mutable_files
+noarch
+nocross
+nonfree
+nostrip
+nostrip_files
+noverifyrdeps
+only_for_archs
+patch_args
+pkgname
+provides
+pycompile_dirs
+pycompile_module
+pycompile_version
+python_versions
+register_shell
+replaces
+revision
+sgml_entries
+short_desc
+skip_extraction
+subpackages
+system_accounts
+system_groups
+systemd_services
+triggers
+version
+wrksrc
+xml_entries"
+
+for template; do
+	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
+	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
+	scan 'short_desc=["'\''].{72}' "short_desc should be less than 72 chars"
+	scan 'license=.*GPL[^-]' "license GPL without version"
+	scan 'vinstall.* usr/bin' "use vbin" -1
+	scan 'vinstall.* usr/share/man' "use vman" -1
+	scan 'vinstall.* usr/share/licenses' "use vlicense" -1
+	scan '^  ' "indent with tabs"
+	scan '`' "use \$() instead of backticks" -1
+	scan 'replaces=[^<>]*$' "replaces needs depname with version"
+	scan 'conflicts=[^<>]*$' "conflicts needs depname with version"
+	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
+	scan '^(?!\s*('"$(echo -n "$variables" | tr '\n' '|')"'))[^\s=-]+=' \
+		"custom variables should use _ prefix: \2" -1
+done

@@ -10,6 +10,7 @@ https://github.com/voidlinux/xbps
   xgensum [-i] TEMPLATE - update SHA256 sums in templates
   xgrep PATTERN PKGS... - search files limited to XBPS package contents
   xlg PKG - open short commit log for XBPS template
+  xlint TEMPLATE - scan XBPS template for common mistakes
   xlocate PATTERN - locate files in all XBPS packages
   xlog PKG - open commit log for XBPS template
   xls PKGS... - list files contained in PKGS (including binpkgs)
@@ -19,7 +20,7 @@ https://github.com/voidlinux/xbps
   xoptdiff [-q] [PKGS...] - show template options which differ from binary package
   xq [-R] PKGS... - query information about XBPS package
   xsrc PKG - list source files for XBPS template
-  xsubpkg PKG - list all subpackages of a package based on srcpkgs dir
+  xsubpkg PKG - lists all subpackages of a package
 
 Tools working on the void-packages tree use xdistdir to find it,
 check it's output is reasonable first.
