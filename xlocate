@@ -1,4 +1,24 @@
 #!/bin/sh
 # xlocate PATTERN - locate files in all XBPS packages
 
-xbps-query --regex -Ro "$@" | sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
+: ${XLOCATE_DB:=~/.cache/xlocate.db}
+
+if [ -e "$XLOCATE_DB" ]; then
+	if [ "$XLOCATE_DB" -ot /var/db/xbps/http___repo_voidlinux_eu_current/*-repodata ] || [ ! -s "$XLOCATE_DB" ]; then
+		echo "xlocate: reindexing database..." 1>&2
+		xbps-query --regex -Ro '' |
+			sed 's/ *([^)]*)$//; s|: ||;' |
+			/usr/libexec/frcode >"$XLOCATE_DB"
+	fi
+	rx=
+	case "$1" in
+		# Just . is unlikely to be a regex here...
+		*[*+\\\[\]]*) rx=-r;;
+	esac
+	# XXX also matches template in package name.
+	locate $rx -d "$XLOCATE_DB" "$1" |
+		sed 's|^\([^/]*\)-[^-/]*/|\1\t/|'
+else
+	xbps-query --regex -Ro "$@" |
+		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
+fi
