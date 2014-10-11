@@ -87,6 +87,7 @@ for template; do
 	scan 'vinstall.* usr/share/man' "use vman" -1
 	scan 'vinstall.* usr/share/licenses' "use vlicense" -1
 	scan '^  ' "indent with tabs"
+	scan '[\t ]$' "trailing whitespace" -1
 	scan '`' "use \$() instead of backticks" -1
 	scan 'replaces=[^<>]*$' "replaces needs depname with version"
 	scan 'conflicts=[^<>]*$' "conflicts needs depname with version"
