@@ -7,7 +7,7 @@ scan() {
 		sed "s/^\([^:]*:[^:]*:\)\(.*\)/\1 $msg/"
 }
 
-variables="#.*
+variables=$(echo -n "#.*
 _.*
 .*_descr
 .*_homedir
@@ -76,7 +76,7 @@ systemd_services
 triggers
 version
 wrksrc
-xml_entries"
+xml_entries" | tr '\n' '|')
 
 for template; do
 	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
@@ -92,7 +92,7 @@ for template; do
 	scan 'replaces=[^<>]*$' "replaces needs depname with version"
 	scan 'conflicts=[^<>]*$' "conflicts needs depname with version"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
-	scan '^(?!\s*('"$(echo -n "$variables" | tr '\n' '|')"'))[^\s=-]+=' \
+	scan '^(?!\s*('"$variables"'))[^\s=-]+=' \
 		"custom variables should use _ prefix: \2" -1
 	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \2" -1
 done
