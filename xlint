@@ -94,4 +94,5 @@ for template; do
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan '^(?!\s*('"$(echo -n "$variables" | tr '\n' '|')"'))[^\s=-]+=' \
 		"custom variables should use _ prefix: \2" -1
+	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \2" -1
 done
