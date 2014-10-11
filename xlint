@@ -95,4 +95,16 @@ for template; do
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' \
 		"custom variables should use _ prefix: \2" -1
 	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \2" -1
+	scan 'distfiles=.*sourceforge\.net' 'use $SOURCEFORGE_SITE'
+	scan 'distfiles=.*savannah.nongnu\.org' 'use $NONGNU_SITE'
+	scan 'distfiles=.*archive\.ubuntu\.com' 'use $UBUNTU_SITE'
+	scan 'distfiles=.*xorg\.freedesktop\.org' 'use $XORG_SITE'
+	scan 'distfiles=.*debian\.org' 'use $DEBIAN_SITE'
+	scan 'distfiles=.*gnome\.org/pub' 'use $GNOME_SITE'
+	scan 'distfiles=.*www\.kernel\.org' 'use $KERNEL_SITE'
+	scan 'distfiles=.*cpan\.org' 'use $CPAN_SITE'
+	scan 'distfiles=.*pypi\.python\.org' 'use $PYPI_SITE'
+	scan 'distfiles=.*ftp\.mozilla\.org' 'use $MOZILLA_SITE'
+	scan 'distfiles=.*ftp\.gnu\.org/pub/gnu' 'use $GNU_SITE'
+	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
 done
