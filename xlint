@@ -84,7 +84,8 @@ for template; do
 	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
 	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
 	scan 'short_desc=["'\''].{72}' "short_desc should be less than 72 chars"
-	scan 'license=.*GPL[^-]' "license GPL without version"
+	scan 'license=.*[^L]GPL[^-]' "license GPL without version"
+	scan 'license=.*LGPL[^-]' "license LGPL without version"
 	scan 'vinstall.* usr/bin' "use vbin" -1
 	scan 'vinstall.* usr/share/man' "use vman" -1
 	scan 'vinstall.* usr/share/licenses' "use vlicense" -1
