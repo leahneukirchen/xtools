@@ -4,7 +4,8 @@
 scan() {
 	local rx=$1 msg=$2 limit=${3:-1}
 	grep -P -Hn -m$limit -e "$rx" "$template" |
-		sed "s/^\([^:]*:[^:]*:\)\(.*\)/\1 $msg/"
+		sed "s/^\([^:]*:[^:]*:\)\(.*\)/\1 $msg/" |
+		grep . && ret=1
 }
 
 variables=$(echo -n "#.*
@@ -78,6 +79,7 @@ version
 wrksrc
 xml_entries" | tr '\n' '|')
 
+ret=0
 for template; do
 	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
 	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
@@ -108,3 +110,4 @@ for template; do
 	scan 'distfiles=.*ftp\.gnu\.org/(pub/)?gnu' 'use $GNU_SITE'
 	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
 done
+exit $ret
