@@ -44,7 +44,7 @@ lib32mode
 license
 maintainer
 make_build_args
-make_build_args
+make_build_target
 make_dirs
 make_install_args
 make_install_target
