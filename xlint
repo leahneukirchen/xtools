@@ -31,6 +31,7 @@ conflicts
 create_wrksrc
 depends
 desc_option_.*
+disable_debug
 disable_parallel_build
 distfiles
 dkms_modules
