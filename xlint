@@ -76,6 +76,9 @@ system_accounts
 system_groups
 systemd_services
 triggers
+update_ignore
+update_pattern
+update_site
 version
 wrksrc
 xml_entries" | tr '\n' '|')
