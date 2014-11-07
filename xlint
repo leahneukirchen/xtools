@@ -2,10 +2,14 @@
 # xlint TEMPLATE - scan XBPS template for common mistakes
 
 scan() {
-	local rx="$1" msg="$2" limit="${3:-1}"
-	grep -P -Hn -m"$limit" -e "$rx" "$template" |
+	local rx="$1" msg="$2"
+	grep -P -Hn -e "$rx" "$template" |
 		sed "s/^\([^:]*:[^:]*:\)\(.*\)/\1 $msg/" |
 		grep . && ret=1
+}
+
+once() {
+	head -n 1
 }
 
 variables=$(echo -n "#.*
@@ -53,7 +57,6 @@ makedepends
 mutable_files
 noarch
 nocross
-nonfree
 nostrip
 nostrip_files
 noverifyrdeps
@@ -67,6 +70,8 @@ pycompile_version
 python_versions
 register_shell
 replaces
+repository
+reverts
 revision
 sgml_entries
 short_desc
@@ -78,6 +83,7 @@ systemd_services
 triggers
 update_ignore
 update_pattern
+update_pkgsite
 update_site
 version
 wrksrc
@@ -85,23 +91,25 @@ xml_entries" | tr '\n' '|')
 
 ret=0
 for template; do
+	{
 	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
 	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
 	scan 'short_desc=["'\''].{72}' "short_desc should be less than 72 chars"
 	scan 'license=.*[^L]GPL[^-]' "license GPL without version"
 	scan 'license=.*LGPL[^-]' "license LGPL without version"
-	scan 'vinstall.* usr/bin' "use vbin" -1
-	scan 'vinstall.* usr/share/man' "use vman" -1
-	scan 'vinstall.* usr/share/licenses' "use vlicense" -1
-	scan '^  ' "indent with tabs"
-	scan '[\t ]$' "trailing whitespace" -1
-	scan '`' "use \$() instead of backticks" -1
+	scan 'vinstall.* usr/bin' "use vbin"
+	scan 'vinstall.* usr/share/man' "use vman"
+	scan 'vinstall.* usr/share/licenses' "use vlicense"
+	scan '^  ' "indent with tabs" | once
+	scan '[\t ]$' "trailing whitespace"
+	scan '`' "use \$() instead of backticks"
 	scan 'replaces=[^<>]*$' "replaces needs depname with version"
 	scan 'conflicts=[^<>]*$' "conflicts needs depname with version"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
+	scan 'nonfree=' "use repository=nonfree"
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' \
-		"custom variables should use _ prefix: \2" -1
-	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \2" -1
+		"custom variables should use _ prefix: \2"
+	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \2"
 	scan 'distfiles=.*sourceforge\.net' 'use $SOURCEFORGE_SITE'
 	scan 'distfiles=.*savannah.nongnu\.org' 'use $NONGNU_SITE'
 	scan 'distfiles=.*archive\.ubuntu\.com' 'use $UBUNTU_SITE'
@@ -114,5 +122,6 @@ for template; do
 	scan 'distfiles=.*ftp\.mozilla\.org' 'use $MOZILLA_SITE'
 	scan 'distfiles=.*ftp\.gnu\.org/(pub/)?gnu' 'use $GNU_SITE'
 	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
+	} | sort -t: -n -k2
 done
 exit $ret
