@@ -5,6 +5,7 @@ https://github.com/voidlinux/xbps
 
   xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
   xbump PKGNAME [git commit options] - git commit a version bump
+  xclash - detect file conflicts between XBPS packages
   xdiff [-u] [DIR] - merge XBPS .new-* files
   xdistdir - figure out XBPS_DISTDIR
   xgensum [-i] TEMPLATE - update SHA256 sums in templates

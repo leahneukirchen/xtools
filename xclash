@@ -1,0 +1,26 @@
+#!/bin/bash
+# xclash - detect file conflicts between XBPS packages
+
+comm -23 <(xbps-query --regex -Ro '' |
+		sed 's/ *([^)]*)$//; s|-[^-]*: | |; /-dbg /d; /-32bit /d; /chroot-/d' | sort | 
+		awk '{f[$2][length(f[$2])]=$1}
+			END {
+			for(pkg in f)
+			if (length(f[pkg])>1)
+			for (i = 0; i < length(f[pkg]); i++)
+			for (j = i+1; j < length(f[pkg]); j++)
+			if (f[pkg][i] != f[pkg][j])
+			print f[pkg][i], f[pkg][j]
+			}' | sort -u ) \
+	<({
+		xbps-query -R -s '' -p conflicts
+		xbps-query -R -s '' -p replaces
+	 } | sed 's/ *([^)]*)$//; s|-[^-]*: | |; s/[<>].*//; /-dbg /d' |
+		awk '{ if($1<$2) print $1, $2; else print $2, $1 }' |
+	       	sort -u ) |
+while read pkg1 pkg2; do
+	echo "$pkg1 and $pkg2 conflict for"
+	comm -12 <(xbps-query -Rf $pkg1 | sed 's/ ->.*//' | sort -u) \
+		<(xbps-query -Rf $pkg2 | sed 's/ ->.*//' | sort -u)
+	echo
+done
