@@ -84,7 +84,7 @@ systemd_services
 triggers
 update_ignore
 update_pattern
-update_pkgsite
+update_pkgname
 update_site
 version
 wrksrc
