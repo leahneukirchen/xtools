@@ -17,6 +17,7 @@ variables=$(echo -n "#.*
 _.*
 .*_descr
 .*_homedir
+.*_groups
 .*_shell
 CFLAGS
 CPPFLAGS
