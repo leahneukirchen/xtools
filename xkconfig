@@ -1,0 +1,17 @@
+#!/bin/bash
+
+cd $(xdistdir)
+
+pkg=$1
+
+./xbps-src configure $pkg
+
+# include template, ignore errors
+. srcpkgs/$pkg/template 2> /dev/null
+
+if [ -z "$wrksrc" ]; then
+	wrksrc=$pkgname-$version
+fi
+
+make -C "masterdir/builddir/$wrksrc" menuconfig && \
+	cp masterdir/builddir/$wrksrc/.config srcpkgs/$pkg/config.new

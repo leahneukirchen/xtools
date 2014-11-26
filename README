@@ -14,6 +14,8 @@ https://github.com/voidlinux/xbps
   xlocate PATTERN - locate files in all XBPS packages
   xlog PKG - open commit log for XBPS template
   xls PKGS... - list files contained in PKGS (including binpkgs)
+  xkconfig PKG - call make menuconfig on PKG, updated .config will go to
+                 srcpkgs/PKG/config.new
   xmindep PKGS... - minimize list of PKGS by removing implicit dependencies
   xnew PKG - create XBPS template template
   xoptdiff [-q] [PKGS...] - show template options which differ from binary package
