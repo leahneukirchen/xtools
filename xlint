@@ -99,6 +99,9 @@ for template; do
 	scan 'short_desc=["'\''].{72}' "short_desc should be less than 72 chars"
 	scan 'license=.*[^L]GPL[^-]' "license GPL without version"
 	scan 'license=.*LGPL[^-]' "license LGPL without version"
+	if ! grep -q vlicense "$template"; then
+		scan 'license=.*custom' "license 'custom', but no use of vlicense"
+	fi
 	scan 'vinstall.* usr/bin' "use vbin"
 	scan 'vinstall.* usr/share/man' "use vman"
 	scan 'vinstall.* usr/share/licenses' "use vlicense"
