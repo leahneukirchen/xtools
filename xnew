@@ -5,12 +5,36 @@ PKG=${1?no package name given}
 srcdir=$(xdistdir)/srcpkgs
 shift
 
+homepage=
+version=
+distfiles=
+case "$PKG" in
+*://*)
+	# guesstimate defaults
+	homepage=${PKG%/*}/
+	PKG=${PKG##*/}
+	ext=${PKG##*-}
+	again=true
+	while $again; do
+		again=false
+		case "$ext" in
+		[0-9]*)
+			version=$version${ext%%.*}.
+			ext=${ext#*.}
+			again=true
+		esac
+	done
+	version=${version%.}
+	PKG=${PKG%-*}
+	distfiles="$homepage/\${pkgname}-\${version}.$ext"
+esac
+
 mkdir $srcdir/$PKG
 
 cat >$srcdir/$PKG/template <<EOF
 # Template file for '$PKG'
 pkgname=$PKG
-version=
+version=$version
 revision=1
 #wrksrc=
 #create_wrksrc=yes
@@ -27,8 +51,8 @@ depends=""
 short_desc=""
 maintainer="$(git config user.name) <$(git config user.email)>"
 license="GPL-3"
-homepage=""
-distfiles=""
+homepage="$homepage"
+distfiles="$distfiles"
 checksum=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb
 EOF
 
