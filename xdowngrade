@@ -1,0 +1,13 @@
+#!/bin/sh -e
+# xdowngrade PKGS.xbps... - install XBPS package directly from .xbps file
+
+T=$(mktemp --tmpdir -d xdowngrade-$(date -I).XXXXXXXX)
+ln -s -t $T/ "$@"
+xbps-rindex -a $T/*
+pkg=
+for f; do
+	f=${f##*/}
+	pkg="$pkg ${f%-*}"
+done
+xbps-install -i -R $T -f $pkg
+rm -r $T
