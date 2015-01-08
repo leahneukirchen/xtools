@@ -13,7 +13,7 @@ https://github.com/voidlinux/xbps
   xgrep PATTERN PKGS... - search files limited to XBPS package contents
   xlg PKG - open short commit log for XBPS template
   xlint TEMPLATE - scan XBPS template for common mistakes
-  xlocate PATTERN - locate files in all XBPS packages
+  xlocate [-u | PATTERN] - locate files in all XBPS packages
   xlog PKG - open commit log for XBPS template
   xls PKGS... - list files contained in PKGS (including binpkgs)
   xmindep PKGS... - minimize list of PKGS by removing implicit dependencies

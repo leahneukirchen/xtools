@@ -1,14 +1,23 @@
 #!/bin/sh
-# xlocate PATTERN - locate files in all XBPS packages
+# xlocate [-u | PATTERN] - locate files in all XBPS packages
 
 : ${XLOCATE_DB:=~/.cache/xlocate.db}
 
+xupdatedb() {
+	echo "xlocate: reindexing database..." 1>&2
+	xbps-query -Ro '*' |
+		sed 's/ *([^)]*)$//; s|: ||;' |
+		/usr/libexec/frcode >"$XLOCATE_DB"
+}
+
+if [ "$1" = -u ]; then
+	xupdatedb
+	exit $?
+fi
+
 if [ -e "$XLOCATE_DB" ]; then
-	if [ "$XLOCATE_DB" -ot /var/db/xbps/http___repo_voidlinux_eu_current/*-repodata ] || [ ! -s "$XLOCATE_DB" ]; then
-		echo "xlocate: reindexing database..." 1>&2
-		xbps-query --regex -Ro '' |
-			sed 's/ *([^)]*)$//; s|: ||;' |
-			/usr/libexec/frcode >"$XLOCATE_DB"
+	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_DB" | grep -q .; then
+		xupdatedb
 	fi
 	rx=
 	case "$1" in
