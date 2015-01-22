@@ -17,7 +17,7 @@ fi
 
 if [ -e "$XLOCATE_DB" ]; then
 	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_DB" | grep -q .; then
-		xupdatedb
+		echo "xlocate: database outdated, please run xlocate -u." 1>&2
 	fi
 	rx=
 	case "$1" in
