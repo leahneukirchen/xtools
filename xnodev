@@ -1,0 +1,11 @@
+#!/bin/bash
+# xnodev - list not installed -devel packages for installed packages
+
+xbps-query -Rs '' | sed 's/^.\(.\). \([^ ]*\)-.* .*/\1 \2/' | sort -k2 | awk '
+	$1 == "-" && $2 ~ "-devel" {
+		b = $2
+		sub("-devel", "", b)
+		if (s[b]) print $2
+	}
+	$1 == "*" { s[$2] = 1 }
+'

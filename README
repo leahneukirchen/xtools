@@ -19,6 +19,7 @@ https://github.com/voidlinux/xbps
   xls PKGS... - list files contained in PKGS (including binpkgs)
   xmindep PKGS... - minimize list of PKGS by removing implicit dependencies
   xnew PKG - create XBPS template template
+  xnodev - list not installed -devel packages for installed packages
   xoptdiff [-q] [PKGS...] - show template options which differ from binary package
   xq [-R] PKGS... - query information about XBPS package
   xsrc PKG - list source files for XBPS template
