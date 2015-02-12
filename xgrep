@@ -6,4 +6,4 @@ shift
 
 for pkg; do
 	xbps-query -f "$pkg"
-done | sed 's/ -> .*//' | xargs grep -d skip -e "$PATTERN"
+done | sed 's/ -> .*//' | xargs -d'\n' grep -H -d skip -e "$PATTERN"
