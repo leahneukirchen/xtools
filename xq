@@ -11,7 +11,7 @@ ADDREPO="--repository=hostdir/binpkgs/$BRANCH
 	--repository=../../hostdir/binpkgs/$BRANCH"
 
 R=
-if [ $1 = -R ]; then
+if [ "$1" = -R ]; then
 	R=-R
 	shift
 fi
