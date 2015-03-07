@@ -1,0 +1,31 @@
+#!/bin/bash
+# xrevbump MESSAGE TEMPLATES... - increase template revision and commit
+
+MESSAGE=$1
+shift
+
+if [ $# -eq 0 ]; then
+	printf "Usage: xrevbump MESSAGE TEMPLATES...\n" 2>&1
+        exit 1
+fi
+
+for t; do
+	if [ -f "$t" ]; then
+		:
+	elif [ -f "$t/template" ]; then
+		t="$t/template"
+	elif [ -f "srcpkgs/$t/template" ]; then
+		t="srcpkgs/$t/template"
+	else
+		printf "Cannot find template '%s'\n" "$t"
+		break
+	fi
+
+	. "$t"
+
+	revision=$((revision + 1))
+	printf "%s: bump to revision %d\n" "$t" "$revision"
+
+	sed -i -e "/^revision=/s/=.*/=$revision/" "$t"
+	git -C "${t%/*}" commit -m "$pkgname: $MESSAGE" template
+done
