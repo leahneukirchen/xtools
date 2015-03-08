@@ -13,18 +13,18 @@ else
 	msg="New package: $pkg-$version"
 fi
 
-spkpattern=$(xsubpkg "$pkg" | tr '\n' '|' | sed 's/\(.*\)|/^(\1)$/')
+subpkg=$(xsubpkg "$pkg")
+spkpattern=$(echo $subpkg | sed 's/^/^\\(/g;s/$/\\)$/g;s/ /\\|/g')
 shlibs=$(git diff common/shlibs | grep "^+[^+]" | \
 	sed "s/^+[^ ]\+ \(.*\)-[^-]\+_[0-9]\+$/\1/")
-if [ -n "$(echo "$shlibs" | grep -vE "$spkpattern")" ]; then
+if [ -n "$(echo "$shlibs" | grep -v "$spkpattern")" ]; then
 	echo "common/shlibs contains uncommitted changes for other packages." 2>&1
 	exit 1
 elif [ -n "$shlibs" ]; then
 	git add common/shlibs
 fi
 
-dirs=$(./xbps-src show "$pkg" |
-	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')
-
-git add $dirs
-git commit -m "$msg" "$@" $dirs
+cd srcpkgs
+git add $subpkg
+cd -
+git commit -m "$msg" "$@"
