@@ -12,12 +12,6 @@ if [ -z "$version" ]; then
 	exit 1
 fi
 
-if [ -n "$(git ls-files srcpkgs/"$pkg"/template)" ]; then
-	msg="$pkg: update to $version."
-else
-	msg="New package: $pkg-$version"
-fi
-
 spkpattern=$(xsubpkg "$pkg" | tr '\n' '|' | sed 's/\(.*\)|/^(\1)$/')
 shlibs=$(git diff common/shlibs | grep "^+[^+]" | \
 	sed "s/^+[^ ]\+ \(.*\)-[^-]\+_[0-9]\+$/\1/")
@@ -32,4 +26,11 @@ dirs=$(./xbps-src show "$pkg" |
 	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')
 
 git add $dirs
+
+if git diff --quiet --cached --diff-filter=A -- srcpkgs/"$pkg"/template; then
+	msg="$pkg: update to $version."
+else
+	msg="New package: $pkg-$version"
+fi
+
 git commit -m "$msg" "$@" $dirs
