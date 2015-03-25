@@ -22,6 +22,7 @@ https://github.com/voidlinux/xbps
   xnodev - list not installed -devel packages for installed packages
   xoptdiff [-q] [PKGS...] - show template options which differ from binary package
   xq [-R] PKGS... - query information about XBPS package
+  xrevbump MESSAGE TEMPLATES... - increase template revision and commit
   xsrc PKG - list source files for XBPS template
   xsubpkg PKG - lists all subpackages of a package
 
