@@ -7,6 +7,11 @@ pkg=$1; shift
 [ -z "$pkg" ] && pkg=$(basename $PWD)
 version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[\t]*//p')
 
+if [ -z "$version" ]; then
+	echo cannot parse version
+	exit 1
+fi
+
 if [ -n "$(git ls-files srcpkgs/"$pkg"/template)" ]; then
 	msg="$pkg: update to $version."
 else
