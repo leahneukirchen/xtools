@@ -41,6 +41,7 @@ STRIP
 allow_unknown_shlibs
 bootstrap
 broken
+build_pie
 build_options
 build_options_default
 build_style
