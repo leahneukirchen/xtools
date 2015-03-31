@@ -41,9 +41,9 @@ STRIP
 allow_unknown_shlibs
 bootstrap
 broken
-build_pie
 build_options
 build_options_default
+build_pie
 build_style
 build_wrksrc
 checksum
@@ -68,6 +68,7 @@ lib32depends
 lib32disabled
 lib32files
 lib32mode
+lib32symlinks
 license
 maintainer
 make_build_args
@@ -81,6 +82,7 @@ mutable_files
 noarch
 nocross
 nodebug
+noshlibprovides
 nostrip
 nostrip_files
 noverifyrdeps
