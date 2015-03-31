@@ -135,8 +135,9 @@ for template; do
 	scan '^  ' "indent with tabs" | once
 	scan '[\t ]$' "trailing whitespace"
 	scan '`' "use \$() instead of backticks"
-	scan 'replaces=[^<>]*$' "replaces needs depname with version"
-	scan 'conflicts=[^<>]*$' "conflicts needs depname with version"
+	scan 'revision=0' "revision must not be zero"
+	scan 'replaces=(?=.*\w)[^<>]*$' "replaces needs depname with version"
+	scan 'conflicts=(?=.*\w)[^<>]*$' "conflicts needs depname with version"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan 'nonfree=' "use repository=nonfree"
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' \
