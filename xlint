@@ -16,8 +16,9 @@ once() {
 variables=$(echo -n "#.*
 _.*
 .*_descr
-.*_homedir
 .*_groups
+.*_homedir
+.*_pgroup
 .*_shell
 desc_option_.*
 AR
