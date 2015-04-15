@@ -1,0 +1,19 @@
+#!/bin/sh
+# xcheckrestart [-v] - list programs using outdated libraries
+
+verbose=false
+[ "$1" = -v ] && verbose=true
+
+for f in /proc/[0-9]*; do
+	LIBS=$(grep -Po '    *\K    .* \(deleted\)$' $f/maps 2>/dev/null |
+		grep -v -e /SYSV -e /.cache/fontconfig -e 'drm mm object' |
+	       	sort -u )
+	if [ "$LIBS" ]; then
+		EXE=$(readlink $f/exe)
+		PKG=$(xbps-query -o "${EXE% (deleted)}")
+		PKG=${PKG%%:*}
+		PKG=${PKG%-*}
+		printf '%d %s (%s)\n' ${f#/proc/} "$EXE" "$PKG"
+		$verbose && printf '%s\n' "$LIBS"
+	fi
+done
