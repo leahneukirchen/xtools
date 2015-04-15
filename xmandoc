@@ -1,0 +1,8 @@
+#!/bin/sh
+# xmandoc MANPAGE - read manpage of possibly not installed package
+
+xlocate "man/man..?/$1\.[0-9]" 2>/dev/null | 
+	{ grep . || { echo "xmandoc: No entry for $1 found." 1>&2; exit 1; } } |
+	while read pkg page; do
+		xbps-query --cat=$page $pkg | mandoc -a
+	done
