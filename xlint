@@ -157,6 +157,7 @@ for template; do
 	scan 'distfiles=.*ftp\.mozilla\.org' 'use $MOZILLA_SITE'
 	scan 'distfiles=.*ftp\.gnu\.org/(pub/)?gnu' 'use $GNU_SITE'
 	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
+	scan '^wrksrc=(\$\{[^}]+\}|[^${}/])*/.+' 'wrksrc should be a top-level directory'
 	else
 	echo no such template "$template" 1>&2
 	fi | sort -t: -n -k2 | grep . && ret=1
