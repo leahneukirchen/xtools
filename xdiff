@@ -1,13 +1,20 @@
 #!/bin/sh
-# xdiff [-u] [DIR] - merge XBPS .new-* files
+# xdiff [-u|-l] [DIR] - merge XBPS .new-* files
 
 mergeutil() {
 	vimdiff "$1" "$2" && rm -vi "$1"
 }
 
+listutil() {
+	printf '%s\n' "$1"
+}
+
 if [ "$1" = -u ]; then
 	shift
 	DIFF="diff -u"
+elif [ "$1" = -l ]; then
+	shift
+	DIFF=listutil
 else
 	DIFF=mergeutil
 fi
