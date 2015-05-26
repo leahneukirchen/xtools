@@ -7,7 +7,7 @@ https://github.com/voidlinux/xbps
   xbump PKGNAME [git commit options] - git commit a version bump
   xcheckrestart [-v] - list programs using outdated libraries
   xclash - detect file conflicts between XBPS packages
-  xdiff [-u] [DIR] - merge XBPS .new-* files
+  xdiff [-u|-l] [DIR] - merge/diff/list XBPS .new-* files
   xdistdir - figure out XBPS_DISTDIR
   xdowngrade PKGS.xbps... - install XBPS package directly from .xbps file
   xgensum [-i] TEMPLATE - update SHA256 sums in templates
