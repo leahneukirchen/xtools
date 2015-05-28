@@ -64,7 +64,7 @@ ${subpkg}_package() {
 EOF
 	case $subpkg in
 	*-devel) cat >>$srcdir/$PKG/template <<EOF
-	depends="$PKG>=\${version}_\${revision}"
+	depends="\${sourcepkg}>=\${version}_\${revision}"
 	short_desc+=" - development files"
 	pkg_install() {
 		vmove usr/share/man/man3
