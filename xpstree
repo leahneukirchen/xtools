@@ -1,0 +1,8 @@
+#!/bin/sh
+# xpstree - display tree view of xbps-src processes
+
+ps -o pid,etime,cmd -H xww |
+	sed -n 's,      , ,;
+		s,  [^ ]* /void-packages/xbps-src,xbps-src,p;
+		s,  [^ ]* /void-packages/.*/build.sh \([^ ]*\).*,\1,p;'
+
