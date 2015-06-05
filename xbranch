@@ -1,0 +1,78 @@
+#!/bin/sh
+# Based on a ruby script by William Morgan (http://git-wt-commit.rubyforge.org/)
+#
+# SYNOPSIS:
+#     xbranch [-d] <branch> [repository]
+#
+# DESCRIPTION:
+#     Publish a branch to the origin or the specified repository.
+#     With -d delete a branch from the origin or the specified repository.
+#     Update local config for branch.<branch>.remote and branch.<branch>.merge
+#     accordingly.
+#
+# HINTS:
+#     The branch is not created or deleted locally, but just (de-)published.
+#     This means you still have to:
+#
+#       git checkout -b <branch>
+#
+#     or similar before publishing it, or to:
+#
+#       git branch [-d|-D] <branch>
+#
+#     after de-publishing it to also delete it locally.
+#
+usage() {
+	echo "Usage: $1 [-d] <branch> [<remote>]"
+	echo "-d\tdelete the branch on origin or <remote>"
+}
+
+head=$(git symbolic-ref HEAD|sed -e"s;/head/refs/;;g")
+
+delete=0
+if [ "x$1" = "x-d" ]; then
+	delete=1
+	shift
+fi
+
+# First parameter is the branch name
+branch=$(echo $1|sed -e"s;/head/refs/;;g")
+if [ -z "$branch" ]; then
+	usage $(basename "$0") && exit 1
+fi
+shift
+
+# A remote may be specified
+remote="$1"
+# Default to origin
+[ -z "$remote" ] && remote=origin
+
+local_ref=$(git show-ref heads/${branch})
+if [ "$delete" -eq "0" ]; then
+	# Add remote branch after sanity checks
+	if [ -z "$local_ref" ]; then
+		echo "No local branch ${branch} exists!"
+		exit 1
+	fi
+	remote_ref=$(git show-ref remotes/${remote}/${branch})
+	if [ -n "$remote_ref" ]; then
+		echo "A remote branch ${branch} already exists!"
+		exit 1
+	fi
+	remote_config=$(git show-ref remotes/${remote}/${branch})
+	if [ -n "$remote_config" ]; then
+		echo "The local branch ${branch} is already a tracking branch!"
+		exit 1
+	fi
+	git push ${remote} ${branch}:refs/heads/${branch}
+	git config branch.${branch}.remote ${remote}
+	git config branch.${branch}.merge refs/heads/${branch}
+else
+	# Delete remote branch
+	git push origin :refs/heads/${branch}
+	if [ -n "$local_ref" ]; then
+		# Remove branch from local config
+		git config --unset branch.${branch}.remote
+		git config --unset branch.${branch}.merge
+	fi
+fi

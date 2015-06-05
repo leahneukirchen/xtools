@@ -3,6 +3,7 @@
 These are a few small utilities for use with XBPS:
 https://github.com/voidlinux/xbps
 
+  xbranch [-d] branch [repository] - (de-)publish a local git branch
   xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
   xbump PKGNAME [git commit options] - git commit a version bump
   xcheckrestart [-v] - list programs using outdated libraries

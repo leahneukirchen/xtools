@@ -1,9 +1,21 @@
-#compdef xbulk xbump xdiff xgensum xgrep xlg xlog xls xmindep xnew xnuxnu xoptdiff xq xsrc
+#compdef xbranch xbulk xbump xdiff xgensum xgrep xlg xlog xls xmindep xnew xnuxnu xoptdiff xq xsrc
 
 _xbps  # force autoload
 
+_xtools_all_branches() {
+	compadd "$@" -- cd $(xdistdir) && git branch -a | \
+		awk '/ remotes\/origin/{ print $1 }' | \
+		cut -d "/" -f 3 | grep -v ^HEAD$
+}
+
 _xtools_all_packages() {
 	compadd "$@" -- $(xdistdir)/srcpkgs/*(:t)
+}
+
+_xbranch() {
+	_arguments : \
+		'-d[de-publish branch]' \
+		'*:available branches:_xtools_all_branches'
 }
 
 _xbulk() {
@@ -55,6 +67,7 @@ _xq() {
 
 _xtools() {
 	case "$service" in
+		xbranch) _xbranch "$@";;
 		xbulk) _xbulk "$@";;
 		xbump) _xtools_one_template "$@";;
 		xdiff) _xdiff "$@";;
