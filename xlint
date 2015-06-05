@@ -131,6 +131,9 @@ for template; do
 	if ! grep -q vlicense "$template"; then
 		scan 'license=.*custom' "license 'custom', but no use of vlicense"
 	fi
+	if ! sed -n '/version=/{n;/revision=/b;q1}' "$template"; then
+		scan 'revision=' "revision does not appear immediately after version"
+	fi
 	scan 'vinstall.* usr/bin' "use vbin"
 	scan 'vinstall.* usr/share/man' "use vman"
 	scan 'vinstall.* usr/share/licenses' "use vlicense"
