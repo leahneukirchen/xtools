@@ -25,6 +25,7 @@ https://github.com/voidlinux/xbps
   xoptdiff [-q] [PKGS...] - show template options which differ from binary package
   xpstree - display tree view of xbps-src processes
   xq [-R] PKGS... - query information about XBPS package
+  xrecent [REPOURL|XBPS_ARCH] - list packages in repo ordered by build date
   xrevbump MESSAGE TEMPLATES... - increase template revision and commit
   xsrc PKG - list source files for XBPS template
   xsubpkg PKG - lists all subpackages of a package
