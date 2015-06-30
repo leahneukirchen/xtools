@@ -49,6 +49,7 @@ build_pie
 build_style
 build_wrksrc
 checksum
+cmake_builddir
 conf_files
 configure_args
 configure_script
