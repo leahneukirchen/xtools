@@ -154,7 +154,7 @@ for template; do
 	scan 'distfiles=.*savannah.nongnu\.org' 'use $NONGNU_SITE'
 	scan 'distfiles=.*archive\.ubuntu\.com' 'use $UBUNTU_SITE'
 	scan 'distfiles=.*xorg\.freedesktop\.org' 'use $XORG_SITE'
-	scan 'distfiles=.*(?<!people\.)debian\.org' 'use $DEBIAN_SITE'
+	scan 'distfiles=.*ftp.*debian\.org' 'use $DEBIAN_SITE'
 	scan 'distfiles=.*gnome\.org/pub' 'use $GNOME_SITE'
 	scan 'distfiles=.*www\.kernel\.org/pub/linux' 'use $KERNEL_SITE'
 	scan 'distfiles=.*cpan\.org' 'use $CPAN_SITE'
