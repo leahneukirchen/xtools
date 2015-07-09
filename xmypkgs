@@ -1,0 +1,14 @@
+#!/bin/sh
+# xmypkgs [EMAIL] - list all pkgs maintained by you (or EMAIL)
+
+EMAIL=${1-$(git config user.email)}
+if [ -z "$EMAIL" ]; then
+	echo "who are you? tell your email address." 2>&1
+	exit 1
+fi
+
+cd "$(xdistdir)" &&
+find srcpkgs -name template -print0 |
+	xargs -0 grep -l -F "<$EMAIL>" |
+	cut -d/ -f2 |
+	sort
