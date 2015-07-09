@@ -1,6 +1,8 @@
 #!/bin/bash
 # xrevbump MESSAGE TEMPLATES... - increase template revision and commit
 
+# TEMPLATES can be "-", then read linewise from stdin.
+
 MESSAGE=$1
 shift
 
@@ -9,7 +11,12 @@ if [ $# -eq 0 ]; then
         exit 1
 fi
 
-for t; do
+seen=' '
+nl='
+'
+
+bump() {
+	t="$1"
 	if [ -f "$t" ]; then
 		:
 	elif [ -f "$t/template" ]; then
@@ -23,9 +30,27 @@ for t; do
 
 	. "$t"
 
-	revision=$((revision + 1))
-	printf "%s: bump to revision %d\n" "$t" "$revision"
+	case "$seen" in
+	*" $pkgname "*)
+		printf "%s: bumped already.\n" "$t"
+		;;
+	*)
+		revision=$((revision + 1))
+		printf "%s: bump to revision %d\n" "$t" "$revision"
 
-	sed -i -e "/^revision=/s/=.*/=$revision/" "$t"
-	git -C "${t%/*}" commit -m "$pkgname: $MESSAGE" template
-done
+		sed -i -e "/^revision=/s/=.*/=$revision/" "$t"
+		git -C "${t%/*}" commit -m "$pkgname: $MESSAGE" template
+		seen="$seen $pkgname "
+		;;
+	esac
+}
+
+if [ "$1" = - ]; then
+	while IFS="$nl" read -r t; do
+		bump "$t"
+	done
+else
+	for t; do
+		bump "$t"
+	done
+fi
