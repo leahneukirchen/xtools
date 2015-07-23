@@ -1,0 +1,13 @@
+#!/bin/sh
+# xbarf - display build logs of last build
+
+cd $(xdistdir) &&
+logdir="$(ls -1td masterdir*/builddir/.xbps-* | sed 1q)" &&
+ls -1tr "$logdir"/*.log |
+	grep -v _bdep_ |
+	while read -r file; do
+		printf "==> %s\n" "${file##*/}"
+		cat "$file"
+		printf "\n\n"
+	done |
+	less -R '+/==>'
