@@ -22,7 +22,7 @@ if [ -e "$XLOCATE_DB" ]; then
 	rx=
 	case "$1" in
 		# Just . is unlikely to be a regex here...
-		*[*+\\\[\]]*) rx=-r;;
+		*[*+\\\[\]^$]*) rx=-r;;
 	esac
 	# XXX also matches template in package name.
 	locate $rx -d "$XLOCATE_DB" "$1" |
