@@ -158,7 +158,7 @@ for template; do
 	scan 'distfiles=.*ftp.*debian\.org' 'use $DEBIAN_SITE'
 	scan 'distfiles=.*gnome\.org/pub' 'use $GNOME_SITE'
 	scan 'distfiles=.*www\.kernel\.org/pub/linux' 'use $KERNEL_SITE'
-	scan 'distfiles=.*cpan\.org' 'use $CPAN_SITE'
+	scan 'distfiles=.*cpan\.org/modules/by-module' 'use $CPAN_SITE'
 	scan 'distfiles=.*pypi\.python\.org' 'use $PYPI_SITE'
 	scan 'distfiles=.*ftp\.mozilla\.org' 'use $MOZILLA_SITE'
 	scan 'distfiles=.*ftp\.gnu\.org/(pub/)?gnu' 'use $GNU_SITE'
