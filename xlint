@@ -132,7 +132,9 @@ for template; do
 	scan 'license=.*[^L]GPL[^-]' "license GPL without version"
 	scan 'license=.*LGPL[^-]' "license LGPL without version"
 	if ! grep -q vlicense "$template"; then
-		scan 'license=.*custom' "license 'custom', but no use of vlicense"
+		for l in custom MIT BSD ISC; do
+			scan "license=.*$l" "license '$l', but no use of vlicense"
+		done
 	fi
 	if ! sed -n '/^version=/{n;/revision=/b;q1}' "$template"; then
 		scan 'revision=' "revision does not appear immediately after version"
