@@ -132,7 +132,10 @@ for template; do
 	scan 'license=.*[^L]GPL[^-]' "license GPL without version"
 	scan 'license=.*LGPL[^-]' "license LGPL without version"
 	if ! grep -q vlicense "$template"; then
-		scan 'license=.*custom' "license 'custom', but no use of vlicense"
+		# XXX: If license is, (i.e BSD and MIT), sed will fail in the 'scan' function
+		# Hence the 'once'
+		license=$(grep -Po 'custom|MIT|BSD|ISC' $template | once)
+		scan 'license=.*(custom|MIT|BSD|ISC)' "license '$license', but no use of vlicense"
 	fi
 	if ! sed -n '/^version=/{n;/revision=/b;q1}' "$template"; then
 		scan 'revision=' "revision does not appear immediately after version"
