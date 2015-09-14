@@ -112,6 +112,7 @@ shlib_provides
 shlib_requires
 short_desc
 skip_extraction
+stackage
 subpackages
 system_accounts
 system_groups
