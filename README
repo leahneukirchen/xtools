@@ -30,6 +30,7 @@ https://github.com/voidlinux/xbps
   xq [-R] PKGS... - query information about XBPS package
   xrecent [REPOURL|XBPS_ARCH] - list packages in repo ordered by build date
   xrevbump MESSAGE TEMPLATES... - increase template revision and commit
+  xrs PATTERN - like xbps-query -Rs, but take cwd repo into account
   xsrc PKG - list source files for XBPS template
   xsubpkg PKG - lists all subpackages of a package
 
