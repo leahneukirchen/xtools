@@ -2,11 +2,13 @@
 # xls PKGS... - list files contained in PKGS (including binpkgs)
 
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+ADDREPO="--repository=hostdir/binpkgs/$BRANCH
+	--repository=../hostdir/binpkgs/$BRANCH
+	--repository=../../hostdir/binpkgs/$BRANCH
+	--repository=hostdir/binpkgs
+	--repository=../hostdir/binpkgs
+	--repository=../../hostdir/binpkgs"
 
 for pkg; do
-	xbps-query \
-		--repository=hostdir/binpkgs/$BRANCH \
-		--repository=../hostdir/binpkgs/$BRANCH \
-		--repository=../../hostdir/binpkgs/$BRANCH \
-		-f $pkg
+	xbps-query $ADDREPO -f $pkg
 done
