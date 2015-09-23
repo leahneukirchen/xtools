@@ -1,6 +1,6 @@
 # xtools - a few helpers for working with XBPS
 
-These are a few small utilities for use with XBPS:
+These are a bunch of small utilities for use with XBPS:
 https://github.com/voidlinux/xbps
 
   xbarf - display build logs of last build
@@ -37,6 +37,9 @@ https://github.com/voidlinux/xbps
 
 Tools working on the void-packages tree use xdistdir to find it,
 check its output is reasonable first.
+
+xi, xls, xq, xrs prefer the hostdir/binpkgs repo if you run them from
+a void-packages checkout.
 
 To the extent possible under law, Christian Neukirchen has waived
 all copyright and related or neighboring rights to this work.
