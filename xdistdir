@@ -17,6 +17,7 @@ elif [ -d ~/src/void-packages ]; then
 elif [ -d ~/src/xbps-packages ]; then
 	echo ~/src/xbps-packages
 else
-	echo "xdistdir: no idea, giving up" 1>&2
+	echo "xdistdir: can't find your void-packages tree, giving up" 1>&2
+	echo "xdistdir: please export XBPS_DISTDIR=/path/to/void-packages" 1>&2
 	exit 111
 fi
