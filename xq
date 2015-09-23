@@ -8,7 +8,10 @@ totop() {
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
 ADDREPO="--repository=hostdir/binpkgs/$BRANCH
 	--repository=../hostdir/binpkgs/$BRANCH
-	--repository=../../hostdir/binpkgs/$BRANCH"
+	--repository=../../hostdir/binpkgs/$BRANCH
+	--repository=hostdir/binpkgs
+	--repository=../hostdir/binpkgs
+	--repository=../../hostdir/binpkgs"
 
 R=
 if [ "$1" = -R ]; then
