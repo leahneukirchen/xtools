@@ -1,0 +1,25 @@
+#!/bin/bash
+# xdbg PKGS... - list debugging packages for PKGS and recursive dependencies
+
+BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+ADDREPO="--repository=hostdir/binpkgs/$BRANCH
+	--repository=../hostdir/binpkgs/$BRANCH
+	--repository=../../hostdir/binpkgs/$BRANCH
+	--repository=hostdir/binpkgs
+	--repository=../hostdir/binpkgs
+	--repository=../../hostdir/binpkgs"
+
+alldbg() {
+	xbps-query --regex $ADDREPO -Rs '-dbg-[^-]*$' |
+		sed 's/^... //; s/-[^- ]* .*//' |
+		sort -u
+}
+
+depdbg() {
+	for pkg; do
+		printf "%s-0\n" "$pkg"
+		xbps-query --fulldeptree $ADDREPO -x "$pkg"
+	done | sed 's/-[^-]*$/-dbg/' | sort -u
+}
+
+comm -12 <(depdbg "$@") <(alldbg)
