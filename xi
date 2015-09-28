@@ -17,4 +17,4 @@ elif [ "$(whoami)" != root ]; then
 	SUDO='su root -c '\''"$@"'\'' -- -'
 fi
 
-$SUDO xbps-install -S "$@"
+$SUDO xbps-install $ADDREPO -S "$@"
