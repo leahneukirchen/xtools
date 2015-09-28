@@ -154,6 +154,7 @@ for template; do
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' \
 		"custom variables should use _ prefix: \2"
 	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \2"
+	scan '^(.*)-docs_package().*' 'use <pkgname>-doc subpackage for documentation'
 	scan 'distfiles=.*sourceforge\.net' 'use $SOURCEFORGE_SITE'
 	scan 'distfiles=.*savannah.nongnu\.org' 'use $NONGNU_SITE'
 	scan 'distfiles=.*archive\.ubuntu\.com' 'use $UBUNTU_SITE'
