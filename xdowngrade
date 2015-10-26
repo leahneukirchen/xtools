@@ -7,6 +7,7 @@ xbps-rindex -a $T/*
 pkg=
 for f; do
 	f=${f##*/}
+	f=${f%.*.*}
 	pkg="$pkg ${f%-*}"
 done
 xbps-install -i -R $T -f $pkg
