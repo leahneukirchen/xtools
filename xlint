@@ -40,6 +40,7 @@ RANLIB
 READELF
 STRIP
 allow_unknown_shlibs
+alternatives
 binfmts
 bootstrap
 broken
