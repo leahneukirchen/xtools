@@ -1,15 +1,15 @@
 #!/bin/sh
 # xrecent [REPOURL|XBPS_ARCH] - list packages in repo ordered by build date
 
-repo=http://repo.voidlinux.net/current/
+repo=http://repo.voidlinux.eu/current/
 case "$1" in
 */*)
 	repo=$1;;
 *-musl)	
-	repo=http://muslrepo.voidlinux.net/current/
+	repo=http://muslrepo.voidlinux.eu/current/
 	export "XBPS_ARCH=$1";;
 ?*)
-	repo=http://repo.voidlinux.net/current/
+	repo=http://repo.voidlinux.eu/current/
 	export "XBPS_ARCH=$1";;
 esac
 
