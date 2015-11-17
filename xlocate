@@ -25,7 +25,7 @@ if [ -e "$XLOCATE_DB" ]; then
 		*[*+\\\[\]^$]*) rx=-r;;
 	esac
 	# XXX also matches template in package name.
-	locate $rx -d "$XLOCATE_DB" "$1" |
+	glocate $rx -d "$XLOCATE_DB" "$1" |
 		sed 's|^\([^/]*\)-[^-/]*/|\1\t/|'
 else
 	xbps-query --regex -Ro "$@" |
