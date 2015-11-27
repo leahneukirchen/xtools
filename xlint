@@ -46,7 +46,6 @@ bootstrap
 broken
 build_options
 build_options_default
-build_pie
 build_style
 build_wrksrc
 checksum
@@ -87,6 +86,7 @@ mutable_files
 noarch
 nocross
 nodebug
+nopie
 noshlibprovides
 nostrip
 nostrip_files
