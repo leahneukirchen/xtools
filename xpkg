@@ -1,0 +1,30 @@
+#!/bin/sh
+# xpkg [-RamOHvV] - convenient package lister
+
+flags=
+filter0='/^.[^i*].\? /d'
+filter1='s/^...\? //'
+filter2='s/-[^- ]* .*//'
+mode="--search="
+
+while getopts R:vVmOHa flag; do
+	case "$flag" in
+		R) flags="$flags -i --repository=$OPTARG";;
+		m|O|H) mode="-$flag"; filter0=; filter1=; filter2='s/-[^-]*$//';;
+		a) flags="$flags -R"; filter0=;;
+		v) filter2='s/ .*//';;
+		V) filter2=;;
+		?) printf "Usage: %s [-RamOHvV]
+  -R REPO  consider only packages from REPO
+  -a       list all packages (default: only installed)
+  -m	   list manual packages
+  -O       list orphaned packages
+  -H       list packages on hold
+  -v       show version numbers
+  -V       show version numbers and description
+" $0 1>&2
+		exit 1;;
+	esac
+done
+
+xbps-query $flags $mode | sed "$filter0;$filter1;$filter2"
