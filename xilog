@@ -1,0 +1,4 @@
+#!/bin/sh
+# xilog [PATTERN] - list installed packages by install-date
+xbps-query -p install-date -s '' |
+	sort -t: -k2 |column -t -s: -o: |grep -e "${1:-.}"
