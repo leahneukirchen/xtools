@@ -4,9 +4,15 @@
 : ${XLOCATE_DB:=~/.cache/xlocate.db}
 
 xupdatedb() {
+	if command -v pv >/dev/null; then
+		PROGRESS="pv -l"
+	else
+		PROGRESS=cat
+	fi
 	echo "xlocate: reindexing database..." 1>&2
 	xbps-query -Ro '*' |
-		sed 's/ *([^)]*)$//; s|: ||;' |
+		$PROGRESS |
+		sed 's/ *([^)]*)$//; s|: ||; s,^,/,' |
 		/usr/libexec/frcode >"$XLOCATE_DB"
 }
 
@@ -26,7 +32,7 @@ if [ -e "$XLOCATE_DB" ]; then
 	esac
 	# XXX also matches template in package name.
 	glocate $rx -d "$XLOCATE_DB" "$1" |
-		sed 's|^\([^/]*\)-[^-/]*/|\1\t/|'
+		sed 's|^/\([^/]*\)-[^-/]*/|\1\t/|'
 else
 	xbps-query --regex -Ro "$@" |
 		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
