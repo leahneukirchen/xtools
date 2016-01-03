@@ -1,14 +1,16 @@
 #!/bin/sh
-# xlocate [-u | PATTERN] - locate files in all XBPS packages
+# xlocate [-u | -g | PATTERN] - locate files in all XBPS packages
 
 : ${XLOCATE_DB:=~/.cache/xlocate.db}
+: ${XLOCATE_GIT:=~/.cache/xlocate.git}
+
+if command -v pv >/dev/null; then
+	PROGRESS="pv -l"
+else
+	PROGRESS=cat
+fi
 
 xupdatedb() {
-	if command -v pv >/dev/null; then
-		PROGRESS="pv -l"
-	else
-		PROGRESS=cat
-	fi
 	echo "xlocate: reindexing database..." 1>&2
 	xbps-query -Ro '*' |
 		$PROGRESS |
@@ -16,12 +18,47 @@ xupdatedb() {
 		/usr/libexec/frcode >"$XLOCATE_DB"
 }
 
+xupdategit() {
+	set -e
+	DIR=$(mktemp -dt xlocate.XXXXXX)
+	DIR=$(realpath -e "$DIR")
+	git init -q $DIR
+	cd $DIR
+	xbps-query -M -Ro '*' | $PROGRESS | awk '
+		$0 ~ ": " {
+			s = index($0, ": ")
+			pkg = substr($0, 1, s-1)
+			file = substr($0, s+2)
+			sub(" *\\([^)]*\\)$", "", file)
+			print file >>pkg
+	       	}'
+	printf '%s\n' ./* |
+		LC_ALL= xargs -d'\n' -I'{}' -n1 -P "$(nproc)" -r -- \
+			sort -o {} {}
+	git add ./*
+	git commit -q -m 'xupdategit'
+	git repack -ad
+	rm -rf "$XLOCATE_GIT" .git/COMMIT_EDITMSG .git/description \
+		.git/index .git/hooks .git/logs
+	mv .git "$XLOCATE_GIT"
+	rm -rf "$DIR"
+}
+
 if [ "$1" = -u ]; then
 	xupdatedb
 	exit $?
+elif [ "$1" = -g ]; then
+	xupdategit
+	exit $?
 fi
 
-if [ -e "$XLOCATE_DB" ]; then
+if [ -d "$XLOCATE_GIT" ]; then
+	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_GIT/HEAD" | grep -q .; then
+		echo "xlocate: database outdated, please run xlocate -g." 1>&2
+	fi
+	git --git-dir="$XLOCATE_GIT" grep "$@" @ |
+		sed 's/^@://; s/:/\t/' | grep .
+elif [ -e "$XLOCATE_DB" ]; then
 	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_DB" | grep -q .; then
 		echo "xlocate: database outdated, please run xlocate -u." 1>&2
 	fi

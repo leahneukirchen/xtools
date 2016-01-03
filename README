@@ -19,7 +19,7 @@ https://github.com/voidlinux/xbps
   xilog [PATTERN] - list installed packages by install-date
   xlg PKG - open short commit log for XBPS template
   xlint TEMPLATE - scan XBPS template for common mistakes
-  xlocate [-u | PATTERN] - locate files in all XBPS packages
+  xlocate [-u | -g | PATTERN] - locate files in all XBPS packages
   xlog PKG - open commit log for XBPS template
   xls PKGS... - list files contained in PKGS (including binpkgs)
   xmandoc MANPAGE - read manpage of possibly not installed package
