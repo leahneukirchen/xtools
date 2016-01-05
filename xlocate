@@ -21,7 +21,7 @@ xupdatedb() {
 xupdategit() {
 	set -e
 	DIR=$(mktemp -dt xlocate.XXXXXX)
-	DIR=$(realpath -e "$DIR")
+	DIR=$(/usr/bin/realpath -e "$DIR")
 	git init -q $DIR
 	cd $DIR
 	xbps-query -M -Ro '*' | $PROGRESS | awk '
