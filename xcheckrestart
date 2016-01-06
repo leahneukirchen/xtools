@@ -6,7 +6,10 @@ verbose=false
 
 for f in /proc/[0-9]*; do
 	LIBS=$(grep -Po '    *\K    .* \(deleted\)$' $f/maps 2>/dev/null |
-		grep -v -e /SYSV -e /.cache/fontconfig -e 'drm mm object' |
+		grep -v -e /SYSV \
+			-e /.cache/fontconfig \
+			-e /var/cache/fontconfig \
+			-e 'drm mm object' |
 	       	sort -u )
 	if [ "$LIBS" ]; then
 		EXE=$(readlink $f/exe)
