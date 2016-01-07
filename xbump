@@ -20,10 +20,11 @@ if [ -n "$(echo "$shlibs" | grep -vE "$spkpattern")" ]; then
 	exit 1
 elif [ -n "$shlibs" ]; then
 	git add common/shlibs
+	dirs=common/shlibs
 fi
 
-dirs=$(./xbps-src show "$pkg" |
-	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')
+dirs="$dirs $(./xbps-src show "$pkg" |
+	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')"
 
 git add $dirs
 
