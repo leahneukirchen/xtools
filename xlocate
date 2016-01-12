@@ -36,7 +36,7 @@ xupdategit() {
 		LC_ALL= xargs -d'\n' -I'{}' -n1 -P "$(nproc)" -r -- \
 			sort -o {} {}
 	git add ./*
-	git commit -q -m 'xupdategit'
+	git commit -q -m 'xupdategit' --author='xupdategit <xupdategit>'
 	git repack -ad
 	rm -rf "$XLOCATE_GIT" .git/COMMIT_EDITMSG .git/description \
 		.git/index .git/hooks .git/logs
