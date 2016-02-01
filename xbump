@@ -29,7 +29,7 @@ dirs="$dirs $(./xbps-src show "$pkg" |
 git add $dirs
 
 if git diff --quiet --cached --diff-filter=A -- srcpkgs/"$pkg"/template; then
-	msg="$pkg: update to $version."
+	msg="$pkg: updated to $version"
 else
 	msg="New package: $pkg-$version"
 fi
