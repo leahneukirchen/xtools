@@ -1,0 +1,15 @@
+#!/bin/sh
+# xetcchanges - show diff of /etc against binary packages
+
+xbps-query -o '/etc/*' |
+	awk 'function q(a) { gsub("\\47", "\47\\\47\47", a); return "\47"a"\47" }
+	{
+		sub(" \\([^)]*\\)$", "")
+		sub(" -> .*$", "")
+		i = index($0, ": ")
+		pkg = substr($0, 1, i-1)
+		file = substr($0, i+2)
+		system("[ -f " q(file) " ] && " \
+                       " xbps-query --cat=" q(file) " " q(pkg) \
+ 		       " | diff -u --label " q(pkg file) " - " q(file))
+	}'

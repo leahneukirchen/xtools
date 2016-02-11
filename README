@@ -12,6 +12,7 @@ https://github.com/voidlinux/xbps
   xdiff [-u|-l] [DIR] - merge/diff/list XBPS .new-* files
   xdistdir - figure out XBPS_DISTDIR
   xdowngrade PKGS.xbps... - install XBPS package directly from .xbps file
+  xetcchanges - show diff of /etc against binary packages
   xgensum [-f] [-i] TEMPLATE - update SHA256 sums in templates
   xgrep PATTERN PKGS... - search files limited to XBPS package contents
   xhog - list installed XBPS packages ordered by size
