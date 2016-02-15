@@ -2,4 +2,4 @@
 # xlg PKG - open short commit log for XBPS template
 
 cd $(xdistdir)/srcpkgs
-git log --date=short --pretty='%cd %h%d %cE: %s' "$@"
+git log --date=short --pretty='%cd %h%d %cE: %s' -- "$@"
