@@ -1,10 +1,25 @@
-#compdef xbulk xbump xdiff xgensum xgrep xlg xlog xls xmindep xnew xnuxnu xoptdiff xq xsrc
+#compdef xbulk xbump xcheckrestart xdiff xdbg xdowngrade xgensum xgrep xlg xlog xlocate xls xmindep xmypkgs xnew xoptdiff xpkg xq xrecent xrevbump xsrc
 
 _xbps  # force autoload
 
 _xtools_all_packages() {
 	compadd "$@" -- $(xdistdir)/srcpkgs/*(:t)
 }
+
+_xtools_one_template() {
+	_arguments : \
+		':available templates:_xtools_all_packages'
+}
+
+_xtools_just_packages() {
+	_arguments : \
+		'*:package:_xbps_all_packages'
+}
+
+_xtools_contributors() {
+	compadd "$@" -- $(git -C "$(xdistdir)" log --pretty=%ce)
+}
+
 
 _xbulk() {
 	_arguments : \
@@ -13,19 +28,26 @@ _xbulk() {
 		'*:available templates:_xtools_all_packages'
 }
 
-_xtools_one_template() {
+_xcheckrestart() {
 	_arguments : \
-		':available templates:_xtools_all_packages'
+		'-v[verbose]'
 }
 
 _xdiff() {
 	_arguments : \
 		'-u[only display differences]' \
+		'-l[only list files with differences]' \
 		':directory:_files -/'
+}
+
+_xdowngrade() {
+	_arguments : \
+		'*:package files:_files -g \*.xbps'
 }
 
 _xgensum() {
 	_arguments : \
+		'-f[force downloading of files]' \
 		'-i[substitute in-place]' \
 		':available templates:_xtools_all_packages'
 }
@@ -36,9 +58,21 @@ _xgrep() {
 		'*:package:_xbps_installed_packages'
 }
 
-_xtools_just_packages() {
+_xilog() {
 	_arguments : \
-		'*:package:_xbps_all_packages'
+		'1::pattern: '
+}
+
+_xlocate() {
+	_arguments : \
+		'-u[update xlocate.db]' \
+		'-g[update xlocate.git]' \
+		'1::pattern: '
+}
+
+_xmypkgs() {
+	_arguments : \
+		'1::contributor:_xtools_contributors'
 }
 
 _xoptdiff() {
@@ -47,26 +81,58 @@ _xoptdiff() {
 		'*:package:_xbps_installed_packages'
 }
 
+_xpkg() {
+	_arguments : \
+		'-R[consider only packages from repository]:repository:_files -/' \
+		'-a[list all packages]' \
+		'-m[list manual packages]' \
+		'-O[list orphaned packages]' \
+		'-H[list packages on hold]' \
+		'-v[show version numbers]' \
+		'-V[show version numbers and description]'
+}
+
 _xq() {
 	_arguments : \
 		'-R[include remote information too]' \
 		'*:package:_xbps_all_packages'
 }
 
+_xrecent() {
+	local archs=( {armv{6,7}l,i686,x86_64}{,-musl} )
+	_arguments : \
+		"1::architecture:($archs)"
+}
+
+_xrevbump() {
+	_arguments : \
+		'1:message: ' \
+		':available templates:_xtools_all_packages'
+}
+
 _xtools() {
 	case "$service" in
 		xbulk) _xbulk "$@";;
 		xbump) _xtools_one_template "$@";;
+		xcheckrestart) _xcheckrestart "$@";;
+		xdbg) _xtools_just_packages "$@";;
 		xdiff) _xdiff "$@";;
+		xdowngrade) _xdowngrade "$@";;
 		xgensum) _xgensum "$@";;
 		xgrep) _xgrep "$@";;
+		xi) _xbps_install "$@";;
+		xilog) _xilog"$@";;
 		xlg) _xtools_one_template "$@";;
+		xlocate) _xlocate "$@";;
 		xlog) _xtools_one_template "$@";;
 		xls) _xtools_just_packages "$@";;
 		xmindep) _xtools_just_packages "$@";;
-		xnuxnu) _xtools_one_template "$@";;
+		xmypkgs) _xmypkgs "$@";;
 		xoptdiff) _xoptdiff "$@";;
+		xpkg) _xpkg "$@";;
 		xq) _xq "$@";;
+		xrecent) _xrecent "$@";;
+		xrevbump) _xrevbump "$@";;
 		xsrc) _xtool_one_template "$@";;
 		xsubpkg) _xtool_one_template "$@";;
 	esac
