@@ -49,7 +49,7 @@ _xgensum() {
 	_arguments : \
 		'-f[force downloading of files]' \
 		'-i[substitute in-place]' \
-		':available templates:_xtools_all_packages'
+		':available templates:_path_files -g "*(/)|template(N)"'
 }
 
 _xgrep() {
