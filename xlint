@@ -62,6 +62,7 @@ distfiles
 dkms_modules
 font_dirs
 force_debug_pkgs
+go_build_tags
 go_import_path
 go_package
 homepage
