@@ -1,7 +1,13 @@
 #!/bin/sh
 # xrecent [REPOURL|XBPS_ARCH] - list packages in repo ordered by build date
 
-repo=http://repo.voidlinux.eu/current/
+case "$(xbps-uhelper arch)" in
+	*-musl)
+		repo=http://muslrepo.voidlinux.eu/current/;;
+	*)
+		repo=http://repo.voidlinux.eu/current/;;
+esac
+
 case "$1" in
 */*)
 	repo=$1;;
