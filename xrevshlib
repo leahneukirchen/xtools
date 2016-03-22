@@ -1,0 +1,14 @@
+#!/bin/sh
+# xrevshlib PACKAGE - list packages shlib-dependent on PACKAGE or its subpkgs
+
+pkg="${1?no package name given}"
+
+xsubpkg "$pkg" |
+	xargs -d'\n' -n1 -r xbps-query -R -p shlib-provides -S |
+	sed 's/\.so.*//' |
+	xargs -d'\n' -n1 -r xbps-query -R -p shlib-requires -s |
+	sed 's/-[^- ]*: .*//' |
+	sort -u |
+	xargs -d'\n' -n1 -r xsubpkg -m |
+	sort -u |
+	grep -Fvx "$(xsubpkg -m $pkg)"
