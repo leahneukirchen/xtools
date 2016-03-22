@@ -110,6 +110,12 @@ _xrevbump() {
 		':available templates:_xtools_all_packages'
 }
 
+_xsubpkg() {
+	_arguments : \
+		'-m[list only master package]'\
+		'*:package:_xbps_all_packages'
+}
+
 _xtools() {
 	case "$service" in
 		xbulk) _xbulk "$@";;
@@ -133,8 +139,9 @@ _xtools() {
 		xq) _xq "$@";;
 		xrecent) _xrecent "$@";;
 		xrevbump) _xrevbump "$@";;
+		xrevshlib) _xtools_one_template "$@";;
 		xsrc) _xtool_one_template "$@";;
-		xsubpkg) _xtool_one_template "$@";;
+		xsubpkg) _xsubpkg "$@";;
 	esac
 }
 
