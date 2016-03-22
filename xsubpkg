@@ -1,6 +1,12 @@
 #!/bin/sh
-# xsubpkg PKG - lists all subpackages of a package
+# xsubpkg [-m] PKG - lists all subpackages of a package
+
+followsym="-L"
+
+case "$1" in
+	-m) followsym="-P"; shift
+esac
 
 PKG=$1
 cd $(xdistdir)
-find -L srcpkgs -maxdepth 2 -samefile srcpkgs/"$PKG"/template | cut -d/ -f 2
+find $followsym srcpkgs -maxdepth 2 -samefile srcpkgs/"$PKG"/template | cut -d/ -f 2
