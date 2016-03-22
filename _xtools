@@ -139,6 +139,7 @@ _xtools() {
 		xq) _xq "$@";;
 		xrecent) _xrecent "$@";;
 		xrevbump) _xrevbump "$@";;
+		xrevshlib) _xtools_one_template "$@";;
 		xsrc) _xtool_one_template "$@";;
 		xsubpkg) _xsubpkg "$@";;
 	esac
