@@ -4,6 +4,7 @@ These are a bunch of small utilities for use with XBPS:
 https://github.com/voidlinux/xbps
 
   xbarf - display build logs of last build
+  xbuildbarf [ARCH] - spy on current buildbot output
   xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
   xbump PKGNAME [git commit options] - git commit a version bump
   xcheckrestart [-v] - list programs using outdated libraries

@@ -1,0 +1,5 @@
+#!/bin/sh
+# xbuildbarf [ARCH] - spy on current buildbot output
+
+arch=${1:-$(xbps-uhelper arch)}
+curl -sL "http://build.voidlinux.eu/builders/${arch}_builder/builds/-1/steps/shell_3/logs/stdio/text"
