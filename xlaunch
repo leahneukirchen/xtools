@@ -1,0 +1,73 @@
+#/bin/sh -e
+# xlaunch <pkg> [command] - From pkg, run command
+# Credit, xtraeme.
+# Origin: https://gist.github.com/anonymous/bb450be89bd58762ae87cf6c7d922312
+
+if [ $# -lt 1 ]; then
+	echo "Usage: $0 [opts] <app> <cmd> [cmdargs]" >&2
+	exit 1
+fi
+
+APP="$1"
+CMD="$2"
+if [ -z "$CMD" ]; then
+	CMD="$APP"
+	shift 1
+else
+	shift 2
+fi
+CMDARGS="$@"
+
+: {ARCH:="$(xbps-uhelper arch)"}
+: ${REPOS:="--repository=$HOME/projects/void-packages/hostdir/binpkgs --repository=https://repo.voidlinux.eu/current --repository=https://repo.voidlinux.eu/current/musl --repository=https://repo.voidlinux.eu/current/nonfree --repository=https://repo.voidlinux.eu/current/multilib --repository=https://repo.voidlinux.eu/current/multilib/nonfree"}
+
+APPVER="$(XBPS_TARGET_ARCH=$ARCH xbps-query ${REPOS} -Mi -p pkgver $APP 2>/dev/null)"
+CACHEDIR="$HOME/xbps-sandbox/cachedir-${ARCH}"
+SBOXDIR="$HOME/xbps-sandbox/${APPVER}-${ARCH}"
+DIRS="/dev/shm /run/user/$(id -u)/pulse /home /tmp /var /proc /sys /usr/share/icons"
+KEY_URL="https://raw.githubusercontent.com/voidlinux/void-packages/master/common/repo-keys/"
+
+if [ ! -d "$SBOXDIR" ]; then
+	case "${ARCH}" in # Hacky. But for now works.
+		*-musl) KEY="3d:b9:c0:50:41:a7:68:4c:2e:2c:a9:a2:5a:04:b7:3f.plist";;
+		*) KEY="60:ae:0c:d6:f0:95:17:80:bc:93:46:7a:89:af:a3:2d.plist";;
+	esac
+	mkdir -p "${SBOXDIR}/var/db/xbps/keys"
+	cp /var/db/xbps/keys/*.plist "${SBOXDIR}/var/db/xbps/keys"
+	[ ! -f "/var/db/xbps/keys/${KEY}" ] &&
+		echo "Fetching the appropiate repository key" &&
+		xbps-uhelper fetch "${KEY_URL}${KEY}>${SBOXDIR}/var/db/xbps/keys/${KEY}" >/dev/null 2>&1
+	mkdir -p "$CACHEDIR"
+	echo "Installing $APPVER application, please wait..."
+	XBPS_ARCH="$ARCH" xbps-install -S \
+		--cachedir "$CACHEDIR" ${REPOS} \
+		-r "$SBOXDIR" -y base-files tzdata busybox-static font-misc-misc libGL mesa-ati-dri mesa-nouveau-dri mesa-intel-dri \
+		"$APP"
+	mkdir -p -m755 "$SBOXDIR/home/$(whoami)"
+	if [ -f "$HOME/.Xauthority" ]; then
+		cp -f "$HOME/.Xauthority" "$SBOXDIR/home/$(whoami)"
+	fi
+	for f in ${DIRS}; do
+		mkdir -p "$SBOXDIR/$f"
+	done
+	chmod 1777 "$SBOXDIR/tmp"
+	chmod 1777 "$SBOXDIR/dev/shm"
+	chmod 700 "$SBOXDIR/run/user/$(id -u)"
+	for f in services localtime os-release resolv.conf; do
+		cp -fL "/etc/$f" "$SBOXDIR/etc" || true
+	done
+
+	if [ -e $SBOXDIR/usr/bin/busybox.static ]; then
+		for f in "$($SBOXDIR/usr/bin/busybox.static --list)"; do
+			ln -s busybox.static "${SBOXDIR}/usr/bin/${f}" 2>/dev/null
+		done
+	fi
+fi
+
+exec env LANG=C PULSE_SERVER="unix:/run/user/$(id -u)/pulse/native" \
+	XDG_RUNTIME_DIR="/run/user/$(id -u)" \
+	SESSION_MANAGER="$SESSION_MANAGER" xbps-uunshare \
+	-b /run:/run -b /dev:/dev \
+	-b /tmp:/tmp -b /var:/var \
+	-b /usr/share/icons:/usr/share/icons \
+	"$SBOXDIR" -- "$CMD" "$CMDARGS"
