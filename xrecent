@@ -3,20 +3,20 @@
 
 case "$(xbps-uhelper arch)" in
 	*-musl)
-		repo=http://muslrepo.voidlinux.eu/current/;;
+		repo=https://repo.voidlinux.eu/current/musl/;;
 	*)
-		repo=http://repo.voidlinux.eu/current/;;
+		repo=https://repo.voidlinux.eu/current/;;
 esac
 
 case "$1" in
 */*)
 	repo=$1;;
 *-musl)	
-	repo=http://muslrepo.voidlinux.eu/current/
-	export "XBPS_ARCH=$1";;
+	repo=https://repo.voidlinux.eu/current/musl/
+	export "XBPS_TARGET_ARCH=$1";;
 ?*)
-	repo=http://repo.voidlinux.eu/current/
-	export "XBPS_ARCH=$1";;
+	repo=https://repo.voidlinux.eu/current/
+	export "XBPS_TARGET_ARCH=$1";;
 esac
 
 xbps-query -M -i -R --repository=$repo -p build-date -s '' |
