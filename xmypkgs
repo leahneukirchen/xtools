@@ -8,7 +8,6 @@ if [ -z "$EMAIL" ]; then
 fi
 
 cd "$(xdistdir)" &&
-find srcpkgs -name template -print0 |
-	xargs -0 grep -l -F "<$EMAIL>" |
+git grep -l -F "<$EMAIL>" -- 'srcpkgs/*/template'
 	cut -d/ -f2 |
 	sort
