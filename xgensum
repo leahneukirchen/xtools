@@ -9,14 +9,13 @@ case "$1" in
 	-i*) i=$1; shift
 esac
 
-if [ -f $1 ]; then
+if [ -f "$1" ]; then
 	. "$1"
-elif [ -f $1/template ]; then
+elif [ -f "$1/template" ]; then
 	exec "$0" $f $i "$1/template"
-elif [ -f template ]; then
-	exec "$0" $f $i template
 else
-	echo 'Usage: xgensum [-f] [-i] TEMPLATE'
+	echo 'Usage: xgensum [-f] [-i] TEMPLATE' 1>&2
+	exit 1
 fi
 
 XBPS_DISTDIR=$(xdistdir)
