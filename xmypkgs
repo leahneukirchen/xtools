@@ -8,6 +8,6 @@ if [ -z "$EMAIL" ]; then
 fi
 
 cd "$(xdistdir)" &&
-git grep -l -F "<$EMAIL>" -- 'srcpkgs/*/template'
+git grep -l -F "<$EMAIL>" -- 'srcpkgs/*/template' |
 	cut -d/ -f2 |
 	sort
