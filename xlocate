@@ -40,6 +40,7 @@ xupdategit() {
 	git repack -ad
 	rm -rf "$XLOCATE_GIT" .git/COMMIT_EDITMSG .git/description \
 		.git/index .git/hooks .git/logs
+	[ -n "${XLOCATE_GIT%/*}" ] && mkdir -p "${XLOCATE_GIT%/*}"
 	mv .git "$XLOCATE_GIT"
 	rm -rf "$DIR"
 }
