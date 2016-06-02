@@ -1,8 +1,9 @@
 #!/bin/sh
-# xlocate [-u | -g | PATTERN] - locate files in all XBPS packages
+# xlocate [-u | -g | -S | PATTERN] - locate files in all XBPS packages
 
 : ${XLOCATE_DB:=~/.cache/xlocate.db}
 : ${XLOCATE_GIT:=~/.cache/xlocate.git}
+: ${XLOCATE_REPO:=https://repo.voidlinux.eu/xlocate/xlocate.git}
 
 if command -v pv >/dev/null; then
 	PROGRESS="pv -l"
@@ -45,11 +46,22 @@ xupdategit() {
 	rm -rf "$DIR"
 }
 
+xsyncgit() {
+	if [ -d "$XLOCATE_GIT" ]; then
+		git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
+	else
+		git clone --bare "$XLOCATE_REPO" "$XLOCATE_GIT"
+	fi
+}
+
 if [ "$1" = -u ]; then
 	xupdatedb
 	exit $?
 elif [ "$1" = -g ]; then
 	xupdategit
+	exit $?
+elif [ "$1" = -S ]; then
+	xsyncgit
 	exit $?
 fi
 
