@@ -50,6 +50,7 @@ xsyncgit() {
 	if [ -d "$XLOCATE_GIT" ]; then
 		git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 	else
+		[ -n "${XLOCATE_GIT%/*}" ] && mkdir -p "${XLOCATE_GIT%/*}"
 		git clone --bare "$XLOCATE_REPO" "$XLOCATE_GIT"
 	fi
 }
