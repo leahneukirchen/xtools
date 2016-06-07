@@ -65,6 +65,7 @@ force_debug_pkgs
 go_build_tags
 go_import_path
 go_package
+go_ldflags
 homepage
 hostmakedepends
 keep_libtool_archives
