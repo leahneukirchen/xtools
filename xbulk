@@ -10,13 +10,15 @@ mainpkg() {
 	echo ${dir##*/}
 }
 
-for pkg; do
-	case $pkg in
-		-n|-k) MAKEARGS="$MAKEARGS $pkg";;
-		-*) ARGS="$ARGS $pkg";;
+while [ $# -gt 0 ]; do
+	case $1 in
+		-n|-k) MAKEARGS="$MAKEARGS $1";;
+		-a|-H|-m|-o|-r) ARGS="$ARGS $1 $2"; shift;;
+		-*) ARGS="$ARGS $1";;
 		*) PKGS="$PKGS
-$(mainpkg $pkg)"
+$(mainpkg $1)"
 	esac
+	shift
 done
 
 {
