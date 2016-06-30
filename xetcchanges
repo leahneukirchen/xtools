@@ -1,7 +1,7 @@
 #!/bin/sh
 # xetcchanges - show diff of /etc against binary packages
 
-xbps-query -o ${1:-/etc/*} |
+xbps-query -o ${1:-"/etc/*"} |
 	awk 'function q(a) { gsub("\\47", "\47\\\47\47", a); return "\47"a"\47" }
 	{
 		sub(" \\([^)]*\\)$", "")
