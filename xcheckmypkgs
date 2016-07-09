@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for pkg in $(/usr/bin/xmypkgs); do
+    echo checking: "$pkg"
+    ./xbps-src update-check "$pkg"
+done
