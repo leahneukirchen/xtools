@@ -1,0 +1,8 @@
+#!/bin/sh
+# xcheckmypkgs [EMAIL] - check your packages for updates
+
+cd "$(xdistdir)" &&
+for pkg in $(xmypkgs "$@"); do
+	echo "checking: $pkg"
+	./xbps-src update-check "$pkg" |grep -v '^=> Using'
+done

@@ -7,6 +7,7 @@ https://github.com/voidlinux/xbps
   xbuildbarf [ARCH] - spy on current buildbot output
   xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
   xbump PKGNAME [git commit options] - git commit a version bump
+  xcheckmypkgs [EMAIL] - check your packages for updates
   xcheckrestart [-v] - list programs using outdated libraries
   xclash - detect file conflicts between XBPS packages
   xdbg PKGS... - list debugging packages for PKGS and recursive dependencies
