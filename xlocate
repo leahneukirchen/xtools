@@ -67,8 +67,12 @@ elif [ "$1" = -S ]; then
 fi
 
 if [ -d "$XLOCATE_GIT" ]; then
-	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_GIT/HEAD" | grep -q .; then
-		echo "xlocate: database outdated, please run xlocate -g." 1>&2
+	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_GIT/refs/heads/master" | grep -q .; then
+		if grep -q origin "$XLOCATE_GIT/config"; then
+			echo "xlocate: database outdated, please run xlocate -S." 1>&2
+		else
+			echo "xlocate: database outdated, please run xlocate -g." 1>&2
+		fi
 	fi
 	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep "$@" @ |
 		sed 's/^@://; s/:/\t/' | grep .
