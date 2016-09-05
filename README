@@ -31,7 +31,7 @@ https://github.com/voidlinux/xbps
   xnew PKG - create XBPS template template
   xnodev - list not installed -devel packages for installed packages
   xoptdiff [-q] [PKGS...] - show template options which differ from binary package
-  xpkg [-RamOHvV] - convenient package lister
+  xpkg [-RamOHDvV] - convenient package lister
   xpstree - display tree view of xbps-src processes
   xq [-R] PKGS... - query information about XBPS package
   xrecent [REPOURL|XBPS_ARCH] - list packages in repo ordered by build date
