@@ -27,6 +27,7 @@ https://github.com/voidlinux/xbps
   xls PKGS... - list files contained in PKGS (including binpkgs)
   xmandoc MANPAGE - read manpage of possibly not installed package
   xmindep PKGS... - minimize list of PKGS by removing implicit dependencies
+  xmksv [NEWSVDIR...] - create new runit service templates
   xmypkgs [EMAIL] - list all pkgs maintained by you (or EMAIL)
   xnew PKG - create XBPS template template
   xnodev - list not installed -devel packages for installed packages

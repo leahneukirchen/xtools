@@ -1,0 +1,14 @@
+#!/bin/sh -e
+# xmksv [NEWSVDIR...] - create new runit service templates
+
+cd ${SVDIR:-/etc/sv}
+
+for SRV; do
+	mkdir "$SRV"
+	touch "$SRV/down"
+	echo "#!/bin/sh" | install -m755 /dev/stdin "$SRV/run"
+	if [ -w /run/runit ]; then
+		ln -s /run/runit/supervise."$(printf %s "$SRV" | tr / -)" \
+			"$SRV/supervise"
+	fi
+done
