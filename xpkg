@@ -1,5 +1,5 @@
-#!/bin/sh
-# xpkg [-RamOHvV] - convenient package lister
+#!/bin/bash
+# xpkg [-RamOHDvV] - convenient package lister
 
 flags=
 filter0='/^.[^i*].\? /d'
@@ -7,8 +7,9 @@ filter1='s/^...\? //'
 filter2='s/-[^- ]* .*//'
 mode="--search="
 
-while getopts R:vVmOHa flag; do
+while getopts R:vVmOHDa flag; do
 	case "$flag" in
+		D) exec comm -23 <(xpkg | sort) <(xpkg -a | sort);;
 		R) flags="$flags -i --repository=$OPTARG";;
 		m|O|H) mode="-$flag"; filter0=; filter1=; filter2='s/-[^-]*$//';;
 		a) flags="$flags -R"; filter0=;;
@@ -20,6 +21,7 @@ while getopts R:vVmOHa flag; do
   -m	   list manual packages
   -O       list orphaned packages
   -H       list packages on hold
+  -D       list installed packages not in repo
   -v       show version numbers
   -V       show version numbers and description
 " $0 1>&2
