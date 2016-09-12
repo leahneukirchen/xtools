@@ -1,14 +1,25 @@
 #!/bin/sh -e
 # xdowngrade PKGS.xbps... - install XBPS package directly from .xbps file
 
+for f; do
+	if ! [ -r "$f" ]; then
+		echo "$0: no such package: $f" 2>&1
+		exit 2
+	fi
+done
 T=$(mktemp --tmpdir -d xdowngrade-$(date -I).XXXXXXXX)
-ln -s -r -t $T/ "$@"
+ln -s -r -t "$T/" -- "$@"
 xbps-rindex -a $T/*
+n=$(xbps-query -i --repository="$T/" -L 2>/dev/null | awk '{print $1}')
+if [ -z "$n" ] || [ "$n" -ne "$#" ]; then
+	echo "$0: failed to register all $# packages." 2>&1
+	exit 2
+fi
 pkg=
 for f; do
 	f=${f##*/}
 	f=${f%.*.*}
 	pkg="$pkg ${f%-*}"
 done
-xbps-install -i -R $T -f $pkg
-rm -r $T
+xbps-install -i -R "$T" -f -- $pkg
+rm -r "$T"
