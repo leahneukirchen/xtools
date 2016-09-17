@@ -99,7 +99,7 @@ _xq() {
 }
 
 _xrecent() {
-	local archs=( {armv{6,7}l,i686,x86_64}{,-musl} )
+	local archs=( {aarch64,armv{6,7}l,i686,x86_64}{,-musl} )
 	_arguments : \
 		"1::architecture:($archs)"
 }
