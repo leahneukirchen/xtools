@@ -2,7 +2,6 @@
 # xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
 
 ARGS=
-ARGS2=
 MAKEARGS=
 PKGS=
 
@@ -14,8 +13,7 @@ mainpkg() {
 while [ $# -gt 0 ]; do
 	case $1 in
 		-n|-k) MAKEARGS="$MAKEARGS $1";;
-		-o|-r) ARGS="$ARGS $1 $2"; shift;;
-		-a|-H|-m) ARGS="$ARGS $1 $2"; ARGS2="$ARGS2 $1 $2"; shift;;
+		-a|-H|-m|-o|-r) ARGS="$ARGS $1 $2"; shift;;
 		-*) ARGS="$ARGS $1";;
 		*) PKGS="$PKGS
 $(mainpkg $1)"
@@ -26,7 +24,7 @@ done
 {
 for pkg in $PKGS; do
 	echo all: pkg-$pkg
-	for dep in $(./xbps-src $ARGS2 show-build-deps $pkg |
+	for dep in $(./xbps-src $ARGS show-build-deps $pkg |
 			sed '1d;s|[<>].*$||g'); do
 		mainpkg $dep |
 		grep -Fx "$PKGS" |
