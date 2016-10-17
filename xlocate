@@ -47,13 +47,11 @@ xupdategit() {
 }
 
 xsyncgit() {
-	if [ -d "$XLOCATE_GIT" ]; then
-		git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
-	else
+	if ! [ -d "$XLOCATE_GIT" ]; then
 		[ -n "${XLOCATE_GIT%/*}" ] && mkdir -p "${XLOCATE_GIT%/*}"
 		git clone --bare "$XLOCATE_REPO" "$XLOCATE_GIT"
-		git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 	fi
+	git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 }
 
 if [ "$1" = -u ]; then
