@@ -52,6 +52,7 @@ xsyncgit() {
 	else
 		[ -n "${XLOCATE_GIT%/*}" ] && mkdir -p "${XLOCATE_GIT%/*}"
 		git clone --bare "$XLOCATE_REPO" "$XLOCATE_GIT"
+		git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 	fi
 }
 
@@ -67,7 +68,12 @@ elif [ "$1" = -S ]; then
 fi
 
 if [ -d "$XLOCATE_GIT" ]; then
-	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_GIT/refs/heads/master" | grep -q .; then
+	if [ -f "$XLOCATE_GIT/refs/heads/master" ]; then
+		BASE="$XLOCATE_GIT/refs/heads/master"
+	elif [ -f "$XLOCATE_GIT/FETCH_HEAD" ]; then
+		BASE="$XLOCATE_GIT/FETCH_HEAD"
+	fi
+	if [ -z "$BASE" ] || find /var/db/xbps/ -name '*repodata' -newer "$BASE" | grep -q .; then
 		if grep -q origin "$XLOCATE_GIT/config"; then
 			echo "xlocate: database outdated, please run xlocate -S." 1>&2
 		else
