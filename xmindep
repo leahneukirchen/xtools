@@ -7,4 +7,4 @@ rdeps() {
 	done | xargs -d'\n' -rn1 xbps-uhelper getpkgname | sort -u
 }
 
-printf '%s\n' "$@" | grep -Fvx -e "$(rdeps "$@")" | fmt
+printf '%s\n' "$@" | grep -Fvx -e "$(rdeps "$@")" | sort -u | fmt
