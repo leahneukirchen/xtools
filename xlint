@@ -101,7 +101,7 @@ provides
 pycompile_dirs
 pycompile_module
 pycompile_version
-python_versions
+python_version
 register_shell
 replaces
 repository
