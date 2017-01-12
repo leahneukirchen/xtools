@@ -63,9 +63,10 @@ dkms_modules
 font_dirs
 force_debug_pkgs
 go_build_tags
+go_get
 go_import_path
-go_package
 go_ldflags
+go_package
 homepage
 hostmakedepends
 keep_libtool_archives
