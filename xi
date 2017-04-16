@@ -2,12 +2,20 @@
 # xi PKGS... - like xbps-install -S, but take cwd repo and sudo/su into account
 
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
-ADDREPO="--repository=hostdir/binpkgs/$BRANCH
+ADDREPO="
+	--repository=hostdir/binpkgs/$BRANCH
 	--repository=../hostdir/binpkgs/$BRANCH
 	--repository=../../hostdir/binpkgs/$BRANCH
+	--repository=hostdir/binpkgs/$BRANCH/nonfree
+	--repository=../hostdir/binpkgs/$BRANCH/nonfree
+	--repository=../../hostdir/binpkgs/$BRANCH/nonfree
 	--repository=hostdir/binpkgs
 	--repository=../hostdir/binpkgs
-	--repository=../../hostdir/binpkgs"
+	--repository=../../hostdir/binpkgs
+	--repository=hostdir/binpkgs/nonfree
+	--repository=../hostdir/binpkgs/nonfree
+	--repository=../../hostdir/binpkgs/nonfree
+"
 
 SUDO=
 if command -v sudo >/dev/null &&
