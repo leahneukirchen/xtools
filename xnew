@@ -85,4 +85,4 @@ EOF
 	echo "}" >>$srcdir/$PKG/template
 done
 
-exec ${EDITOR:-vim} +3 $srcdir/$PKG/template
+exec ${EDITOR:-vi} +3 $srcdir/$PKG/template
