@@ -5,6 +5,7 @@ OS=Void
 KVER=$(uname -r)
 MACH=$(xbps-uhelper arch)
 OUTDATED=$(xbps-install -Mun)
+HOLD=$(xbps-query -H)
 VM=$(dmesg | awk '/Hypervisor detected/{print $NF}')
 CPU=$(cat /proc/cpuinfo |awk '/^vendor_id/{print $NF;exit}')
 REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
@@ -17,5 +18,5 @@ REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
 	END { print r m d n D F }
 ')
 
-printf '%s %s %s %s %s %s\n' \
-	"$OS" "$KVER" "$MACH" "$CPU${VM+/$VM}" "${OUTDATED+not}uptodate" "$REPO"
+printf '%s %s %s %s %s%s %s\n' \
+	"$OS" "$KVER" "$MACH" "$CPU${VM:+/$VM}" "${OUTDATED:+not}uptodate" "${HOLD:+ hold}" "$REPO"
