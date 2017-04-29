@@ -1,0 +1,281 @@
+.Dd April 29, 2017
+.Dt XTOOLS 1
+.Os
+.Sh NAME
+.Nm xtools
+.Nd A collection of small utilities for use with XBPS
+.Sh COMMANDS
+.Nm xbarf
+.Nd Display build logs of last build
+.sp
+.Nm xbuildbarf
+.Nd Spy on current buildbod output
+.sp
+.Nm xbulk
+.Nd Simple XBPS bulk builder
+.sp
+.Nm xbump
+.Nd Git commit a version bump
+.sp
+.Nm xcheckmypkgs
+.Nd Check your packages for updates
+.sp
+.Nm xcheckrestart
+.Nd List programs using outdated libraries
+.sp
+.Nm xclash
+.Nd Detect file conflicts between XBPS packages
+.sp
+.Nm xdbg
+.Nd List debugging packages for PKGS and recursive dependencies
+.sp
+.Nm xdiff
+.Nd Merge/diff/list XBPS .new-* files
+.sp
+.Nm xdistdir
+.Nd Figure out XBPS_DISTDIR
+.sp
+.Nm xdowngrade
+.Nd Install XBPS package directly from .xbps file
+.sp
+.Nm xetcchanges
+.Nd Show diff of /etc against binary packages
+.sp
+.Nm xgensum
+.Nd Update SHA256 sum in templates
+.sp
+.Nm xgrep
+.Nd Search files limited to XBPS package contents
+.sp
+.Nm xhog
+.Nd List installed XBPS packages ordered by size
+.sp
+.Nm xi
+.Nd Like xbps-install -S, but take cwd repo and sudo/su into account
+.sp
+.Nm xilog
+.Nd List installed packages by install-date
+.sp
+.Nm xlg
+.Nd Open short commit log for XBPS template
+.sp
+.Nm xlint
+.Nd Scan XBPS template for common mistakes
+.sp
+.Nm xlocate
+.Nd Locate files in all XBPS packages
+.sp
+.Nm xlog
+.Nd Open commit log for XBPS template
+.sp
+.Nm xls
+.Nd List files contained in PKGS (including binpkgs)
+.sp
+.Nm xmandoc
+.Nd Read manpage of possibly not installed package
+.sp
+.Nm xmindep
+.Nd Minimize list of PKGS by removing implicit dependencies
+.sp
+.Nm xmksv
+.Nd Create new runit service templates
+.sp
+.Nm xmypkgs
+.Nd List all pkgs maintained by you (or EMAIL)
+.sp
+.Nm xnew
+.Nd Create XBPS template
+.sp
+.Nm xnodev
+.Nd List not installed -devel packages for installed packages
+.sp
+.Nm xoptdiff
+.Nd Show template options which differ from binary package
+.sp
+.Nm xpkg
+.Nd Convenient package lister
+.sp
+.Nm xpstree
+.Nd Display tree view of xbps-src processes
+.sp
+.Nm xq
+.Nd Query information about XBPS package
+.sp
+.Nm xrecent
+.Nd List packages in repo ordered by build date
+.sp
+.Nm xrevbump
+.Nd Increase template revision and commit
+.sp
+.Nm xrevshlib
+.Nd List packages shlib-dependent on PACKAGE or its subpackages
+.sp
+.Nm xrs
+.Nd Like xbps-query -Rs, but take cwd repo into account
+.sp
+.Nm xsrc
+.Nd List source files for XBPS template
+.sp
+.Nm xsubpkg
+.Nd List all subpackages of a package
+.sp
+.Sh SYNOPSIS
+.Nm xbarf
+.sp
+.Nm xbuildbarf
+.Op Ar ARCH
+.sp
+.Nm xbulk
+.Op Fl n
+.Op Fl k
+.Op Ar xbps-src flags
+.Ar PKGS...
+.sp
+.Nm xbump
+.Ar PKGName
+.Op Ar git commit options
+.sp
+.Nm xcheckmypkgs
+.Op Ar EMAIL
+.sp
+.Nm xcheckrestart
+.Op Fl v
+.sp
+.Nm xclash
+.sp
+.Nm xdbg
+.Ar PKGS...
+.sp
+.Nm xdiff
+.Oo
+.Fl u |
+.Fl l
+.Oc
+.Op Ar DIR
+.sp
+.Nm xdistdir
+.sp
+.Nm xdowngrade
+.Ar PKGS.xbps
+.sp
+.Nm xetcchanges
+.sp
+.Nm xgensum
+.Op Fl f
+.Op Fl i
+.Ar TEMPLATE
+.sp
+.Nm xgrep
+.Ar PATTERS
+.Ar PKGS
+.sp
+.Nm xhog
+.sp
+.Nm xi
+.Ar PKGS
+.sp
+.Nm xilog
+.Op Ar PATTERN
+.sp
+.Nm xlg
+.Ar PKG
+.sp
+.Nm xlint
+.Ar TEMPLATE
+.sp
+.Nm xlocate
+.Oo
+.Fl u | g | s |
+.Ar PATTERN
+.Oc
+.sp
+.Nm xlog
+.Ar PKG
+.sp
+.Nm xsl
+.Ar PKGS
+.sp
+.Nm xmandog
+.Ar MANPAGE
+.sp
+.Nm xmindep
+.Ar PKGS
+.sp
+.Nm xmksv
+.Op Ar NEWSVDIR
+.sp
+.Nm xmypkgs
+.Op Ar EMAIL
+.sp
+.Nm xnew
+.Ar PKG
+.sp
+.Nm xnodev
+.sp
+.Nm xoptdiff
+.Op Fl q
+.Op Ar PKGS...
+.sp
+.Nm xpgk
+.Op Fl RamOHDvV
+.sp
+.Nm xpstree
+.sp
+.Nm xq
+.Op Fl R
+.Ar PKGS
+.sp
+.Nm xrecent
+.Op Ar REPOURL | XBPS_ARCH
+.sp
+.Nm xrevbump
+.Ar MESSAGE
+.Ar TEMPLATES
+.sp
+.Nm xrevshlib
+.Ar PACKAGE
+.sp
+.Nm xrs
+.Ar PATTERN
+.sp
+.Nm xsrc
+.Ar PKG
+.sp
+.Nm xsubpkg
+.Op Fl m
+.Ar PKG
+.sp
+.Sh DESCRIPTION
+Tools working on the void-packages tree use
+.Nm xdistdir
+to find it, check that its output is reasonable first.
+.sp
+.Nm xi ,
+.Nm xls ,
+.Nm xq
+and
+.Nm xrs
+prefer the
+.Pa hostdir
+/
+.Pa binpkgs
+repo if you run them from a void-packages checkout.
+.sp
+To the extent possible under law, Christian Neukirchen has waived
+all copyright and related or neighboring rights to this work.
+.sp
+.Sh AUTHORS
+.An Christian Neukirchen <chneukirchen@gmail.com>
+.An Enno Boland <mail@eboland.de>
+.An Toyam Cox <vaelatern@gmail.com>
+.An Jürgen Buchmüller <pullmoll@t-online.de>
+.An Eivind Uggedal <eivind@uggedal.com>
+.An bougyman <bougyman@voidlinux.eu>
+.An Nicklaus McClendon <nicklaus@kulinacs.com>
+.An Alexander Mamay <alexander@mamay.su>
+.An Michael Gehring
+.An Duncan Overbruck
+.An beefcurtains
+.Sh BUGS
+All bugs should be reported to
+.Lk https://github.com/chneukirchen/xtools
