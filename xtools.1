@@ -47,7 +47,7 @@ verbose mode, also print the library names
 .Pp
 .Nm xdbg
 .Ar pkgs ...
-.Nd list debugging packages for PKGS and recursive dependencies
+.Nd list debugging packages for pkgs and recursive dependencies
 .Pp
 .Nm xdiff
 .Op Fl u | l
@@ -109,7 +109,7 @@ replace checksum in-place
 .Nm xlocate
 .Oo
 .Fl u | g | S |
-.Ar PATTERN
+.Ar pattern
 .Oc
 .Nd locate files in all XBPS packages
 .Bl -tag -offset 2n -width 2n -compact
@@ -135,7 +135,7 @@ Update a find based xlocate database (obsolete)
 .Pp
 .Nm xmindep
 .Ar pkg ...
-.Nd minimize list of PKGS by removing implicit dependencies
+.Nd minimize list of packages by removing implicit dependencies
 .Pp
 .Nm xmksv
 .Op Ar newsvdir
@@ -210,7 +210,7 @@ query remote repos
 .Pp
 .Nm xrevshlib
 .Ar package
-.Nd list packages shlib-dependent on PACKAGE or its subpackages
+.Nd list packages shlib-dependent on package or its subpackages
 .Pp
 .Nm xrs
 .Ar pattern

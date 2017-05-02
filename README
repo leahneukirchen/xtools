@@ -21,7 +21,7 @@ COMMANDS
 
      xclash – detect file conflicts between XBPS packages
 
-     xdbg pkgs ... – list debugging packages for PKGS and recursive
+     xdbg pkgs ... – list debugging packages for pkgs and recursive
      dependencies
 
      xdiff [-u | -l] [basedir] – merge/diff/list XBPS .new-* files
@@ -52,7 +52,7 @@ COMMANDS
 
      xlint template – scan XBPS template for common mistakes
 
-     xlocate [-u | -g | -S | PATTERN] – locate files in all XBPS packages
+     xlocate [-u | -g | -S | pattern] – locate files in all XBPS packages
        -g  Update a git based xlocate database
        -S  Sync the with the official git based xlocate database
        -u  Update a find based xlocate database (obsolete)
@@ -63,7 +63,8 @@ COMMANDS
 
      xmandoc manpage – read manpage of possibly not installed package
 
-     xmindep pkg ... – minimize list of PKGS by removing implicit dependencies
+     xmindep pkg ... – minimize list of packages by removing implicit
+     dependencies
 
      xmksv [newsvdir] – create new runit service templates
 
@@ -98,7 +99,7 @@ COMMANDS
 
      xrevbump message templates ... – increase template revision and commit
 
-     xrevshlib package – list packages shlib-dependent on PACKAGE or its
+     xrevshlib package – list packages shlib-dependent on package or its
      subpackages
 
      xrs pattern – like xbps-query -Rs, but take cwd repo into account
