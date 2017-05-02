@@ -172,6 +172,7 @@ for template; do
 	scan 'distfiles=.*ftp\.mozilla\.org' 'use $MOZILLA_SITE'
 	scan 'distfiles=.*ftp\.gnu\.org/(pub/)?gnu' 'use $GNU_SITE'
 	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
+	scan "distfiles=.*$(sed -n -e 's/"//g;s/\./\\./g;/^version=.../ { s/.*=//p; q}' -e '$ aNOVER' "$template")" 'use ${version}'
 	scan '^wrksrc=(\$\{[^}]+\}|[^${}/])*/.+' 'wrksrc should be a top-level directory'
 	scan '^\t*function\b' 'do not use the function keyword'
 	scan '^\t*[^ ]*  *\(\)' 'do not use space before function parenthesis'
