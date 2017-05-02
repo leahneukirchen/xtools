@@ -1,0 +1,261 @@
+.Dd May 2, 2017
+.Dt XTOOLS 1
+.Os
+.Sh NAME
+.Nm xtools
+.Nd A collection of small utilities for use with XBPS
+.Sh COMMANDS
+.Nm xbarf
+.Nd display build logs of last build
+.Pp
+.Nm xbuildbarf
+.Op Ar arch
+.Nd spy on current buildbod output
+.Pp
+.Nm xbulk
+.Op Fl n
+.Op Fl k
+.Op Ar xbps-src\ flags
+.Ar pkgs ...
+.Nd simple XBPS bulk builder
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl n
+dry-run mode
+.It Fl k
+keep going on errors
+.El
+.Pp
+.Nm xbump
+.Ar pkgname
+.Op Ar git\ commit\ options
+.Nd Git commit a version bump
+.Pp
+.Nm xcheckmypkgs
+.Op Ar email
+.Nd check your packages for updates
+.Pp
+.Nm xcheckrestart
+.Op Fl v
+.Nd list programs using outdated libraries
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl v
+verbose mode, also print the library names
+.El
+.Pp
+.Nm xclash
+.Nd detect file conflicts between XBPS packages
+.Pp
+.Nm xdbg
+.Ar pkgs ...
+.Nd list debugging packages for PKGS and recursive dependencies
+.Pp
+.Nm xdiff
+.Op Fl u | l
+.Op Ar basedir
+.Nd merge/diff/list XBPS .new-* files
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl l
+list .new files
+.It Fl u
+print unified diffs
+.El
+.Pp
+.Nm xdistdir
+.Nd figure out XBPS_DISTDIR
+.Pp
+.Nm xdowngrade
+.Ar pkgfiles.xbps ...
+.Nd install XBPS package directly from .xbps file
+.Pp
+.Nm xetcchanges
+.Nd show diff of /etc against binary packages
+.Pp
+.Nm xgensum
+.Op Fl f
+.Op Fl i
+.Ar template
+.Nd update SHA256 sum in templates
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl f
+force (re-)download of distfiles
+.It Fl i
+replace checksum in-place
+.El
+.Pp
+.Nm xgrep
+.Ar pattern
+.Ar pkgs ...
+.Nd search files limited to XBPS package contents
+.Pp
+.Nm xhog
+.Nd list installed XBPS packages ordered by size
+.Pp
+.Nm xi
+.Ar pkgs ...
+.Nd like xbps-install -S, but take cwd repo and sudo/su into account
+.Pp
+.Nm xilog
+.Op Ar pattern
+.Nd list installed packages by install-date
+.Pp
+.Nm xlg
+.Ar pkg
+.Nd open short commit log for XBPS template
+.Pp
+.Nm xlint
+.Ar template
+.Nd scan XBPS template for common mistakes
+.Pp
+.Nm xlocate
+.Oo
+.Fl u | g | S |
+.Ar PATTERN
+.Oc
+.Nd locate files in all XBPS packages
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl g
+Update a git based xlocate database
+.It Fl S
+Sync the with the official git based xlocate database
+.It Fl u
+Update a find based xlocate database (obsolete)
+.El
+.Pp
+.Nm xlog
+.Ar pkg
+.Nd open commit log for XBPS template
+.Pp
+.Nm xls
+.Ar pkg ...
+.Nd list files contained in pkg (including binpkgs)
+.Pp
+.Nm xmandoc
+.Ar manpage
+.Nd read manpage of possibly not installed package
+.Pp
+.Nm xmindep
+.Ar pkg ...
+.Nd minimize list of PKGS by removing implicit dependencies
+.Pp
+.Nm xmksv
+.Op Ar newsvdir
+.Nd create new runit service templates
+.Pp
+.Nm xmypkgs
+.Op Ar email
+.Nd list all pkgs maintained by you
+.Pp
+.Nm xnew
+.Ar pkg
+.Nd create XBPS template
+.Pp
+.Nm xnodev
+.Nd list not installed -devel packages for installed packages
+.Pp
+.Nm xoptdiff
+.Op Fl q
+.Op Ar pkgs ...
+.Nd show template options which differ from binary package
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl q
+quiet mode, show package names only
+.El
+.Pp
+.Nm xpkg
+.Op Fl R Ar repo
+.Op Fl amOHDvV
+.Nd convenient package lister
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl R Ar repo
+consider only packages from
+.Ar repo
+.It Fl a
+list all packages (default: only installed)
+.It Fl m
+list manual packages
+.It Fl O
+list orphaned packages
+.It Fl H
+list packages on hold
+.It Fl D
+list installed packages not in repo
+.It Fl L
+list installed packages not from remote repos
+.It Fl v
+show version numbers
+.It Fl V
+show version numbers and description
+.El
+.Pp
+.Nm xpstree
+.Nd display tree view of xbps-src processes
+.Pp
+.Nm xq
+.Op Fl R
+.Ar pkg ...
+.Nd query information about XBPS package
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl R
+query remote repos
+.El
+.Pp
+.Nm xrecent
+.Op Ar repourl | arch
+.Nd list packages in repo ordered by build date
+.Pp
+.Nm xrevbump
+.Ar message
+.Ar templates ...
+.Nd increase template revision and commit
+.Pp
+.Nm xrevshlib
+.Ar package
+.Nd list packages shlib-dependent on PACKAGE or its subpackages
+.Pp
+.Nm xrs
+.Ar pattern
+.Nd like xbps-query -Rs, but take cwd repo into account
+.Pp
+.Nm xsrc
+.Ar pkg
+.Nd list source files for XBPS template
+.Pp
+.Nm xsubpkg
+.Op Fl m
+.Ar pkg
+.Nd list all subpackages of a package
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl m
+only print main package
+.El
+.Pp
+.Nm xuname
+.Nd display system info relevant for debugging Void
+.Sh DESCRIPTION
+Tools working on the void-packages tree use
+.Nm xdistdir
+to find it, check that its output is reasonable first.
+.Pp
+.Nm xi ,
+.Nm xls ,
+.Nm xq
+and
+.Nm xrs
+prefer the
+.Pa hostdir
+/
+.Pa binpkgs
+repo if you run them from a void-packages checkout.
+.Sh LICENSE
+.Nm
+is in the public domain.
+.Pp
+To the extent possible under law,
+the creator of this work
+has waived all copyright and related or
+neighboring rights to this work.
+.Pp
+.Lk http://creativecommons.org/publicdomain/zero/1.0/
+.Sh BUGS
+All bugs should be reported to
+.Lk https://github.com/chneukirchen/xtools
