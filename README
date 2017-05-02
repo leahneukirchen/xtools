@@ -1,54 +1,131 @@
-# xtools - a few helpers for working with XBPS
+XTOOLS(1)                   General Commands Manual                  XTOOLS(1)
 
-These are a bunch of small utilities for use with XBPS:
-https://github.com/voidlinux/xbps
+NAME
+     xtools – A collection of small utilities for use with XBPS
 
-  xbarf - display build logs of last build
-  xbuildbarf [ARCH] - spy on current buildbot output
-  xbulk [-n] [-k] [xbps-src flags...] PKGS... - simple XBPS bulk builder
-  xbump PKGNAME [git commit options] - git commit a version bump
-  xcheckmypkgs [EMAIL] - check your packages for updates
-  xcheckrestart [-v] - list programs using outdated libraries
-  xclash - detect file conflicts between XBPS packages
-  xdbg PKGS... - list debugging packages for PKGS and recursive dependencies
-  xdiff [-u|-l] [DIR] - merge/diff/list XBPS .new-* files
-  xdistdir - figure out XBPS_DISTDIR
-  xdowngrade PKGS.xbps... - install XBPS package directly from .xbps file
-  xetcchanges - show diff of /etc against binary packages
-  xgensum [-f] [-i] TEMPLATE - update SHA256 sums in templates
-  xgrep PATTERN PKGS... - search files limited to XBPS package contents
-  xhog - list installed XBPS packages ordered by size
-  xi PKGS... - like xbps-install -S, but take cwd repo and sudo/su into account
-  xilog [PATTERN] - list installed packages by install-date
-  xlg PKG - open short commit log for XBPS template
-  xlint TEMPLATE - scan XBPS template for common mistakes
-  xlocate [-u | -g | -S | PATTERN] - locate files in all XBPS packages
-  xlog PKG - open commit log for XBPS template
-  xls PKGS... - list files contained in PKGS (including binpkgs)
-  xmandoc MANPAGE - read manpage of possibly not installed package
-  xmindep PKGS... - minimize list of PKGS by removing implicit dependencies
-  xmksv [NEWSVDIR...] - create new runit service templates
-  xmypkgs [EMAIL] - list all pkgs maintained by you (or EMAIL)
-  xnew PKG - create XBPS template template
-  xnodev - list not installed -devel packages for installed packages
-  xoptdiff [-q] [PKGS...] - show template options which differ from binary package
-  xpkg [-RamOHDvV] - convenient package lister
-  xpstree - display tree view of xbps-src processes
-  xq [-R] PKGS... - query information about XBPS package
-  xrecent [REPOURL|XBPS_ARCH] - list packages in repo ordered by build date
-  xrevbump MESSAGE TEMPLATES... - increase template revision and commit
-  xrevshlib PACKAGE - list packages shlib-dependent on PACKAGE or its subpkgs
-  xrs PATTERN - like xbps-query -Rs, but take cwd repo into account
-  xsrc PKG - list source files for XBPS template
-  xsubpkg [-m] PKG - lists all subpackages of a package
+COMMANDS
+     xbarf – display build logs of last build
 
-Tools working on the void-packages tree use xdistdir to find it,
-check its output is reasonable first.
+     xbuildbarf [arch] – spy on current buildbod output
 
-xi, xls, xq, xrs prefer the hostdir/binpkgs repo if you run them from
-a void-packages checkout.
+     xbulk [-n] [-k] [xbps-src flags] pkgs ... – simple XBPS bulk builder
+       -n  dry-run mode
+       -k  keep going on errors
 
-To the extent possible under law, Christian Neukirchen has waived
-all copyright and related or neighboring rights to this work.
+     xbump pkgname [git commit options] – Git commit a version bump
 
-http://creativecommons.org/publicdomain/zero/1.0/
+     xcheckmypkgs [email] – check your packages for updates
+
+     xcheckrestart [-v] – list programs using outdated libraries
+       -v  verbose mode, also print the library names
+
+     xclash – detect file conflicts between XBPS packages
+
+     xdbg pkgs ... – list debugging packages for PKGS and recursive
+     dependencies
+
+     xdiff [-u | -l] [basedir] – merge/diff/list XBPS .new-* files
+       -l  list .new files
+       -u  print unified diffs
+
+     xdistdir – figure out XBPS_DISTDIR
+
+     xdowngrade pkgfiles.xbps ... – install XBPS package directly from .xbps
+     file
+
+     xetcchanges – show diff of /etc against binary packages
+
+     xgensum [-f] [-i] template – update SHA256 sum in templates
+       -f  force (re-)download of distfiles
+       -i  replace checksum in-place
+
+     xgrep pattern pkgs ... – search files limited to XBPS package contents
+
+     xhog – list installed XBPS packages ordered by size
+
+     xi pkgs ... – like xbps-install -S, but take cwd repo and sudo/su into
+     account
+
+     xilog [pattern] – list installed packages by install-date
+
+     xlg pkg – open short commit log for XBPS template
+
+     xlint template – scan XBPS template for common mistakes
+
+     xlocate [-u | -g | -S | PATTERN] – locate files in all XBPS packages
+       -g  Update a git based xlocate database
+       -S  Sync the with the official git based xlocate database
+       -u  Update a find based xlocate database (obsolete)
+
+     xlog pkg – open commit log for XBPS template
+
+     xls pkg ... – list files contained in pkg (including binpkgs)
+
+     xmandoc manpage – read manpage of possibly not installed package
+
+     xmindep pkg ... – minimize list of PKGS by removing implicit dependencies
+
+     xmksv [newsvdir] – create new runit service templates
+
+     xmypkgs [email] – list all pkgs maintained by you
+
+     xnew pkg – create XBPS template
+
+     xnodev – list not installed -devel packages for installed packages
+
+     xoptdiff [-q] [pkgs ...] – show template options which differ from binary
+     package
+       -q  quiet mode, show package names only
+
+     xpkg [-R repo] [-amOHDvV] – convenient package lister
+       -R repo
+           consider only packages from repo
+       -a  list all packages (default: only installed)
+       -m  list manual packages
+       -O  list orphaned packages
+       -H  list packages on hold
+       -D  list installed packages not in repo
+       -L  list installed packages not from remote repos
+       -v  show version numbers
+       -V  show version numbers and description
+
+     xpstree – display tree view of xbps-src processes
+
+     xq [-R] pkg ... – query information about XBPS package
+       -R  query remote repos
+
+     xrecent [repourl | arch] – list packages in repo ordered by build date
+
+     xrevbump message templates ... – increase template revision and commit
+
+     xrevshlib package – list packages shlib-dependent on PACKAGE or its
+     subpackages
+
+     xrs pattern – like xbps-query -Rs, but take cwd repo into account
+
+     xsrc pkg – list source files for XBPS template
+
+     xsubpkg [-m] pkg – list all subpackages of a package
+       -m  only print main package
+
+     xuname – display system info relevant for debugging Void
+
+DESCRIPTION
+     Tools working on the void-packages tree use xdistdir to find it, check
+     that its output is reasonable first.
+
+     xi, xls, xq and xrs prefer the hostdir / binpkgs repo if you run them
+     from a void-packages checkout.
+
+LICENSE
+     xtools is in the public domain.
+
+     To the extent possible under law, the creator of this work has waived all
+     copyright and related or neighboring rights to this work.
+
+     http://creativecommons.org/publicdomain/zero/1.0/
+
+BUGS
+     All bugs should be reported to https://github.com/chneukirchen/xtools
+
+Void Linux                        May 2, 2017                       Void Linux
