@@ -67,6 +67,7 @@ go_get
 go_import_path
 go_ldflags
 go_package
+go_ldflags
 homepage
 hostmakedepends
 keep_libtool_archives
