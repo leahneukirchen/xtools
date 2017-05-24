@@ -120,7 +120,6 @@ stackage
 subpackages
 system_accounts
 system_groups
-systemd_services
 tags
 triggers
 version
