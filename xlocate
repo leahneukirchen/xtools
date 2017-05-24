@@ -79,7 +79,7 @@ if [ -d "$XLOCATE_GIT" ]; then
 		fi
 	fi
 	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep "$@" @ |
-		sed 's/^@://; s/:/\t/' | grep .
+		sed 's/^@://; s/:/	/' | grep .
 elif [ -e "$XLOCATE_DB" ]; then
 	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_DB" | grep -q .; then
 		echo "xlocate: database outdated, please run xlocate -u." 1>&2
@@ -91,8 +91,8 @@ elif [ -e "$XLOCATE_DB" ]; then
 	esac
 	# XXX also matches template in package name.
 	glocate $rx -d "$XLOCATE_DB" "$1" |
-		sed 's|^/\([^/]*\)-[^-/]*/|\1\t/|'
+		sed 's|^/\([^/]*\)-[^-/]*/|\1	/|'
 else
 	xbps-query --regex -Ro "$@" |
-		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
+		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1	/'
 fi
