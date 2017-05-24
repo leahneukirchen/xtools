@@ -5,7 +5,7 @@ verbose=false
 [ "$1" = -v ] && verbose=true
 
 for f in /proc/[0-9]*; do
-	LIBS=$(grep -Po '    *\K    .* \(deleted\)$' $f/maps 2>/dev/null |
+	LIBS=$(grep -o '    *    .* (deleted)$' $f/maps 2>/dev/null |
 		grep -v -e /SYSV \
 			-e /.cache/fontconfig \
 			-e /var/cache/fontconfig \
