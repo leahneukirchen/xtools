@@ -5,7 +5,7 @@ cd $(xdistdir)
 
 pkg=$1; shift
 [ -z "$pkg" ] && pkg=$(basename $PWD)
-version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[\t]*//p')
+version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[	]*//p')
 
 if [ -z "$version" ]; then
 	echo cannot parse version
@@ -24,7 +24,7 @@ elif [ -n "$shlibs" ]; then
 fi
 
 dirs="$dirs $(./xbps-src show "$pkg" |
-	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')"
+	sed -r -n '/^(pkgname|subpackage)/s/[^:]*:[	]*/srcpkgs\//p')"
 
 git add $dirs
 
