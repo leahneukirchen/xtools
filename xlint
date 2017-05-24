@@ -56,7 +56,6 @@ configure_script
 conflicts
 create_wrksrc
 depends
-depends
 disable_parallel_build
 distfiles
 dkms_modules
