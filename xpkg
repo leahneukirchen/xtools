@@ -2,8 +2,8 @@
 # xpkg [-RamOHDLvV] - convenient package lister
 
 flags=
-filter0='/^.[^i*].\? /d'
-filter1='s/^...\? //'
+filter0='/^.[^i*].? /d'
+filter1='s/^...? //'
 filter2='s/-[^- ]* .*//'
 mode="--search="
 
@@ -14,7 +14,7 @@ while getopts R:vVmOHDLa flag; do
 		R) flags="$flags -i --repository=$OPTARG";;
 		m|O|H) mode="-$flag"; filter0=; filter1=; filter2='s/-[^-]*$//';;
 		a) flags="$flags -R"; filter0=;;
-		v) filter2='s/:\? .*//';;
+		v) filter2='s/:? .*//';;
 		V) filter2=;;
 		?) printf "Usage: %s [-RamOHvV]
   -R REPO  consider only packages from REPO
@@ -31,4 +31,4 @@ while getopts R:vVmOHDLa flag; do
 	esac
 done
 
-xbps-query $flags $mode | sed "$filter0;$filter1;$filter2"
+xbps-query $flags $mode | sed -r "$filter0;$filter1;$filter2"
