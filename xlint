@@ -154,6 +154,7 @@ for template; do
 	scan '^version=.*[:-].*' "version must not contain the characters : or -"
 	scan 'replaces=(?=.*\w)[^<>]*$' "replaces needs depname with version"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
+	scan 'maintainer=.*<.*@users.noreply.github.com>.*' "maintainer needs a valid address for sending mail"
 	scan 'nonfree=' "use repository=nonfree"
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' \
 		"custom variables should use _ prefix: \2"
