@@ -39,6 +39,7 @@ OBJDUMP
 RANLIB
 READELF
 STRIP
+XBPS_FETCH_CMD
 allow_unknown_shlibs
 alternatives
 binfmts
