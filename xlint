@@ -153,6 +153,8 @@ for template; do
 	scan '[^\\]`' "use \$() instead of backticks"
 	scan 'revision=0' "revision must not be zero"
 	scan '^version=.*[:-].*' "version must not contain the characters : or -"
+	scan '^reverts=.*-.*' "reverts must not contain package name"
+	scan '^reverts=(?!.*_.*).*' "reverts without revision"
 	scan 'replaces=(?=.*\w)[^<>]*$' "replaces needs depname with version"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan 'maintainer=.*<.*@users.noreply.github.com>.*' "maintainer needs a valid address for sending mail"
