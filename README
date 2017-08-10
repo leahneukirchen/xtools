@@ -52,10 +52,9 @@ COMMANDS
 
      xlint template – scan XBPS template for common mistakes
 
-     xlocate [-u | -g | -S | pattern] – locate files in all XBPS packages
+     xlocate [-g | -S | pattern] – locate files in all XBPS packages
        -g  Update a git based xlocate database
        -S  Sync with the official git based xlocate database
-       -u  Update a find based xlocate database (obsolete)
 
      xlog pkg – open commit log for XBPS template
 
@@ -124,9 +123,10 @@ LICENSE
      To the extent possible under law, the creator of this work has waived all
      copyright and related or neighboring rights to this work.
 
-     http://creativecommons.org/publicdomain/zero/1.0/
+           http://creativecommons.org/publicdomain/zero/1.0/
 
 BUGS
-     All bugs should be reported to https://github.com/chneukirchen/xtools
+     All bugs should be reported to
+           https://github.com/chneukirchen/xtools
 
 Void Linux                        May 2, 2017                       Void Linux

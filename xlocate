@@ -1,7 +1,6 @@
 #!/bin/sh
-# xlocate [-u | -g | -S | PATTERN] - locate files in all XBPS packages
+# xlocate [-g | -S | PATTERN] - locate files in all XBPS packages
 
-: ${XLOCATE_DB:=~/.cache/xlocate.db}
 : ${XLOCATE_GIT:=~/.cache/xlocate.git}
 : ${XLOCATE_REPO:=https://repo.voidlinux.eu/xlocate/xlocate.git}
 
@@ -10,14 +9,6 @@ if command -v pv >/dev/null; then
 else
 	PROGRESS=cat
 fi
-
-xupdatedb() {
-	echo "xlocate: reindexing database..." 1>&2
-	xbps-query -Ro '*' |
-		$PROGRESS |
-		sed 's/ *([^)]*)$//; s|: ||; s,^,/,' |
-		/usr/libexec/frcode >"$XLOCATE_DB"
-}
 
 xupdategit() {
 	set -e
@@ -54,15 +45,15 @@ xsyncgit() {
 	git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 }
 
-if [ "$1" = -u ]; then
-	xupdatedb
-	exit $?
-elif [ "$1" = -g ]; then
+if [ "$1" = -g ]; then
 	xupdategit
 	exit $?
 elif [ "$1" = -S ]; then
 	xsyncgit
 	exit $?
+else
+	echo "xlocate: invalid option '$1'" 1>&2
+	exit 1
 fi
 
 if [ -d "$XLOCATE_GIT" ]; then
@@ -80,18 +71,6 @@ if [ -d "$XLOCATE_GIT" ]; then
 	fi
 	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep "$@" @ |
 		sed 's/^@://; s/:/\t/' | grep .
-elif [ -e "$XLOCATE_DB" ]; then
-	if find /var/db/xbps/ -name '*repodata' -newer "$XLOCATE_DB" | grep -q .; then
-		echo "xlocate: database outdated, please run xlocate -u." 1>&2
-	fi
-	rx=
-	case "$1" in
-		# Just . is unlikely to be a regex here...
-		*[*+\\\[\]^$]*) rx=-r;;
-	esac
-	# XXX also matches template in package name.
-	glocate $rx -d "$XLOCATE_DB" "$1" |
-		sed 's|^/\([^/]*\)-[^-/]*/|\1\t/|'
 else
 	xbps-query --regex -Ro "$@" |
 		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'

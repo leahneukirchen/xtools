@@ -65,7 +65,7 @@ _xilog() {
 
 _xlocate() {
 	_arguments : \
-		'-u[update xlocate.db]' \
+		'-S[sync with official xlocate.git]' \
 		'-g[update xlocate.git]' \
 		'1::pattern: '
 }
