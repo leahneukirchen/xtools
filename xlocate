@@ -45,16 +45,20 @@ xsyncgit() {
 	git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 }
 
-if [ "$1" = -g ]; then
+case "$1" in
+-g)
 	xupdategit
-	exit $?
-elif [ "$1" = -S ]; then
+	exit $?;;
+-S)
 	xsyncgit
-	exit $?
-else
+	exit $?;;
+-*)
 	echo "xlocate: invalid option '$1'" 1>&2
-	exit 1
-fi
+	exit 1;;
+'')
+	echo "Usage: xlocate [-g | -S | PATTERN]" 1>&2
+	exit 1;;
+esac
 
 if [ -d "$XLOCATE_GIT" ]; then
 	if [ -f "$XLOCATE_GIT/refs/heads/master" ]; then
