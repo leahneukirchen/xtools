@@ -138,7 +138,7 @@ for template; do
 	scan 'license=.*[^L]GPL[^-]' "license GPL without version"
 	scan 'license=.*LGPL[^-]' "license LGPL without version"
 	if ! grep -q vlicense "$template"; then
-		for l in custom MIT BSD ISC; do
+		for l in custom AGPL MIT BSD ISC; do
 			scan "license=.*$l" "license '$l', but no use of vlicense"
 		done
 	fi
