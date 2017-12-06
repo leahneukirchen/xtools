@@ -17,6 +17,8 @@ fi | while read pkg; do
 	comm -23 <(./xbps-src show-options $pkg 2>/dev/null |
 			sed -n '/\(ON\)/s/ *\([^ ]*\):.*/\1/p;
 			        /\(OFF\)/s/ *\([^ ]*\):.*/~\1/p;' | sort) \
-		 <(xbps-query -R -p build-options $pkg | tr ' ' '\n' | sort) |
+		 <(xbps-query -R  \
+			      --repository=$(xbps-query -p repository $pkg) \
+			      -p build-options $pkg | tr ' ' '\n' | sort) |
 		tr '\n' ' ' | sed -n "s/^[^ ].*/$pkg$q\n/p"
 done
