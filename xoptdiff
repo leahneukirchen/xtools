@@ -9,10 +9,10 @@ if [ "$1" = -q ]; then
 	q=
 fi
 
-if [ $# = 0 ]; then
+if [ $# -eq 0 ]; then
 	xbps-query -p build-options -s '' | sed 's/^\([^ ]*\)-.*/\1/'
 else
-	echo "$@"
+	echo "$@" | tr ' ' '\n'
 fi | while read pkg; do
 	comm -23 <(./xbps-src show-options $pkg 2>/dev/null |
 			sed -n '/\(ON\)/s/ *\([^ ]*\):.*/\1/p;
