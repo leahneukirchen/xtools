@@ -1,0 +1,28 @@
+#!/bin/sh
+# xupdate - like xbps-install -Su, but take cwd repo and sudo/su into account
+
+BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+ADDREPO="
+	--repository=hostdir/binpkgs/$BRANCH
+	--repository=../hostdir/binpkgs/$BRANCH
+	--repository=../../hostdir/binpkgs/$BRANCH
+	--repository=hostdir/binpkgs/$BRANCH/nonfree
+	--repository=../hostdir/binpkgs/$BRANCH/nonfree
+	--repository=../../hostdir/binpkgs/$BRANCH/nonfree
+	--repository=hostdir/binpkgs
+	--repository=../hostdir/binpkgs
+	--repository=../../hostdir/binpkgs
+	--repository=hostdir/binpkgs/nonfree
+	--repository=../hostdir/binpkgs/nonfree
+	--repository=../../hostdir/binpkgs/nonfree
+"
+
+SUDO=
+if command -v sudo >/dev/null &&
+   sudo -l | grep -q -e ' ALL$' -e xbps-install; then
+	SUDO=sudo
+elif [ "$(whoami)" != root ]; then
+	SUDO='su root -c '\''"$@"'\'' -- -'
+fi
+
+$SUDO xbps-install $ADDREPO -Su "$@"
