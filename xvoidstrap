@@ -1,0 +1,55 @@
+#!/bin/sh -e
+# xvoidstrap DIR [PACKAGES...] - bootstrap a new Void installation
+#
+# (Setting XBPS_ARCH=x86_64-musl works.)
+
+fail() {
+	printf '%s\n' "$1" 1>&2
+	exit 1
+}
+
+if [ "$(id -u)" -ne 0 ]; then
+	fail 'xvoidstrap needs to run as root'
+fi
+
+umask 0022
+
+case "$1" in
+	/*) CHROOT=$1; shift;;
+	*) fail 'no absolute chroot dir given';;
+esac
+
+[ -d "$CHROOT" ] || fail 'not a directory'
+
+[ -d "$CHROOT/bin" ] && fail 'directory contains /bin, bailing out'
+[ -d "$CHROOT/dev" ] && fail 'directory contains /dev, bailing out'
+[ -d "$CHROOT/etc" ] && fail 'directory contains /etc, bailing out'
+[ -d "$CHROOT/usr" ] && fail 'directory contains /usr, bailing out'
+
+chown root:root "$CHROOT"
+chmod 0755 "$CHROOT"
+mkdir -p "$CHROOT/boot" "$CHROOT/dev"
+mkdir -p 0555 "$CHROOT/proc" "$CHROOT/sys"
+
+if [ -d /var/db/xbps/keys ]; then
+	mkdir -p "$CHROOT/var/db/xbps/keys"
+	cp -a /var/db/xbps/keys/* "$CHROOT/var/db/xbps/keys"
+fi
+
+xbps-install \
+	-R https://repo.voidlinux.eu/current \
+	-R https://repo.voidlinux.eu/current/musl \
+	-S -r "$CHROOT" \
+	${@:-base-system lvm2 cryptsetup grub}
+
+printf '\n'
+cat <<EOF | tee ${CHROOT}/checklist
+Void post-install checklist
+- Set hostname: /etc/hostname
+- Configure fstab: /etc/fstab
+- Set locale: /etc/locale.conf and /etc/default/libc-locales
+- Rebuild locale: xbps-reconfigure -f glibc-locales
+- Install boot-loader: grub-install /dev/sda
+- Make dracut hostonly: echo hostonly=yes >/etc/dracut.conf.d/hostonly.conf
+- Rebuild initrd: xbps-reconfigure -f linux4.??
+EOF
