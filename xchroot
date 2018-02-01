@@ -1,0 +1,41 @@
+#!/bin/sh -e
+# xchroot DIR [CMD...] - chroot into a Void (or other Linux) installation
+
+fail() {
+	printf '%s\n' "$1" 1>&2
+	exit 1
+}
+
+if [ "$(id -u)" -ne 0 ]; then
+	fail 'xchroot needs to run as root'
+fi
+
+case "$1" in
+	/*) CHROOT=$1; shift;;
+	*) fail 'no absolute chroot dir given';;
+esac
+
+[ -d "$CHROOT" ] || fail 'not a directory'
+[ -d "$CHROOT/dev" ] || fail 'no /dev in chroot'
+[ -d "$CHROOT/proc" ] || fail 'no /proc in chroot'
+[ -d "$CHROOT/sys" ] || fail 'no /sys in chroot'
+
+mount --rbind /dev "$CHROOT/dev"
+mount --rbind /proc "$CHROOT/proc"
+mount --rbind /sys "$CHROOT/sys"
+
+cleanup() {
+	umount -R "$CHROOT/dev" "$CHROOT/proc" "$CHROOT/sys"
+}
+
+trap cleanup EXIT INT
+
+if [ -f "$CHROOT/$SHELL" ]; then
+	INNER_SHELL="$SHELL"
+elif [ -f "$CHROOT/bin/bash" ]; then
+	INNER_SHELL="/bin/bash"
+else
+	INNER_SHELL="/bin/sh"
+fi
+
+chroot "$CHROOT" ${@:-$INNER_SHELL}
