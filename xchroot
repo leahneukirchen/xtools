@@ -23,9 +23,11 @@ esac
 mount --rbind /dev "$CHROOT/dev"
 mount --rbind /proc "$CHROOT/proc"
 mount --rbind /sys "$CHROOT/sys"
+touch "$CHROOT/etc/resolv.conf"
+mount --bind /etc/resolv.conf "$CHROOT/etc/resolv.conf"
 
 cleanup() {
-	umount -R "$CHROOT/dev" "$CHROOT/proc" "$CHROOT/sys"
+	umount -R "$CHROOT/dev" "$CHROOT/etc/resolv.conf" "$CHROOT/proc" "$CHROOT/sys"
 }
 
 trap cleanup EXIT INT
