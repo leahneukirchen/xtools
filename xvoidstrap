@@ -45,11 +45,17 @@ xbps-install \
 printf '\n'
 cat <<EOF | tee ${CHROOT}/checklist
 Void post-install checklist
+- Set root password: passwd
+- Set root shell: chsh
 - Set hostname: /etc/hostname
 - Configure fstab: /etc/fstab
 - Set locale: /etc/locale.conf and /etc/default/libc-locales
 - Rebuild locale: xbps-reconfigure -f glibc-locales
 - Install boot-loader: grub-install /dev/sda
+- Adjust kernel command-line in /etc/default/grub:
+  printk.time=1 loglevel=6 net.ifnames=0
 - Make dracut hostonly: echo hostonly=yes >/etc/dracut.conf.d/hostonly.conf
 - Rebuild initrd: xbps-reconfigure -f linux4.??
+- Enable default services: ln -s /etc/sv/... /var/service
+
 EOF
