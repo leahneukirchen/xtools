@@ -40,4 +40,10 @@ else
 	INNER_SHELL="/bin/sh"
 fi
 
-chroot "$CHROOT" ${@:-$INNER_SHELL}
+printf "\033[1m=> Entering chroot $CHROOT\033[m\n"
+export PS1="[xchroot $CHROOT] $PS1"
+if chroot "$CHROOT" ${@:-$INNER_SHELL}; then
+	printf "\033[1m=> Exited chroot $CHROOT\033[m\n"
+else
+	printf "\033[1m=> Exited chroot $CHROOT with status $?\033[m\n"
+fi
