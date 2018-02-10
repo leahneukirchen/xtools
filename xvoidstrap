@@ -48,6 +48,7 @@ Void post-install checklist
 - Set root password: passwd
 - Set root shell: chsh
 - Set hostname: /etc/hostname
+- Set time zone: ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 - Configure fstab: /etc/fstab
 - Set locale: /etc/locale.conf and /etc/default/libc-locales
 - Rebuild locale: xbps-reconfigure -f glibc-locales
