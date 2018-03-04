@@ -35,8 +35,9 @@ COMMANDS
 
      xetcchanges – show diff of /etc against binary packages
 
-     xgensum [-f] [-i] template – update SHA256 sum in templates
+     xgensum [-f] [-c] [-i] template – update SHA256 sum in templates
        -f  force (re-)download of distfiles
+       -c  use content checksum
        -i  replace checksum in-place
 
      xgrep pattern pkgs ... – search files limited to XBPS package contents

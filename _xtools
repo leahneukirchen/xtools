@@ -48,6 +48,7 @@ _xdowngrade() {
 _xgensum() {
 	_arguments : \
 		'-f[force downloading of files]' \
+		'-c[use content checksum]' \
 		'-i[substitute in-place]' \
 		':available templates:_path_files -g "*(/)|template(N)"'
 }
