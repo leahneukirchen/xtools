@@ -6,6 +6,10 @@ case "$1" in
 esac
 
 case "$1" in
+	-c) FLAG_c=$1; shift
+esac
+
+case "$1" in
 	-i*) FLAG_i=$1; shift
 esac
 
@@ -14,7 +18,7 @@ if [ -f "$1" ]; then
 elif [ -f "$1/template" ]; then
 	template="$1/template"
 else
-	echo 'Usage: xgensum [-f] [-i] TEMPLATE' 1>&2
+	echo 'Usage: xgensum [-f] [-c] [-i] TEMPLATE' 1>&2
 	exit 1
 fi
 
@@ -39,7 +43,58 @@ sums=""
 for f in $distfiles; do
 	curfile=$(basename "${f#*>}")
 	distfile="$srcdir/$curfile"
-	sum=$(sha256sum $distfile)
+	if [ "$FLAG_c" = -c ];then
+		sum="@"
+		case ${distfile} in
+		*tar.lzma|*.tar|*.txz|*.tar.xz|*.tbz|*.tar.gz)
+			sum+=$(tar xf "$distfile" --to-stdout | sha256sum | awk '{print $1}')
+			;;
+		*.gz)
+			sum+=$(gunzip -c "$distfile" | sha256sum | awk '{print $1}')
+			;;
+		*.tar.bz2|*.bz2)
+			sum+=$(bunzip2 -c "$distfile" | sha256sum | awk '{print $1}')
+			;;
+		*.zip)
+			if command -v unzip &>/dev/null; then
+				sum+=$(unzip -p "$distfile" | sha256sum | awk '{print $1}')
+				if [ $? -ne 0 ]; then
+					echo "$pkgver: extracting $curfile to pipe.\n"
+				fi
+			else
+				echo "$pkgver: cannot find unzip bin for extraction.\n"
+			fi
+			;;
+		*.rpm)
+			if command -v rpmextract &>/dev/null; then
+				sum+=$(rpm2cpio "$distfile" | bsdtar xf - --to-stdout | sha256sum | awk '{print $1}')
+				if [ $? -ne 0 ]; then
+					echo "$pkgver: extracting $curfile to pipe.\n"
+				fi
+			else
+				echo "$pkgver: cannot find rpmextract for extraction.\n"
+			fi
+			;;
+		*.7z)
+			if command -v 7z &>/dev/null; then
+				sum+=$(7z x -o "$distfile" | sha256sum | awk '{print $1}')
+				if [ $? -ne 0 ]; then
+					echo "$pkgver: extracting $curfile to pipe.\n"
+				fi
+			else
+				echo "$pkgver: cannot find 7z bin for extraction.\n"
+			fi
+			;;
+		*.txt|*.patch|*.diff)
+			sum+=$(cat "$distfile" | sha256sum | awk '{print $1}')
+			;;
+		*)
+			sum=$(sha256sum $distfile)
+
+		esac
+	else
+		sum=$(sha256sum $distfile)
+	fi
 	sums+="${sum%  *}\n "
 done
 

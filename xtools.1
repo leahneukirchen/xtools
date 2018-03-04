@@ -72,12 +72,15 @@ print unified diffs
 .Pp
 .Nm xgensum
 .Op Fl f
+.Op Fl c
 .Op Fl i
 .Ar template
 .Nd update SHA256 sum in templates
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl f
 force (re-)download of distfiles
+.It Fl c
+use content checksum
 .It Fl i
 replace checksum in-place
 .El
