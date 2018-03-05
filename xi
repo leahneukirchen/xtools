@@ -9,12 +9,18 @@ ADDREPO="
 	--repository=hostdir/binpkgs/$BRANCH/nonfree
 	--repository=../hostdir/binpkgs/$BRANCH/nonfree
 	--repository=../../hostdir/binpkgs/$BRANCH/nonfree
+	--repository=hostdir/binpkgs/$BRANCH/debug
+	--repository=../hostdir/binpkgs/$BRANCH/debug
+	--repository=../../hostdir/binpkgs/$BRANCH/debug
 	--repository=hostdir/binpkgs
 	--repository=../hostdir/binpkgs
 	--repository=../../hostdir/binpkgs
 	--repository=hostdir/binpkgs/nonfree
 	--repository=../hostdir/binpkgs/nonfree
 	--repository=../../hostdir/binpkgs/nonfree
+	--repository=hostdir/binpkgs/debug
+	--repository=../hostdir/binpkgs/debug
+	--repository=../../hostdir/binpkgs/debug
 "
 
 SUDO=
