@@ -10,13 +10,15 @@ case "$1" in
 esac
 
 if [ -f "$1" ]; then
-	. "$1"
+	template="$1"
 elif [ -f "$1/template" ]; then
-	. "$1/template"
+	template="$1/template"
 else
 	echo 'Usage: xgensum [-f] [-i] TEMPLATE' 1>&2
 	exit 1
 fi
+
+. "$template"
 
 XBPS_DISTDIR=$(xdistdir)
 XBPS_SRCDISTDIR=$($XBPS_DISTDIR/xbps-src show-var XBPS_SRCDISTDIR | tail -1)
@@ -45,4 +47,4 @@ sed $FLAG_i -e "/^checksum=/,/^[^ \t]/{
 		/^[ \t]/d
 		s/^checksum=.*/checksum=\"${sums%\n }\"/
 		/^checksum=\"[^ ]*\"/s/\"//g
-	}" "$1"
+	}" "$template"
