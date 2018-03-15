@@ -4,5 +4,6 @@
 xlocate "man/man..\?/$1\.[0-9]" 2>/dev/null | 
 	{ grep . || { echo "xmandoc: No entry for $1 found." 1>&2; exit 1; } } |
 	while read -r pkg page; do
+		page=${page#* -> }
 		xbps-query --cat=$page ${pkg%-*} | mandoc -a
 	done
