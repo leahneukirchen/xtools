@@ -110,6 +110,8 @@ COMMANDS
 
      xuname – display system info relevant for debugging Void
 
+     xpcdeps pcfile ... - finds package matching the Requires: section of pkg-config files
+
 DESCRIPTION
      Tools working on the void-packages tree use xdistdir to find it, check
      that its output is reasonable first.
