@@ -14,7 +14,7 @@ tempdir="$(mktemp -d)"
 create_pcfile() {
 	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
 	while read -r pkgname file ; do
-		for rpkg in $( xbps-query --repository=hostdir/binpkgs/"$branch" --cat="$file" "$pkgname" | grep Requires: | cut -d: -f2 ) ; do
+		for rpkg in $( xbps-query --repository=hostdir/binpkgs/"$branch" --cat="$file" "$pkgname" | grep Requires: | cut -d: -f2 | sed 's/,/ /g' ) ; do
 			# This makes the iterator ignore over the version specifier available for pkg-config
 			# >=, <=, >, <, =, and also ignore versions by ignoring everything that doesn't have
 			# a letter
