@@ -1,0 +1,65 @@
+#!/bin/sh
+# xpcdeps pcfile ... - finds package matching the Requires: section of pkg-config files
+cleanup() {
+	[ -n "$tempdir" ] &&
+	[ -d "$tempdir" ] &&
+	rm -rf -- "$tempdir"
+}
+trap cleanup EXIT INT TERM
+
+tempdir="$(mktemp -d)"
+
+# This takes 1 argument which is the name of the file to write to and reads
+# lines from stdin in the form of '$pkgname $file'
+create_pcfile() {
+	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+	while read -r pkgname file ; do
+		for rpkg in $( xbps-query --repository=hostdir/binpkgs/"$branch" --cat="$file" "$pkgname" | grep Requires: | cut -d: -f2 ) ; do
+			# This makes the iterator ignore over the version specifier available for pkg-config
+			# >=, <=, >, <, =, and also ignore versions by ignoring everything that doesn't have
+			# a letter
+			[ -z "${rpkg##*[<=>]*}" ] && continue
+			[ -z "${rpkg##*[a-zA-Z]*}" ] || continue
+			printf "%s\\n" "$rpkg" >> "$tempdir/$1.pc"
+		done
+	done
+}
+
+grab_local() {
+	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+	for pkg in hostdir/binpkgs/$branch/* ; do
+		pkg="${pkg##*/}"
+		pcfile="$(xbps-query -i --repository=hostdir/binpkgs/"$branch" -f "${pkg%-*}" | grep "$1.pc")"
+		if [ -n "$pcfile" ] ; then
+			printf "%s %s\\n" "${pkg%-*}" "$pcfile"
+			touch "$tempdir/$1.pc"
+		fi
+	done | create_pcfile "$1"
+
+	# Check if the file doesn't exist, we can't check if it empty because emptyness
+	# means the Requires: is defined but is empty
+	[ -f "$tempdir/$1.pc" ] || return 1
+}
+
+grab_requires() {
+	for pkg; do
+		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" |
+		{ grep . || { echo "xpcdeps: No pkg-config file for $pkg found." 1>&2 ; exit 1; } } |
+		create_pcfile "$pkg"
+	done
+}
+
+get_package_from_requires() {
+	while read -r pkg ; do
+		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" |
+		{ grep . || { printf -- "UNKNOWN PKG PLEASE FIX -> %s\\n" "$pkg" 1>&2 ; return; } } |
+		while read -r pkgname file ; do
+			file="${file##*/}"
+			printf "%s -> %s\\n" "${pkgname%-*}" "${file%*.pc}"
+		done
+	done
+}
+
+for arg; do
+	grab_local "$arg" || grab_requires "$arg" && [ -f "$tempdir/$arg.pc" ] && get_package_from_requires < "$tempdir/$arg.pc"
+done
