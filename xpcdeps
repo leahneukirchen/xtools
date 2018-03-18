@@ -23,6 +23,15 @@ create_pcfile() {
 			[ -z "${rpkg##*[a-zA-Z]*}" ] || continue
 			printf "%s\\n" "$rpkg" >> "$tempdir/$1.pc"
 		done
+		for rpkg in $( xbps-query --repository=hostdir/binpkgs/"$branch" --cat="$file" "$pkgname" | grep Requires.private: | cut -d: -f2 | sed 's/,/ /g' ) ; do
+			# This makes the iterator ignore over the version specifier available for pkg-config
+			# >=, <=, >, <, =, and also ignore versions by ignoring everything that doesn't have
+			# a letter, we also ignore $ { } because some package like mutter define a requires=
+			# variable and then makes the actual Requires: be ${requires}
+			[ -z "${rpkg##*[\{<=>\}\$]*}" ] && continue
+			[ -z "${rpkg##*[a-zA-Z]*}" ] || continue
+			printf "%s\\n" "$rpkg" >> "$tempdir/$1.pc"
+		done
 	done
 }
 
