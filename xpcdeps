@@ -14,13 +14,9 @@ tempdir="$(mktemp -d)"
 create_pcfile() {
 	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
 	while read -r pkgname file ; do
-		for rpkg in $( xbps-query --repository=hostdir/binpkgs/"$branch" --cat="$file" "$pkgname" | grep Requires: | cut -d: -f2 | sed 's/,/ /g' ) ; do
-			# This makes the iterator ignore over the version specifier available for pkg-config
-			# >=, <=, >, <, =, and also ignore versions by ignoring everything that doesn't have
-			# a letter, we also ignore $ { } because some package like mutter define a requires=
-			# variable and then makes the actual Requires: be ${requires}
-			[ -z "${rpkg##*[\{<=>\}\$]*}" ] && continue
-			[ -z "${rpkg##*[a-zA-Z]*}" ] || continue
+		# We search for Requires.private: because even they are required
+		# for usage with --cflags
+		for rpkg in $( xbps-query --repository=hostdir/binpkgs/"$branch" --cat="$file" "$pkgname" | grep "Requires:\|Requires.private" | cut -d: -f2 | sed 's/,/ /g' ) ; do
 			printf "%s\\n" "$rpkg" >> "$tempdir/$1.pc"
 		done
 	done
@@ -61,6 +57,19 @@ get_package_from_requires() {
 	done
 }
 
+sanitize_pcfile() {
+	# remove special symbols ( < > = { } $ ) 
+	# remove version numbers
+	# remove all duplicates
+	sed -i -e '/[${<=>}]/d' \
+		   -e '/[a-zA-Z]/!d' "$1"
+	sort -o "$1" -u "$1"
+}
+
 for arg; do
-	grab_local "$arg" || grab_requires "$arg" && [ -f "$tempdir/$arg.pc" ] && get_package_from_requires < "$tempdir/$arg.pc"
+	grab_local "$arg" || \
+		grab_requires "$arg" && \
+		[ -f "$tempdir/$arg.pc" ] && \
+		sanitize_pcfile "$tempdir/$arg.pc" && \
+		get_package_from_requires < "$tempdir/$arg.pc"
 done
