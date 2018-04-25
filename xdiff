@@ -1,12 +1,14 @@
 #!/bin/sh
 # xdiff [-u|-l] [DIR] - merge/diff/list XBPS .new-* files
 
+XDIFF_MERGE_EDITOR=${XDIFF_MERGE_EDITOR:-vim -d}
+
 mergeutil() {
-	vimdiff "$1" "$2" && rm -vi "$1"
+	$XDIFF_MERGE_EDITOR "$1" "$2" && rm -vi "$2"
 }
 
 listutil() {
-	printf '%s\n' "$1"
+	printf '%s\n' "$2"
 }
 
 if [ "$1" = -u ]; then
@@ -22,5 +24,5 @@ fi
 DIR=${1:-/etc}
 
 for newfile in $(find "$DIR" -name '*.new-*_*'); do
-	$DIFF "$newfile" "${newfile%.new-*_*}"
+	$DIFF "${newfile%.new-*_*}" "$newfile"
 done
