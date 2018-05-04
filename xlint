@@ -49,6 +49,7 @@ build_options
 build_options_default
 build_style
 build_wrksrc
+changelog
 checkdepends
 checksum
 cmake_builddir
