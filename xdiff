@@ -21,6 +21,6 @@ fi
 
 DIR=${1:-/etc}
 
-for newfile in $(find "$DIR" -name '*.new-*_*'); do
+for newfile in $(find "$DIR" -name '*.new-*_*' | sort -V); do
 	$DIFF "$newfile" "${newfile%.new-*_*}"
 done
