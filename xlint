@@ -187,6 +187,8 @@ for template; do
 	scan '^\t*[^ ]*  *\(\)' 'do not use space before function parenthesis'
 	scan '^\t*[^ ]*\(\)(|   *){' 'use one space after function parenthesis'
 	scan '^\t*[^ ]*\(\)$' 'do not use a newline before function opening brace'
+	version=$(grep -Po "^version=\K.*" "$template")
+	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
 	else
 	echo no such template "$template" 1>&2
 	fi | sort -t: -n -k2 | grep . && ret=1
