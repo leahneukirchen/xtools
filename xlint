@@ -183,6 +183,7 @@ for template; do
 	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
 	scan 'distfiles=.*download.kde.org/stable' 'use $KDE_SITE'
 	scan '^wrksrc=(\$\{[^}]+\}|[^${}/])*/.+' 'wrksrc should be a top-level directory'
+        scan 'distfiles=[^\n]*[\n\w]+(?!checksum=)' 'checksum should be directly below distfiles'
 	scan '^\t*function\b' 'do not use the function keyword'
 	scan '^\t*[^ ]*  *\(\)' 'do not use space before function parenthesis'
 	scan '^\t*[^ ]*\(\)(|   *){' 'use one space after function parenthesis'
