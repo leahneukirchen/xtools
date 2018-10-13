@@ -13,10 +13,14 @@ case "$1" in
 	-i*) FLAG_i=$1; shift
 esac
 
+XBPS_DISTDIR=$(xdistdir)
+
 if [ -f "$1" ]; then
 	template="$1"
 elif [ -f "$1/template" ]; then
 	template="$1/template"
+elif [ -f "$XBPS_DISTDIR/srcpkgs/$1/template" ]; then
+	template="$XBPS_DISTDIR/srcpkgs/$1/template"
 else
 	echo 'Usage: xgensum [-f] [-c] [-i] TEMPLATE' 1>&2
 	exit 1
@@ -24,7 +28,6 @@ fi
 
 . "$template"
 
-XBPS_DISTDIR=$(xdistdir)
 XBPS_SRCDISTDIR=$($XBPS_DISTDIR/xbps-src show-var XBPS_SRCDISTDIR | tail -1)
 srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
 
