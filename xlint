@@ -19,6 +19,81 @@ header() {
 	fi
 }
 
+variables_order() {
+	local curr_index max_index max_index_line variables_end message line
+	max_index=0
+	while IFS="" read -r line; do
+		case "$line" in
+			pkgname=*) curr_index=1;;
+			reverts=*) curr_index=2;;
+			version=*) curr_index=3;;
+			revision=*) curr_index=4;;
+			noarch=*) curr_index=5;;
+			revision=*) curr_index=6;;
+			wrksrc=*) curr_index=7;;
+			build_wrksrc=*) curr_index=8;;
+			build_style=*) curr_index=9;;
+			cmake_args=*) curr_index=10;;
+			cmake_builddir=*) curr_index=10;;
+			configure_args=*) curr_index=10;;
+			configure_script=*) curr_index=10;;
+			go_build_tags=*) curr_index=10;;
+			go_get=*) curr_index=10;;
+			go_import_path=*) curr_index=10;;
+			go_ldflags=*) curr_index=10;;
+			go_package=*) curr_index=10;;
+			make_build_args=*) curr_index=10;;
+			make_build_target=*) curr_index=10;;
+			make_check_args=*) curr_index=10;;
+			make_check_target=*) curr_index=10;;
+			make_cmd=*) curr_index=10;;
+			make_install_args=*) curr_index=10;;
+			make_install_target=*) curr_index=10;;
+			make_use_env=*) curr_index=10;;
+			meson_builddir=*) curr_index=10;;
+			meson_cmd=*) curr_index=10;;
+			meson_crossfile=*) curr_index=10;;
+			perl_configure_dirs=*) curr_index=10;;
+			python_versions=*) curr_index=10;;
+			stackage=*) curr_index=10;;
+			hostmakedepends=*) curr_index=11;;
+			makedepends=*) curr_index=12;;
+			depends=*) curr_index=13;;
+			checkdepends=*) curr_index=14;;
+			short_desc=*) curr_index=15;;
+			maintainer=*) curr_index=16;;
+			license=*) curr_index=17;;
+			homepage=*) curr_index=18;;
+			changelog=*) curr_index=19;;
+			distfiles=*) curr_index=20;;
+			checksum=*) curr_index=21;;
+			alternatives=*) curr_index=22;;
+			"#"*) continue;;
+			" "*) continue;;
+			"	"*) continue;;
+			"_"*"="*) continue;;
+			*"="*) curr_index=23;;
+			"") variables_end=1;;
+			*"{") variables_end=1;;
+			*) continue;;
+		esac
+
+		if [ "$variables_end" ]; then
+			return
+		elif [ "$curr_index" -lt "$max_index" ]; then
+			message="$template: Place $max_index_line= after ${line%%=*}="
+		elif [ "$curr_index" -gt "$max_index" ]; then
+			max_index="$curr_index"
+			max_index_line="${line%%=*}"
+			if [ "$message" ]; then
+				echo "$message"
+				message=
+			fi
+		fi
+	done < "$template"
+	[ -n "$message" ] && echo "$message"
+}
+
 variables=$(echo -n "#.*
 _.*
 .*_descr
@@ -199,6 +274,7 @@ for template; do
 	pkgname=$(grep -Po "^pkgname=\K.*" "$template")
 	version=$(grep -Po "^version=\K.*" "$template")
 	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
+	variables_order
 	header
 	else
 	echo no such template "$template" 1>&2
