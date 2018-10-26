@@ -37,8 +37,8 @@ if [ -d /var/db/xbps/keys ]; then
 fi
 
 xbps-install \
-	-R https://repo.voidlinux.eu/current \
-	-R https://repo.voidlinux.eu/current/musl \
+	-R ${XVOIDSTRAP_MIRROR:-https://repo.voidlinux.eu/current} \
+	-R ${XVOIDSTRAP_MIRROR:-https://repo.voidlinux.eu/current}/musl \
 	-S -r "$CHROOT" \
 	${@:-base-system lvm2 cryptsetup grub}
 
