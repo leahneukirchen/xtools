@@ -156,9 +156,11 @@ for template; do
 	scan '^  ' "indent with tabs" | once
 	scan '[\t ]$' "trailing whitespace"
 	scan '[^\\]`' "use \$() instead of backticks"
+	scan '^pkgname="[^$]+"' "pkgname must not be quoted"
 	scan 'revision=0' "revision must not be zero"
 	scan '^version=.*[:-].*' "version must not contain the characters : or -"
 	scan '^version=.*\${.*[:!#%/^,@].*}.*' "version must not use shell variable substitution mechanism"
+	scan '^version="[^$]+"' "version must not be quoted"
 	scan '^reverts=.*-.*' "reverts must not contain package name"
 	scan '^reverts=(?!.*_.*).*' "reverts without revision"
 	scan 'replaces=(?=.*\w)[^<>]*$' "replaces needs depname with version"
