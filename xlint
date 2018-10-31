@@ -54,6 +54,8 @@ variables_order() {
 			meson_cmd=*) curr_index=10;;
 			meson_crossfile=*) curr_index=10;;
 			perl_configure_dirs=*) curr_index=10;;
+			pycompile_dirs=*) curr_index=10;;
+			pycompile_module=*) curr_index=10;;
 			python_versions=*) curr_index=10;;
 			stackage=*) curr_index=10;;
 			hostmakedepends=*) curr_index=11;;
