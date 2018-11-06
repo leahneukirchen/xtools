@@ -81,7 +81,7 @@ variables_order() {
 		esac
 
 		if [ "$variables_end" ]; then
-			return
+			break
 		elif [ "$curr_index" -lt "$max_index" ]; then
 			message="$template: Place $max_index_line= after ${line%%=*}="
 		elif [ "$curr_index" -gt "$max_index" ]; then
@@ -93,7 +93,7 @@ variables_order() {
 			fi
 		fi
 	done < "$template"
-	[ -n "$message" ] && echo "$message"
+	[ "$message" ] && echo "$message"
 }
 
 variables=$(echo -n "#.*
