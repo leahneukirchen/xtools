@@ -1,9 +1,15 @@
-#compdef xbulk xbump xcheckrestart xdiff xdbg xdowngrade xgensum xgrep xlg xlog xlocate xls xmindep xmypkgs xnew xoptdiff xpkg xq xrecent xrevbump xrevshlib xsrc
+#compdef xbuildbarf xbulk xbump xcheckrestart xdiff xdbg xdowngrade xgensum xgrep xlg xlog xlocate xls xmindep xmypkgs xnew xoptdiff xpkg xq xrecent xrevbump xrevshlib xsrc
 
 _xbps  # force autoload
 
 _xtools_all_packages() {
 	compadd "$@" -- $(xdistdir)/srcpkgs/*(:t)
+}
+
+_xtools_one_arch() {
+	local archs=( {aarch64,armv{6,7}l,i686,x86_64}{,-musl} )
+	_arguments : \
+		":architecture:($archs)"
 }
 
 _xtools_one_template() {
@@ -99,12 +105,6 @@ _xq() {
 		'*:package:_xbps_all_packages'
 }
 
-_xrecent() {
-	local archs=( {aarch64,armv{6,7}l,i686,x86_64}{,-musl} )
-	_arguments : \
-		"1::architecture:($archs)"
-}
-
 _xrevbump() {
 	_arguments : \
 		'1:message: ' \
@@ -119,6 +119,7 @@ _xsubpkg() {
 
 _xtools() {
 	case "$service" in
+		xbuildbarf) _xtools_one_arch "@";;
 		xbulk) _xbulk "$@";;
 		xbump) _xtools_one_template "$@";;
 		xcheckrestart) _xcheckrestart "$@";;
@@ -138,7 +139,7 @@ _xtools() {
 		xoptdiff) _xoptdiff "$@";;
 		xpkg) _xpkg "$@";;
 		xq) _xq "$@";;
-		xrecent) _xrecent "$@";;
+		xrecent) _xtools_one_arch "$@";;
 		xrevbump) _xrevbump "$@";;
 		xrevshlib) _xtools_one_template "$@";;
 		xsrc) _xtools_one_template "$@";;
