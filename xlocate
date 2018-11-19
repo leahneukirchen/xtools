@@ -52,9 +52,6 @@ case "$1" in
 -S)
 	xsyncgit
 	exit $?;;
--*)
-	echo "xlocate: invalid option '$1'" 1>&2
-	exit 1;;
 '')
 	echo "Usage: xlocate [-g | -S | PATTERN]" 1>&2
 	exit 1;;
@@ -73,9 +70,9 @@ if [ -d "$XLOCATE_GIT" ]; then
 			echo "xlocate: database outdated, please run xlocate -g." 1>&2
 		fi
 	fi
-	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep "$@" @ |
+	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
 		sed 's/^@://; s/:/\t/' | grep .
 else
-	xbps-query --regex -Ro "$@" |
+	xbps-query --regex -Ro -- "$@" |
 		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
 fi
