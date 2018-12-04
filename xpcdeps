@@ -26,7 +26,7 @@ grab_local() {
 	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
 	for pkg in hostdir/binpkgs/$branch/* ; do
 		pkg="${pkg##*/}"
-		pcfile="$(xbps-query -i --repository=hostdir/binpkgs/"$branch" -f "${pkg%-*}" | grep "$1.pc")"
+		pcfile="$(xbps-query -i --repository=hostdir/binpkgs/"$branch" -f "${pkg%-*}" | grep "/$1.pc")"
 		if [ -n "$pcfile" ] ; then
 			printf "%s %s\\n" "${pkg%-*}" "$pcfile"
 			touch "$tempdir/$1.pc"
