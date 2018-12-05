@@ -273,6 +273,7 @@ for template; do
 	scan 'distfiles=.*ftp\.gnu\.org/(pub/)?gnu' 'use $GNU_SITE'
 	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
 	scan 'distfiles=.*download.kde.org/stable' 'use $KDE_SITE'
+	scan 'usr/lib/python3.[0-9]/site-packages' 'use $py3_sitelib'
 	scan '^wrksrc=(\$\{[^}]+\}|[^${}/])*/.+' 'wrksrc should be a top-level directory'
 	scan '^\t*function\b' 'do not use the function keyword'
 	scan '^\t*[^ ]*  *\(\)' 'do not use space before function parenthesis'
