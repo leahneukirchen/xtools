@@ -418,7 +418,7 @@ for argument; do
 	scan '[^\\]`' "use \$() instead of backticks"
 	scan '^pkgname="[^$]+"' "pkgname must not be quoted"
 	scan 'revision=0' "revision must not be zero"
-	scan '^version=.*[:-].*' "version must not contain the characters : or -"
+	scan '^version=.*[-:_].*' "version must not contain the characters - or : or _"
 	scan '^version=.*\${.*[:!#%/^,@].*}.*' "version must not use shell variable substitution mechanism"
 	scan '^version="[^$]+"' "version must not be quoted"
 	scan '^reverts=.*-.*' "reverts must not contain package name"
