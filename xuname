@@ -9,12 +9,12 @@ HOLD=$(xbps-query -H)
 VM=$(dmesg | awk '/Hypervisor detected/{print $NF}')
 CPU=$(cat /proc/cpuinfo |awk '/^vendor_id/{print $NF;exit}')
 REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
-	/^\/repo.voidlinux.eu\/current\/multilib/ {m=m"m"}
-	/^\/repo.voidlinux.eu\/current\/debug/ {d=d"d"}
-	/^\/repo.voidlinux.eu\/current\/.*\/nonfree/ {n=n"n"}
-	/^\/repo.voidlinux.eu\/current/ {r=r"r"}
+	/^\/alpha.de.repo.voidlinux.org\/current\/multilib/ {m=m"m"}
+	/^\/alpha.de.repo.voidlinux.org\/current\/debug/ {d=d"d"}
+	/^\/alpha.de.repo.voidlinux.org\/current\/.*\/nonfree/ {n=n"n"}
+	/^\/alpha.de.repo.voidlinux.org\/current/ {r=r"r"}
 	/xdowngrade-/ {D=D"D"}
-	!/repo.voidlinux.eu/ && !/xdowngrade-/ {F=F"F"}
+	!/alpha.de.voidlinux.org/ && !/xdowngrade-/ {F=F"F"}
 	END { print r m d n D F }
 ')
 
