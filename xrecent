@@ -3,24 +3,24 @@
 
 case "$(xbps-uhelper arch)" in
 	aarch64*)
-		repo=https://repo.voidlinux.eu/current/aarch64/;;
+		repo=https://alpha.de.repo.voidlinux.org/current/aarch64/;;
 	*-musl)
-		repo=https://repo.voidlinux.eu/current/musl/;;
+		repo=https://alpha.de.repo.voidlinux.org/current/musl/;;
 	*)
-		repo=https://repo.voidlinux.eu/current/;;
+		repo=https://alpha.de.repo.voidlinux.org/current/;;
 esac
 
 case "$1" in
 */*)
 	repo=$1;;
 aarch64*)
-	repo=https://repo.voidlinux.eu/current/aarch64/
+	repo=https://alpha.de.repo.voidlinux.org/current/aarch64/
 	export "XBPS_TARGET_ARCH=$1";;
 *-musl)	
-	repo=https://repo.voidlinux.eu/current/musl/
+	repo=https://alpha.de.repo.voidlinux.org/current/musl/
 	export "XBPS_TARGET_ARCH=$1";;
 ?*)
-	repo=https://repo.voidlinux.eu/current/
+	repo=https://alpha.de.repo.voidlinux.org/current/
 	export "XBPS_TARGET_ARCH=$1";;
 esac
 
