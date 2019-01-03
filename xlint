@@ -44,6 +44,7 @@ variables_order() {
 			go_import_path=*) curr_index=12;;
 			go_ldflags=*) curr_index=12;;
 			go_package=*) curr_index=12;;
+			go_mod_mode=*) curr_index=12;;
 			make_build_args=*) curr_index=12;;
 			make_build_target=*) curr_index=12;;
 			make_check_args=*) curr_index=12;;
@@ -157,6 +158,7 @@ go_get
 go_import_path
 go_ldflags
 go_package
+go_mod_mode
 homepage
 hostmakedepends
 keep_libtool_archives
