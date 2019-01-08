@@ -61,8 +61,8 @@ variables_order() {
 			pycompile_module=*) curr_index=12;;
 			python_versions=*) curr_index=12;;
 			stackage=*) curr_index=12;;
-			conf_files=*) curr_index=13;;
-			make_dirs=*) curr_index=14;;
+			conf_files=*) continue;;
+			make_dirs=*) continue;;
 			hostmakedepends=*) curr_index=15;;
 			makedepends=*) curr_index=16;;
 			depends=*) curr_index=17;;
