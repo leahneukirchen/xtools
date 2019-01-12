@@ -33,7 +33,7 @@ variables_order() {
 			wrksrc=*) curr_index=7;;
 			create_wrksrc=*) curr_index=8;;
 			build_wrksrc=*) curr_index=9;;
-			only_for_archs=*) curr_index=10;;
+			only_for_archs=*) continue;;
 			build_style=*) curr_index=11;;
 			cmake_args=*) curr_index=12;;
 			cmake_builddir=*) curr_index=12;;
