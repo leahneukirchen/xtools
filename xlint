@@ -75,6 +75,7 @@ variables_order() {
 			distfiles=*) curr_index=24;;
 			checksum=*) curr_index=25;;
 			alternatives=*) curr_index=26;;
+			fetch_cmd=*) curr_index=26;;
 			bootstrap=*) continue;;
 			"#"*) continue;;
 			" "*) continue;;
