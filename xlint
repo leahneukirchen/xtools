@@ -151,6 +151,7 @@ depends
 disable_parallel_build
 distfiles
 dkms_modules
+fetch_cmd
 font_dirs
 force_debug_pkgs
 go_build_tags
