@@ -35,6 +35,7 @@ variables_order() {
 			build_wrksrc=*) curr_index=9;;
 			only_for_archs=*) continue;;
 			build_style=*) curr_index=11;;
+			build_helper=*) curr_index=11;;
 			cmake_args=*) curr_index=12;;
 			cmake_builddir=*) curr_index=12;;
 			configure_args=*) curr_index=12;;
@@ -138,6 +139,7 @@ broken
 build_options
 build_options_default
 build_style
+build_helper
 build_wrksrc
 changelog
 checkdepends
