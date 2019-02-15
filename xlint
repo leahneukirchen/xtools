@@ -28,7 +28,8 @@ variables_order() {
 			reverts=*) curr_index=2;;
 			version=*) curr_index=3;;
 			revision=*) curr_index=4;;
-			noarch=*) curr_index=5;;
+			archs=*) curr_index=5;;
+			noarch=*) continue;;
 			revision=*) curr_index=6;;
 			wrksrc=*) curr_index=7;;
 			create_wrksrc=*) curr_index=8;;
@@ -133,6 +134,7 @@ STRIP
 XBPS_FETCH_CMD
 allow_unknown_shlibs
 alternatives
+archs
 binfmts
 bootstrap
 broken
