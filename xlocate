@@ -1,7 +1,8 @@
 #!/bin/sh
 # xlocate [-g | -S | PATTERN] - locate files in all XBPS packages
 
-: ${XLOCATE_GIT:=~/.cache/xlocate.git}
+: ${XDG_CACHE_HOME:=~/.cache}
+: ${XLOCATE_GIT:=$XDG_CACHE_HOME/xlocate.git}
 : ${XLOCATE_REPO:=https://alpha.de.repo.voidlinux.org/xlocate/xlocate.git}
 
 if command -v pv >/dev/null; then
