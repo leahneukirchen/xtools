@@ -14,33 +14,43 @@ tempdir="$(mktemp -d)"
 create_pcfile() {
 	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
 	while read -r pkgname file ; do
+		pkgname="$(xbps-uhelper getpkgname "$pkgname")"
 		# We search for Requires.private: because even they are required
 		# for usage with --cflags
-		for rpkg in $( xbps-query --repository=hostdir/binpkgs/"$branch" --cat="$file" "$pkgname" | grep "Requires:\|Requires.private" | cut -d: -f2 | sed 's/,/ /g' ) ; do
+		for rpkg in $( xbps-query \
+					   --repository=hostdir/binpkgs/"$branch" \
+					   --cat="$file" "$pkgname" \
+					   | grep -E "Requires:|Requires.private" \
+					   | cut -d: -f2 \
+					   | sed 's/,/ /g' ) ; do
 			printf "%s\\n" "$rpkg" >> "$tempdir/$1.pc"
 		done
 	done
 }
 
 grab_local() {
+	if [ "$(xdistdir)" != "$PWD" ]; then
+		return 0
+	fi
+
 	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+
 	for pkg in hostdir/binpkgs/$branch/* ; do
 		pkg="${pkg##*/}"
-		pcfile="$(xbps-query -i --repository=hostdir/binpkgs/"$branch" -f "${pkg%-*}" | grep "/$1.pc")"
+		pkg="$(xbps-uhelper getpkgname "$pkg")"
+		pcfile="$( xbps-query -i \
+				   --repository=hostdir/binpkgs/"$branch" \
+				   -f "$pkg" \
+				   | grep "/$1.pc" )"
 		if [ -n "$pcfile" ] ; then
-			printf "%s %s\\n" "${pkg%-*}" "$pcfile"
-			touch "$tempdir/$1.pc"
+			printf "%s %s\\n" "$pkg" "$pcfile"
 		fi
 	done | create_pcfile "$1"
-
-	# Check if the file doesn't exist, we can't check if it empty because emptyness
-	# means the Requires: is defined but is empty
-	[ -f "$tempdir/$1.pc" ] || return 1
 }
 
 grab_requires() {
 	for pkg; do
-		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" |
+		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" 2>/dev/null |
 		{ grep . || { echo "xpcdeps: No pkg-config file for $pkg found." 1>&2 ; exit 1; } } |
 		create_pcfile "$pkg"
 	done
@@ -48,7 +58,7 @@ grab_requires() {
 
 get_package_from_requires() {
 	while read -r pkg ; do
-		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" |
+		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" 2>/dev/null |
 		{ grep . || { printf -- "UNKNOWN PKG PLEASE FIX -> %s\\n" "$pkg" 1>&2 ; return; } } |
 		while read -r pkgname file ; do
 			file="${file##*/}"
@@ -63,13 +73,17 @@ sanitize_pcfile() {
 	# remove all duplicates
 	sed -i -e '/[${<=>}]/d' \
 		   -e '/[a-zA-Z]/!d' "$1"
-	sort -o "$1" -u "$1"
+	sort -u "$1"
 }
 
 for arg; do
-	grab_local "$arg" || \
-		grab_requires "$arg" && \
-		[ -f "$tempdir/$arg.pc" ] && \
-		sanitize_pcfile "$tempdir/$arg.pc" && \
-		get_package_from_requires < "$tempdir/$arg.pc"
+	grab_local "$arg"
+
+	[ -f "$tempdir/$arg.pc" ] || grab_requires "$arg"
+
+	exit 0
+
+	if [ -f "$tempdir/$arg.pc" ]; then
+		sanitize_pcfile "$tempdir/$arg.pc" | get_package_from_requires
+	fi
 done
