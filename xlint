@@ -29,7 +29,6 @@ variables_order() {
 			version=*) curr_index=3;;
 			revision=*) curr_index=4;;
 			archs=*) curr_index=5;;
-			noarch=*) continue;;
 			revision=*) curr_index=6;;
 			wrksrc=*) curr_index=7;;
 			create_wrksrc=*) curr_index=8;;
@@ -187,7 +186,6 @@ make_install_target
 make_use_env
 makedepends
 mutable_files
-noarch
 nocross
 nodebug
 nopie
