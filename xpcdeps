@@ -29,21 +29,23 @@ create_pcfile() {
 }
 
 grab_local() {
-	if [ "$(xdistdir)" != "$PWD" ]; then
+	if [ "$(xdistdir)" != "$(pwd -P)" ]; then
 		return 0
 	fi
 
 	branch=$(git symbolic-ref -q --short HEAD 2>/dev/null)
 
-	for pkg in hostdir/binpkgs/$branch/* ; do
+	for pkg in hostdir/binpkgs/$branch/*.xbps ; do
+		[ "$pkg" = "hostdir/binpkgs/$branch/*.xbps" ] && continue
 		pkg="${pkg##*/}"
-		pkg="$(xbps-uhelper getpkgname "$pkg")"
+		pkg="$(echo "$pkg" | sed 's|-musl||g')"
 		pcfile="$( xbps-query -i \
 				   --repository=hostdir/binpkgs/"$branch" \
-				   -f "$pkg" \
+				   -f "$(xbps-uhelper getpkgname "$pkg")" \
 				   | grep "/$1.pc" )"
 		if [ -n "$pcfile" ] ; then
 			printf "%s %s\\n" "$pkg" "$pcfile"
+			touch "$tempdir/$1.pc"
 		fi
 	done | create_pcfile "$1"
 }
@@ -80,8 +82,6 @@ for arg; do
 	grab_local "$arg"
 
 	[ -f "$tempdir/$arg.pc" ] || grab_requires "$arg"
-
-	exit 0
 
 	if [ -f "$tempdir/$arg.pc" ]; then
 		sanitize_pcfile "$tempdir/$arg.pc" | get_package_from_requires
