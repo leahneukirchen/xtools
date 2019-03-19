@@ -28,6 +28,11 @@ fi
 
 . "$template"
 
+# Try to source the build-style as well. This is required for R-cran packages.
+if [ -f ${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh  ]; then
+	. ${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh
+fi
+
 XBPS_SRCDISTDIR=$($XBPS_DISTDIR/xbps-src show-var XBPS_SRCDISTDIR | tail -1)
 srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
 
