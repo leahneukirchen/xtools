@@ -245,6 +245,19 @@ for template; do
 			scan "license=.*$l" "license '$l', but no use of vlicense"
 		done
 	fi
+
+	if [ -f /usr/share/spdx/license.lst ]; then
+		sed -n 's/license="\(.*\)"/\1/p' "$template" | tr , "\n" | while read -r l; do
+			if echo "$l" | grep -q 'custom:'; then
+				continue
+			fi
+
+			if ! grep -q "^${l}$" /usr/share/spdx/license.lst; then
+				scan "license=.*$l" "license '$l' is not SPDX"
+			fi
+		done
+	fi
+	
 	if ! sed -n '/^version=/{n;/revision=/b;q1}' "$template"; then
 		scan 'revision=' "revision does not appear immediately after version"
 	fi
