@@ -33,7 +33,8 @@ srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
 
 if [ "$FLAG_f" = -f ]; then
 	for f in $distfiles; do
-		curfile=$(basename "${f#*>}")
+		curfile="${f#*>}"
+		curfile="${curfile##*/}"
 		distfile="$srcdir/$curfile"
 		rm -vf "$distfile"
 	done
@@ -44,23 +45,24 @@ $XBPS_DISTDIR/xbps-src -I fetch $pkgname
 
 sums=""
 for f in $distfiles; do
-	curfile=$(basename "${f#*>}")
+	curfile="${f#*>}"
+	curfile="${curfile##*/}"
 	distfile="$srcdir/$curfile"
 	if [ "$FLAG_c" = -c ];then
 		sum="@"
 		case ${distfile} in
 		*tar.lzma|*.tar|*.txz|*.tar.xz|*.tbz|*.tar.gz)
-			sum+=$(tar xf "$distfile" --to-stdout | sha256sum | awk '{print $1}')
+			sum+=$(xbps-uhelper digest <(tar xf "$distfile" --to-stdout))
 			;;
 		*.gz)
-			sum+=$(gunzip -c "$distfile" | sha256sum | awk '{print $1}')
+			sum+=$(xbps-uhelper digest <(gunzip -c "$distfile"))
 			;;
 		*.tar.bz2|*.bz2)
-			sum+=$(bunzip2 -c "$distfile" | sha256sum | awk '{print $1}')
+			sum+=$(xbps-uhelper digest <(bunzip2 -c "$distfile"))
 			;;
 		*.zip)
 			if command -v unzip &>/dev/null; then
-				sum+=$(unzip -p "$distfile" | sha256sum | awk '{print $1}')
+				sum+=$(xbps-uhelper digest <(unzip -p "$distfile"))
 				if [ $? -ne 0 ]; then
 					echo "$pkgver: extracting $curfile to pipe.\n"
 				fi
@@ -70,7 +72,7 @@ for f in $distfiles; do
 			;;
 		*.rpm)
 			if command -v rpmextract &>/dev/null; then
-				sum+=$(rpm2cpio "$distfile" | bsdtar xf - --to-stdout | sha256sum | awk '{print $1}')
+				sum+=$(xbps-uhelper digest <(rpm2cpio "$distfile" | bsdtar xf - --to-stdout))
 				if [ $? -ne 0 ]; then
 					echo "$pkgver: extracting $curfile to pipe.\n"
 				fi
@@ -80,7 +82,7 @@ for f in $distfiles; do
 			;;
 		*.7z)
 			if command -v 7z &>/dev/null; then
-				sum+=$(7z x -o "$distfile" | sha256sum | awk '{print $1}')
+				sum+=$(xbps-uhelper digest <(7z x -o "$distfile"))
 				if [ $? -ne 0 ]; then
 					echo "$pkgver: extracting $curfile to pipe.\n"
 				fi
@@ -89,14 +91,14 @@ for f in $distfiles; do
 			fi
 			;;
 		*.txt|*.patch|*.diff)
-			sum+=$(cat "$distfile" | sha256sum | awk '{print $1}')
+			sum+=$(xbps-uhelper digest "$distfile")
 			;;
 		*)
-			sum=$(sha256sum $distfile)
+			sum=$(xbps-uhelper digest $distfile)
 
 		esac
 	else
-		sum=$(sha256sum $distfile)
+		sum=$(xbps-uhelper digest $distfile)
 	fi
 	sums+="${sum%  *}\n "
 done
