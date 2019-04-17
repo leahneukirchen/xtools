@@ -11,6 +11,9 @@ for f in /proc/[0-9]*; do
 			-e /var/cache/fontconfig \
 			-e /dev/shm \
 			-e /home \
+			-e /memfd \
+			-e /i915 \
+			-e /run/user \
 			-e 'drm mm object' |
 	       	sort -u )
 	if [ "$LIBS" ]; then
