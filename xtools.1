@@ -164,12 +164,15 @@ quiet mode, show package names only
 .Pp
 .Nm xpkg
 .Op Fl R Ar repo
+.Op Fl r Ar rootdir
 .Op Fl amOHDvV
 .Nd convenient package lister
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl R Ar repo
 consider only packages from
 .Ar repo
+.It Fl r Ar rootdir
+specifies a full path for the target root directory
 .It Fl a
 list all packages (default: only installed)
 .It Fl m
