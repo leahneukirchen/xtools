@@ -25,7 +25,7 @@ done
 for pkg in $PKGS; do
 	echo all: pkg-$pkg
 	for dep in $(./xbps-src $ARGS show-build-deps $pkg |
-			sed 's|[<>].*$||g'); do
+			sed '/^[<=>]/d'); do
 		mainpkg $dep |
 		grep -Fx "$PKGS" |
 		sed 's/^/pkg-'$pkg': pkg-/'
