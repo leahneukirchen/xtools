@@ -1,4 +1,4 @@
-#compdef xbuildbarf xbulk xbump xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmindep xmypkgs xoptdiff xpkg xq xrecent xrevbump xrevshlib xsrc xsubpkg
+#compdef xbuildbarf xbulk xbump xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xq xrecent xrevbump xrevshlib xsrc xsubpkg
 
 _xbps  # force autoload
 
@@ -25,7 +25,6 @@ _xtools_just_packages() {
 _xtools_contributors() {
 	compadd "$@" -- $(git -C "$(xdistdir)" log --pretty=%ce)
 }
-
 
 _xbulk() {
 	_arguments : \
@@ -134,7 +133,6 @@ _xtools() {
 		xlocate) _xlocate "$@";;
 		xlog) _xtools_one_template "$@";;
 		xls) _xtools_just_packages "$@";;
-		xmindep) _xtools_just_packages "$@";;
 		xmypkgs) _xmypkgs "$@";;
 		xoptdiff) _xoptdiff "$@";;
 		xpkg) _xpkg "$@";;

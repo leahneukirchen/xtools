@@ -63,9 +63,6 @@ COMMANDS
 
      xmandoc manpage – read manpage of possibly not installed package
 
-     xmindep pkg ... – minimize list of packages by removing implicit
-     dependencies
-
      xmksv [newsvdir] – create new runit service templates
 
      xmypkgs [email] – list all pkgs maintained by you
