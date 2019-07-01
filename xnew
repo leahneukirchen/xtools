@@ -36,9 +36,9 @@ cat >$srcdir/$PKG/template <<EOF
 pkgname=$PKG
 version=$version
 revision=1
+#archs="i686 x86_64"
 #wrksrc=
 #create_wrksrc=yes
-#archs="i686 x86_64"
 build_style=gnu-configure
 #configure_args=""
 #make_build_args=""
