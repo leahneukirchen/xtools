@@ -3,11 +3,11 @@
 
 git_xbps_src="./$(git rev-parse --show-cdup 2>/dev/null)/xbps-src"
 if [ -x "$git_xbps_src" ]; then
-	"$(readlink -f "$git_xbps_src")" show-var XBPS_DISTDIR | tail -1
+	"$(readlink -f "$git_xbps_src")" show-var XBPS_DISTDIR
 elif [ -n "$XBPS_DISTDIR" ]; then
 	printf '%s\n' "$XBPS_DISTDIR"
 elif [ -x "$(command -v xbps-src)" ]; then
-	"$(readlink -f "$(command -v xbps-src)")" show-var XBPS_DISTDIR | tail -1
+	"$(readlink -f "$(command -v xbps-src)")" show-var XBPS_DISTDIR
 elif [ -d ~/void-packages ]; then
 	echo ~/void-packages
 elif [ -d ~/xbps-packages ]; then
