@@ -13,7 +13,7 @@ case "$1" in
 	-i*) FLAG_i=$1; shift
 esac
 
-XBPS_DISTDIR=$(xdistdir)
+XBPS_DISTDIR=$(xdistdir) || exit 1
 
 if [ -f "$1" ]; then
 	template="$1"
