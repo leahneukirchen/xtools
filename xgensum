@@ -29,11 +29,11 @@ fi
 . "$template"
 
 # Try to source the build-style as well. This is required for R-cran packages.
-if [ -f ${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh  ]; then
-	. ${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh
+if [ -f "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"  ]; then
+	. "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"
 fi
 
-XBPS_SRCDISTDIR=$($XBPS_DISTDIR/xbps-src show-var XBPS_SRCDISTDIR | tail -1)
+XBPS_SRCDISTDIR=$("$XBPS_DISTDIR/xbps-src" show-var XBPS_SRCDISTDIR | tail -1)
 srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
 
 if [ "$FLAG_f" = -f ]; then
@@ -43,10 +43,10 @@ if [ "$FLAG_f" = -f ]; then
 		distfile="$srcdir/$curfile"
 		rm -vf "$distfile"
 	done
-	$XBPS_DISTDIR/xbps-src -I clean $pkgname
+	"$XBPS_DISTDIR/xbps-src" -I clean $pkgname
 fi
 
-$XBPS_DISTDIR/xbps-src -I fetch $pkgname
+"$XBPS_DISTDIR/xbps-src" -I fetch $pkgname
 
 sums=""
 for f in $distfiles; do
