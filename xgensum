@@ -69,30 +69,30 @@ for f in $distfiles; do
 			if command -v unzip &>/dev/null; then
 				sum+=$(xbps-uhelper digest <(unzip -p "$distfile"))
 				if [ $? -ne 0 ]; then
-					echo "$pkgver: extracting $curfile to pipe.\n"
+					echo "$pkgver: extracting $curfile to pipe."
 				fi
 			else
-				echo "$pkgver: cannot find unzip bin for extraction.\n"
+				echo "$pkgver: cannot find unzip bin for extraction."
 			fi
 			;;
 		*.rpm)
 			if command -v rpmextract &>/dev/null; then
 				sum+=$(xbps-uhelper digest <(rpm2cpio "$distfile" | bsdtar xf - --to-stdout))
 				if [ $? -ne 0 ]; then
-					echo "$pkgver: extracting $curfile to pipe.\n"
+					echo "$pkgver: extracting $curfile to pipe."
 				fi
 			else
-				echo "$pkgver: cannot find rpmextract for extraction.\n"
+				echo "$pkgver: cannot find rpmextract for extraction."
 			fi
 			;;
 		*.7z)
 			if command -v 7z &>/dev/null; then
 				sum+=$(xbps-uhelper digest <(7z x -o "$distfile"))
 				if [ $? -ne 0 ]; then
-					echo "$pkgver: extracting $curfile to pipe.\n"
+					echo "$pkgver: extracting $curfile to pipe."
 				fi
 			else
-				echo "$pkgver: cannot find 7z bin for extraction.\n"
+				echo "$pkgver: cannot find 7z bin for extraction."
 			fi
 			;;
 		*.txt|*.patch|*.diff)
