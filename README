@@ -75,9 +75,11 @@ COMMANDS
      package
        -q  quiet mode, show package names only
 
-     xpkg [-R repo] [-amOHDvV] – convenient package lister
+     xpkg [-R repo] [-r rootdir] [-amOHDvV] – convenient package lister
        -R repo
            consider only packages from repo
+       -r rootdir
+           specifies a full path for the target root directory
        -a  list all packages (default: only installed)
        -m  list manual packages
        -O  list orphaned packages
@@ -106,10 +108,13 @@ COMMANDS
      xsubpkg [-m] pkg – list all subpackages of a package
        -m  only print main package
 
-     xuname – display system info relevant for debugging Void
-
      xpcdeps pcfile ... – finds package matching the Requires: section of pkg-
      config files
+
+     xuname – display system info relevant for debugging Void
+
+     xvoidstrap dir [packages] – bootstrap a new Void installation
+
 
 DESCRIPTION
      Tools working on the void-packages tree use xdistdir to find it, check
@@ -129,4 +134,4 @@ LICENSE
 BUGS
      All bugs should be reported to https://github.com/leahneukirchen/xtools
 
-Void Linux                        May 2, 2017                       Void Linux
+Void Linux                       June 25, 2019                      Void Linux

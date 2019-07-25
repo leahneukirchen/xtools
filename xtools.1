@@ -1,4 +1,4 @@
-.Dd May 2, 2017
+.Dd June 25, 2019
 .Dt XTOOLS 1
 .Os
 .Sh NAME
@@ -229,12 +229,18 @@ query remote repos
 only print main package
 .El
 .Pp
-.Nm xuname
-.Nd display system info relevant for debugging Void
-.Pp
 .Nm xpcdeps
 .Ar pcfile ...
 .Nd finds package matching the Requires: section of pkg-config files
+.Pp
+.Nm xuname
+.Nd display system info relevant for debugging Void
+.Pp
+.Nm xvoidstrap
+.Ar dir
+.Op Ar packages
+.Nd bootstrap a new Void installation
+.Pp
 .Sh DESCRIPTION
 Tools working on the void-packages tree use
 .Nm xdistdir
