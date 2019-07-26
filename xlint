@@ -243,13 +243,14 @@ for template; do
 		done
 	fi
 
-	if [ -f /usr/share/spdx/license.lst ]; then
+	: ${LICENSE_LIST:=/usr/share/spdx/license.lst}
+	if [ -f "${LICENSE_LIST}" ]; then
 		sed -n 's/license="\(.*\)"/\1/p' "$template" | tr , "\n" | while read -r l; do
 			if echo "$l" | grep -q 'custom:'; then
 				continue
 			fi
 
-			if ! grep -q "^${l}$" /usr/share/spdx/license.lst; then
+			if ! grep -q "^${l}$" "${LICENSE_LIST}"; then
 				scan "license=.*$l" "license '$l' is not SPDX"
 			fi
 		done
