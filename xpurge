@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+SIZE=0
+FILES=()
+CACHE=/var/cache/xbps
+TMPFILE=$(mktemp)
+
+xbps-query -l | awk '{ print $2 }' > ${TMPFILE}
+
+for file in $(ls ${CACHE} | grep -v "\.sig$"); do
+        name=$(echo "$file"|sed -e "s;\.noarch\.xbps.*;;" -e"s;\.x86_64\.xbps.*;;")
+        if [ ! $(grep ${name} ${TMPFILE}) ]; then
+            file_size_kb=`du -k "$CACHE/$file" | cut -f1`
+            echo "${CACHE}/${file} - $file_size_kb Kb"
+            FILES+=("${CACHE}/${file}")
+            SIZE=$((SIZE+$file_size_kb))
+        fi
+done
+
+if [[ ${#FILES[@]} -gt 0 ]]; then
+    echo
+    echo " Total size: $SIZE Kb"
+    echo
+
+    read  -p  "Do you want to delete old these files? (y/n) "  answer
+    if [[ $answer == [Yy]* ]]; then
+        for i in "${FILES[@]}"; do rm -vf ${i}*; done
+    fi
+fi
+
+rm -f $TMPFILE
