@@ -103,6 +103,14 @@ variables_order() {
 	[ "$message" ] && echo "$message"
 }
 
+file_end() {
+	if [ "$(tail -c 1 $template)" ]; then
+		echo "$template:$(( $(wc -l < $template) + 1 )): File does not end with newline character"
+	elif [ -z "$(tail -c 2 $template)" ]; then
+		echo "$template:$(wc -l < $template): Last line is empty"
+	fi
+}
+
 variables=$(echo -n "#.*
 _.*
 .*_descr
@@ -306,6 +314,7 @@ for template; do
 	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
 	variables_order
 	header
+	file_end
 	else
 	echo no such template "$template" 1>&2
 	fi | sort -t: -n -k2 | grep . && ret=1
