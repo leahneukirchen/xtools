@@ -8,6 +8,7 @@ OUTDATED=$(xbps-install -Mun)
 HOLD=$(xbps-query -H)
 VM=$(dmesg 2>/dev/null | awk '/Hypervisor detected/{print $NF}')
 CPU=$(cat /proc/cpuinfo |awk '/^vendor_id/{print $NF;exit}')
+[ -z "$CPU" ] && CPU=$(cat /proc/cpuinfo |awk '/^platform/{print $NF;exit}')
 REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
 	/^\/alpha.de.repo.voidlinux.org\/current\/multilib/ {m=m"m"}
 	/^\/alpha.de.repo.voidlinux.org\/current\/debug/ {d=d"d"}
@@ -19,4 +20,4 @@ REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
 ')
 
 printf '%s %s %s %s %s%s %s\n' \
-	"$OS" "$KVER" "$MACH" "$CPU${VM:+/$VM}" "${OUTDATED:+not}uptodate" "${HOLD:+ hold}" "$REPO"
+	"$OS" "$KVER" "$MACH" "${CPU:-Unknown}${VM:+/$VM}" "${OUTDATED:+not}uptodate" "${HOLD:+ hold}" "$REPO"
