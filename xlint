@@ -259,7 +259,7 @@ for template; do
 			fi
 
 			if ! grep -q "^${l}$" "${LICENSE_LIST}"; then
-				scan "license=.*$l" "license '$l' is not SPDX"
+				scan "license=.*$l" "use SPDX id for '$l' license or see Manual.md"
 			fi
 		done
 	fi
