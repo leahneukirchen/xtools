@@ -2,6 +2,13 @@
 # xlocate [-g | -S | PATTERN] - locate files in all XBPS packages
 
 : ${XDG_CACHE_HOME:=~/.cache}
+: ${XDG_CONFIG_HOME:=~/.config}
+: ${XLOCATE_CONF:="${XDG_CONFIG_HOME}/xlocate.conf"}
+
+if [ -f "${XLOCATE_CONF}" ]; then
+    . "${XLOCATE_CONF}";
+fi
+
 : ${XLOCATE_GIT:=$XDG_CACHE_HOME/xlocate.git}
 : ${XLOCATE_REPO:=https://alpha.de.repo.voidlinux.org/xlocate/xlocate.git}
 
