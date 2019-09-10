@@ -249,6 +249,10 @@ for template; do
 		for l in custom AGPL MIT BSD ISC; do
 			scan "license=.*$l" "license '$l', but no use of vlicense"
 		done
+	else
+		if ! grep license= "$template" | grep -Pqv -e 'license="(\b(LGPL|GPL|GFDL|Apache)-\S+(, )?)+"'; then
+			scan "vlicense" 'license '"$(grep -Po license='\K.+' "$template" | tr -d '",' | tr '\n' ' ')"'should not be installed' | once
+		fi
 	fi
 
 	: ${LICENSE_LIST:=/usr/share/spdx/license.lst}
