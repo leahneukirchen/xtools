@@ -23,9 +23,11 @@ bump() {
 		t="$t/template"
 	elif [ -f "srcpkgs/$t/template" ]; then
 		t="srcpkgs/$t/template"
+	elif [ -f "$XBPS_DISTDIR/srcpkgs/$1/template" ]; then
+		t="$XBPS_DISTDIR/srcpkgs/$1/template"
 	else
 		printf "Cannot find template '%s'\n" "$t"
-		break
+		return
 	fi
 
 	. "$t"
@@ -44,6 +46,8 @@ bump() {
 		;;
 	esac
 }
+
+XBPS_DISTDIR="$(xdistdir)"
 
 if [ "$1" = - ]; then
 	while IFS="$nl" read -r t; do
