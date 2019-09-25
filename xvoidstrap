@@ -54,9 +54,9 @@ Void post-install checklist
 - Rebuild locale: xbps-reconfigure -f glibc-locales
 - Install boot-loader: grub-install /dev/sda
 - Adjust kernel command-line in /etc/default/grub:
-  printk.time=1 loglevel=6 net.ifnames=0
+  printk.time=1 loglevel=6 net.ifnames=0 psi=1
 - Make dracut hostonly: echo hostonly=yes >/etc/dracut.conf.d/hostonly.conf
-- Rebuild initrd: xbps-reconfigure -f linux4.??
-- Enable default services: ln -s /etc/sv/... /var/service
+- Rebuild initrd and grub config: xbps-reconfigure -f linux5.??
+- Enable default services: ln -s /etc/sv/... /etc/runit/runsvdir/default/
 
 EOF
