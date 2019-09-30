@@ -7,6 +7,7 @@ MACH=$(xbps-uhelper arch)
 OUTDATED=$(xbps-install -Mun)
 HOLD=$(xbps-query -H)
 VM=$(dmesg 2>/dev/null | awk '/Hypervisor detected/{print $NF}')
+[ -z "$VM" ] && grep -q hypervisor /proc/cpuinfo && VM=VM
 CPU=$(cat /proc/cpuinfo |awk '/^vendor_id/{print $NF;exit}')
 [ -z "$CPU" ] && CPU=$(cat /proc/cpuinfo |awk '/^platform/{print $NF;exit}')
 REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
