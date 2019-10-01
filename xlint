@@ -258,7 +258,7 @@ for template; do
 	: ${LICENSE_LIST:=/usr/share/spdx/license.lst}
 	if [ -f "${LICENSE_LIST}" ]; then
 		sed -n 's/license="\(.*\)"/\1/p' "$template" | tr , "\n" | while read -r l; do
-			if echo "$l" | grep -q 'custom:'; then
+			if echo "$l" | grep -Eq 'custom:|Public Domain'; then
 				continue
 			fi
 
