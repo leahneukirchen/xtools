@@ -107,7 +107,7 @@ _xq() {
 _xrevbump() {
 	_arguments : \
 		'1:message: ' \
-		':available templates:_xtools_all_packages'
+		'*:available templates:_xtools_all_packages'
 }
 
 _xsubpkg() {
