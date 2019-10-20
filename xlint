@@ -21,7 +21,7 @@ header() {
 
 exists_once() {
 	for var in pkgname version revision short_desc maintainer license \
-		   homepage distfiles checksum; do
+		   homepage; do
 		case "$(grep -c "^${var}=" "$template")" in
 			0) echo "$template: '$var' missing!";;
 			1) ;;
