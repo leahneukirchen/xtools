@@ -19,6 +19,17 @@ header() {
 	fi
 }
 
+exists_once() {
+	for var in pkgname version revision short_desc maintainer license \
+		   homepage distfiles checksum; do
+		case "$(grep -c "^${var}=" "$template")" in
+			0) echo "$template: '$var' missing!";;
+			1) ;;
+			*) echo "$template: '$var' defined more than once";;
+		esac
+	done
+}
+
 variables_order() {
 	local curr_index max_index max_index_line variables_end message line
 	max_index=0
@@ -237,6 +248,7 @@ xml_entries" | tr '\n' '|')
 ret=0
 for template; do
 	if [ -f "$template" ]; then
+	exists_once "$template"
 	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
 	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
 	scan 'short_desc=["'\''](An?|The) ' "short_desc should not start with an article"
