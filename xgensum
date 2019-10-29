@@ -114,7 +114,7 @@ for f in $distfiles; do
 	sums+="${sum%  *}\n "
 done
 
-sed $FLAG_i -e "/^checksum=/,/^[^ \t]/{
+sed $FLAG_i -i "/^checksum=/,/^[^ \t]/{
 		/^[ \t]/d
 		s/^checksum=.*/checksum=\"${sums%\n }\"/
 		/^checksum=\"[^ ]*\"/s/\"//g
