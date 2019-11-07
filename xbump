@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# xbump PKGNAME [git commit options] - git commit a version bump
+# xbump PKGNAME [git commit options] - git commit a new package or package update
 
 cd $(xdistdir)
 

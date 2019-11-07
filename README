@@ -12,7 +12,8 @@ COMMANDS
        -n  dry-run mode
        -k  keep going on errors
 
-     xbump pkgname [git commit options] – Git commit a version bump
+     xbump pkgname [git commit options] – git commit a new package or package
+     update
 
      xcheckmypkgs [email] – check your packages for updates
 
