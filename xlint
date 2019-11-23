@@ -34,7 +34,7 @@ exists_once() {
 		exists_once_for "$var"
 	done
 	if grep -Eq "^build_style=\(['\"]\?\)meta\1" "$template"; then
-		for var in distfiles checksum; do
+		for var in distfiles checksum SOURCE_DATE_EPOCH; do
 			exists_once_for "$var"
 		done
 	fi
@@ -157,6 +157,7 @@ OBJCOPY
 OBJDUMP
 RANLIB
 READELF
+SOURCE_DATE_EPOCH
 STRIP
 XBPS_FETCH_CMD
 allow_unknown_shlibs
