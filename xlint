@@ -33,6 +33,11 @@ exists_once() {
 		   homepage; do
 		exists_once_for "$var"
 	done
+	if grep -Eq "^build_style=\(['\"]\?\)meta\1" "$template"; then
+		for var in distfiles checksum; do
+			exists_once_for "$var"
+		done
+	fi
 }
 
 variables_order() {
