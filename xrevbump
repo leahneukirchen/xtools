@@ -38,10 +38,15 @@ bump() {
 		;;
 	*)
 		revision=$((revision + 1))
+		source_date=$(date -u +%s)
 		printf "%s: bump to revision %d\n" "$t" "$revision"
 
-		sed -i -e "/^revision=/s/=.*/=$revision/" "$t"
-		git -C "${t%/*}" commit -m "$pkgname: $MESSAGE" template
+		sed -i -e "/^revision=/s/=.*/=$revision/" \
+			-e "/^SOURCE_DATE_EPOCH=/s/=.*/=$source_date" \
+			"$t"
+
+		GIT_AUTHOR_DATE="$source_date +0000" \
+			git -C "${t%/*}" commit -m "$pkgname: $MESSAGE" template
 		seen="$seen $pkgname "
 		;;
 	esac
