@@ -54,6 +54,7 @@ license="GPL-3.0-or-later"
 homepage="$homepage"
 distfiles="$distfiles"
 checksum=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb
+SOURCE_DATE_EPOCH=$(date -u +%s)
 EOF
 
 for subpkg; do
