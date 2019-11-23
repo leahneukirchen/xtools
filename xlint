@@ -19,14 +19,19 @@ header() {
 	fi
 }
 
+exists_once_for() {
+	local var=$1
+	case "$(grep -c "^${var}=" "$template")" in
+		0) echo "$template: '$var' missing!";;
+		1) ;;
+		*) echo "$template: '$var' defined more than once";;
+	esac
+}
+
 exists_once() {
 	for var in pkgname version revision short_desc maintainer license \
 		   homepage; do
-		case "$(grep -c "^${var}=" "$template")" in
-			0) echo "$template: '$var' missing!";;
-			1) ;;
-			*) echo "$template: '$var' defined more than once";;
-		esac
+		exists_once_for "$var"
 	done
 }
 
