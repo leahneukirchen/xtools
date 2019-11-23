@@ -26,6 +26,11 @@ fi
 dirs="$dirs $(./xbps-src show "$pkg" |
 	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')"
 
+source_date=$(date -u +%s)
+
+sed -i -e "/^SOURCE_DATE_EPOCH=/s/=.*/=$source_date/" \
+	"$(xdistdir)/srcpkgs/$pkg/template"
+
 git add $dirs
 
 if git diff --quiet --cached --diff-filter=A -- srcpkgs/"$pkg"/template; then
@@ -34,4 +39,4 @@ else
 	msg="New package: $pkg-$version"
 fi
 
-git commit -m "$msg" "$@" $dirs
+GIT_AUTHOR_DATE="$source_date +0000" git commit -m "$msg" "$@" $dirs
