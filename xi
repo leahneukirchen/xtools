@@ -39,6 +39,8 @@ SUDO=
 if command -v sudo >/dev/null &&
    sudo -l | grep -q -e ' ALL$' -e xbps-install; then
 	SUDO=sudo
+elif command -v doas >/dev/null && [ -f /etc/doas.conf ]; then
+	SUDO=doas
 elif [ "$(whoami)" != root ]; then
 	SUDO='su root -c '\''"$@"'\'' -- -'
 fi
