@@ -1,6 +1,11 @@
 #!/bin/sh -e
 # xnew PKG - create XBPS template template
 
+if [ "$1" = "-a" ]; then
+	append=1
+	shift
+fi
+
 PKG=${1?no package name given}
 srcdir=$(xdistdir)/srcpkgs
 shift
@@ -29,6 +34,8 @@ case "$PKG" in
 	distfiles="$homepage\${pkgname}-\${version}.$ext"
 esac
 
+if [ -z "$append" ]; then
+
 mkdir $srcdir/$PKG
 
 cat >$srcdir/$PKG/template <<EOF
@@ -55,6 +62,8 @@ homepage="$homepage"
 distfiles="$distfiles"
 checksum=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb
 EOF
+
+fi
 
 for subpkg; do
 	ln -sr -- "$srcdir/$PKG" "$srcdir/$subpkg"

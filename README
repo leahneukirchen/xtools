@@ -68,7 +68,8 @@ COMMANDS
 
      xmypkgs [email] – list all pkgs maintained by you
 
-     xnew pkg – create XBPS template
+     xnew [-a] pkg [subpkgs ...] – create XBPS template
+       -a  append subpkgs to existing pkg
 
      xnodev – list not installed -devel packages for installed packages
 
