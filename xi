@@ -46,3 +46,7 @@ elif [ "$(whoami)" != root ]; then
 fi
 
 $SUDO xbps-install $ADDREPO -S "$@"
+if [ $? -eq 16 ]; then
+	$SUDO xbps-install -u xbps
+	$SUDO xbps-install $ADDREPO -S "$@"
+fi
