@@ -54,6 +54,7 @@ fi
 
 "$XBPS_DISTDIR/xbps-src" -H $FLAG_h -I fetch $pkgname
 
+ret=0
 sums=""
 for f in $distfiles; do
 	curfile="${f#*>}"
@@ -63,22 +64,24 @@ for f in $distfiles; do
 		sum="@"
 		case ${distfile} in
 		*tar.lzma|*.tar|*.txz|*.tar.xz|*.tbz|*.tar.gz)
-			sum+=$(xbps-uhelper digest <(tar xf "$distfile" --to-stdout))
+			sum+=$(xbps-uhelper digest <(tar xf "$distfile" --to-stdout)) || ret=1
 			;;
 		*.gz)
-			sum+=$(xbps-uhelper digest <(gunzip -c "$distfile"))
+			sum+=$(xbps-uhelper digest <(gunzip -c "$distfile")) || ret=1
 			;;
 		*.tar.bz2|*.bz2)
-			sum+=$(xbps-uhelper digest <(bunzip2 -c "$distfile"))
+			sum+=$(xbps-uhelper digest <(bunzip2 -c "$distfile")) || ret=1
 			;;
 		*.zip)
 			if command -v unzip &>/dev/null; then
 				sum+=$(xbps-uhelper digest <(unzip -p "$distfile"))
 				if [ $? -ne 0 ]; then
 					echo "$pkgver: extracting $curfile to pipe."
+					ret=1
 				fi
 			else
 				echo "$pkgver: cannot find unzip bin for extraction."
+				ret=1
 			fi
 			;;
 		*.rpm)
@@ -86,9 +89,11 @@ for f in $distfiles; do
 				sum+=$(xbps-uhelper digest <(rpm2cpio "$distfile" | bsdtar xf - --to-stdout))
 				if [ $? -ne 0 ]; then
 					echo "$pkgver: extracting $curfile to pipe."
+					ret=1
 				fi
 			else
 				echo "$pkgver: cannot find rpmextract for extraction."
+				ret=1
 			fi
 			;;
 		*.7z)
@@ -96,20 +101,22 @@ for f in $distfiles; do
 				sum+=$(xbps-uhelper digest <(7z x -o "$distfile"))
 				if [ $? -ne 0 ]; then
 					echo "$pkgver: extracting $curfile to pipe."
+					ret=1
 				fi
 			else
 				echo "$pkgver: cannot find 7z bin for extraction."
+				ret=1
 			fi
 			;;
 		*.txt|*.patch|*.diff)
-			sum+=$(xbps-uhelper digest "$distfile")
+			sum+=$(xbps-uhelper digest "$distfile") || ret=1
 			;;
 		*)
-			sum=$(xbps-uhelper digest $distfile)
+			sum=$(xbps-uhelper digest $distfile) || ret=1
 
 		esac
 	else
-		sum=$(xbps-uhelper digest $distfile)
+		sum=$(xbps-uhelper digest $distfile) || ret=1
 	fi
 	sums+="${sum%  *}\n "
 done
@@ -118,4 +125,6 @@ sed $FLAG_i -e "/^checksum=/,/^[^ \t]/{
 		/^[ \t]/d
 		s/^checksum=.*/checksum=\"${sums%\n }\"/
 		/^checksum=\"[^ ]*\"/s/\"//g
-	}" "$template"
+	}" "$template" || ret=1
+
+exit $ret
