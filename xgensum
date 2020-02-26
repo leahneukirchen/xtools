@@ -17,9 +17,9 @@ case "$1" in
 	-H*) FLAG_h=$2; shift; shift
 esac
 
-: ${FLAG_h:=hostdir}
-
 XBPS_DISTDIR=$(xdistdir) || exit 1
+
+: ${FLAG_h:=$XBPS_DISTDIR/hostdir}
 
 if [ -f "$1" ]; then
 	template="$1"
