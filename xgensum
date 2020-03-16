@@ -1,5 +1,5 @@
 #!/bin/bash
-# xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE - update SHA256 sums in templates
+# xgensum [-f] [-c] [-i] [-H hostdir] [-m masterdir] TEMPLATE - update SHA256 sums in templates
 
 case "$1" in
 	-f) FLAG_f=$1; shift
@@ -17,9 +17,14 @@ case "$1" in
 	-H*) FLAG_h=$2; shift; shift
 esac
 
+case "$1" in
+	-m*) FLAG_m=$2; shift; shift
+esac
+
 XBPS_DISTDIR=$(xdistdir) || exit 1
 
 : ${FLAG_h:=$XBPS_DISTDIR/hostdir}
+: ${FLAG_m:=$XBPS_DISTDIR/masterdir}
 
 if [ -f "$1" ]; then
 	template="$1"
@@ -39,7 +44,7 @@ if [ -f "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"  ]; t
 	. "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"
 fi
 
-XBPS_SRCDISTDIR=$("$XBPS_DISTDIR/xbps-src" -H $FLAG_h show-var XBPS_SRCDISTDIR | tail -1)
+XBPS_SRCDISTDIR=$("$XBPS_DISTDIR/xbps-src" -H $FLAG_h -m $FLAG_m show-var XBPS_SRCDISTDIR | tail -1)
 srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
 
 if [ "$FLAG_f" = -f ]; then
@@ -49,10 +54,10 @@ if [ "$FLAG_f" = -f ]; then
 		distfile="$srcdir/$curfile"
 		rm -vf "$distfile"
 	done
-	"$XBPS_DISTDIR/xbps-src" -H $FLAG_h -I clean $pkgname
+	"$XBPS_DISTDIR/xbps-src" -H $FLAG_h -m $FLAG_m -I clean $pkgname
 fi
 
-"$XBPS_DISTDIR/xbps-src" -H $FLAG_h -I fetch $pkgname
+"$XBPS_DISTDIR/xbps-src" -H $FLAG_h -m $FLAG_m -I fetch $pkgname
 
 ret=0
 sums=""
