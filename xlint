@@ -203,6 +203,9 @@ make_install_args
 make_install_target
 make_use_env
 makedepends
+meson_builddir
+meson_cmd
+meson_crossfile
 mutable_files
 nocross
 nodebug
