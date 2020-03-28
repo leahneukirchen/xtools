@@ -1,4 +1,5 @@
 #!/bin/sh
 # xhog - list installed XBPS packages ordered by size
 
+export LC_ALL=C
 xbps-query -p installed_size -s '' | sort -h -k2 | column -s: -t
