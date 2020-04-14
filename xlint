@@ -6,6 +6,7 @@ export LC_ALL=C
 scan() {
 	local rx="$1" msg="$2"
 	grep -P -Hn -e "$rx" "$template" |
+		grep -v -P -e "[^:]*:[^:]*:\s*#" |
 		sed "s/^\([^:]*:[^:]*:\)\(.*\)/\1 $msg/"
 }
 
