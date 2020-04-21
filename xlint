@@ -330,6 +330,7 @@ for template; do
 	scan '^\t*[^ ]*  *\(\)' 'do not use space before function parenthesis'
 	scan '^\t*[^ ]*\(\)(|   *){' 'use one space after function parenthesis'
 	scan '^\t*[^ ]*\(\)$' 'do not use a newline before function opening brace'
+	scan 'python_version=.*#[[:space:]]*unverified' 'verify python_version and remove "#unverified"'
 	pkgname=$(grep -Po "^pkgname=\K.*" "$template")
 	version=$(grep -Po "^version=\K.*" "$template")
 	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
