@@ -323,7 +323,6 @@ for template; do
 	scan 'distfiles=.*download.kde.org/stable' 'use $KDE_SITE'
 	scan 'distfiles=.*xorg\.freedesktop\.org/wiki/' 'use $XORG_HOME'
 	scan 'usr/lib/python3.[0-9]/site-packages' 'use $py3_sitelib'
-	grep -q "^pycompile_dirs=" "$template" ||
 	scan 'pycompile_module=' 'do not set pycompile_module, it is autodetected'
 	scan '^wrksrc=(\$\{[^}]+\}|[^${}/])*/.+' 'wrksrc should be a top-level directory'
 	scan '^\t*function\b' 'do not use the function keyword'
