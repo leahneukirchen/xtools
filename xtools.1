@@ -42,6 +42,11 @@ keep going on errors
 verbose mode, also print the library names
 .El
 .Pp
+.Nm xchroot
+.Ar directory
+.Ar [command ...]
+.Nd chroot into a Void (or other Linux) installation
+.Pp
 .Nm xclash
 .Nd detect file conflicts between XBPS packages
 .Pp
@@ -164,6 +169,10 @@ append subpkgs to existing pkg
 quiet mode, show package names only
 .El
 .Pp
+.Nm xpcdeps
+.Ar pcfile ...
+.Nd finds package matching the Requires: section of pkg-config files
+.Pp
 .Nm xpkg
 .Op Fl R Ar repo
 .Op Fl r Ar rootdir
@@ -234,10 +243,6 @@ query remote repos
 .It Fl m
 only print main package
 .El
-.Pp
-.Nm xpcdeps
-.Ar pcfile ...
-.Nd finds package matching the Requires: section of pkg-config files
 .Pp
 .Nm xuname
 .Nd display system info relevant for debugging Void
