@@ -6,12 +6,19 @@ totop() {
 }
 
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
-ADDREPO="--repository=hostdir/binpkgs/$BRANCH
-	--repository=../hostdir/binpkgs/$BRANCH
-	--repository=../../hostdir/binpkgs/$BRANCH
-	--repository=hostdir/binpkgs
-	--repository=../hostdir/binpkgs
-	--repository=../../hostdir/binpkgs"
+XBPS_DISTDIR="$(xdistdir)" || XBPS_DISTDIR=.
+ADDREPO="
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/multilib
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/multilib/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/debug
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/multilib
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/multilib/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/debug
+"
 
 R=
 if [ "$1" = -R ]; then
