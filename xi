@@ -2,37 +2,18 @@
 # xi PKGS... - like xbps-install -S, but take cwd repo and sudo/su into account
 
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+XBPS_DISTDIR="$(xdistdir)" || XBPS_DISTDIR=.
 ADDREPO="
-	--repository=hostdir/binpkgs/$BRANCH
-	--repository=../hostdir/binpkgs/$BRANCH
-	--repository=../../hostdir/binpkgs/$BRANCH
-	--repository=hostdir/binpkgs/$BRANCH/nonfree
-	--repository=../hostdir/binpkgs/$BRANCH/nonfree
-	--repository=../../hostdir/binpkgs/$BRANCH/nonfree
-	--repository=hostdir/binpkgs/$BRANCH/multilib
-	--repository=../hostdir/binpkgs/$BRANCH/multilib
-	--repository=../../hostdir/binpkgs/$BRANCH/multilib
-	--repository=hostdir/binpkgs/$BRANCH/multilib/nonfree
-	--repository=../hostdir/binpkgs/$BRANCH/multilib/nonfree
-	--repository=../../hostdir/binpkgs/$BRANCH/multilib/nonfree
-	--repository=hostdir/binpkgs/$BRANCH/debug
-	--repository=../hostdir/binpkgs/$BRANCH/debug
-	--repository=../../hostdir/binpkgs/$BRANCH/debug
-	--repository=hostdir/binpkgs
-	--repository=../hostdir/binpkgs
-	--repository=../../hostdir/binpkgs
-	--repository=hostdir/binpkgs/nonfree
-	--repository=../hostdir/binpkgs/nonfree
-	--repository=../../hostdir/binpkgs/nonfree
-	--repository=hostdir/binpkgs/multilib
-	--repository=../hostdir/binpkgs/multilib
-	--repository=../../hostdir/binpkgs/multilib
-	--repository=hostdir/binpkgs/multilib/nonfree
-	--repository=../hostdir/binpkgs/multilib/nonfree
-	--repository=../../hostdir/binpkgs/multilib/nonfree
-	--repository=hostdir/binpkgs/debug
-	--repository=../hostdir/binpkgs/debug
-	--repository=../../hostdir/binpkgs/debug
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/multilib
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/multilib/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/debug
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/multilib
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/multilib/nonfree
+	--repository=$XBPS_DISTDIR/hostdir/binpkgs/debug
 "
 
 SUDO=
