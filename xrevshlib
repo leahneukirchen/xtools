@@ -5,7 +5,6 @@ pkg="${1?no package name given}"
 
 xsubpkg "$pkg" |
 	xargs -d'\n' -n1 -r xbps-query -R -p shlib-provides -S |
-	sed 's/\.so.*/.so/' |
 	xargs -d'\n' -n1 -r xbps-query -R -p shlib-requires -s |
 	sed 's/-[^- ]*: .*//' |
 	sort -u |
