@@ -5,18 +5,12 @@
 .Nm xtools
 .Nd A collection of small utilities for use with XBPS
 .Sh COMMANDS
-.Nm xbarf
-.Nd display build logs of last build
-.Pp
-.Nm xbuildbarf
-.Op Ar arch
-.Nd spy on current buildbot output
-.Pp
-.Nm xbulk
-.Op Fl n
-.Op Fl k
-.Op Ar xbps-src\ flags
-.Ar pkgs ...
+.Bl -tag -width x
+.It Nm xbarf
+.Nd Display build logs of last build
+.It Nm xbuildbarf Op Ar arch
+.Nd Spy on current buildbot output
+.It Nm xbulk Op Fl n Op Fl k Op Ar xbps-src\ flags Ar pkgs ...
 .Nd simple XBPS bulk builder
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl n
@@ -24,39 +18,23 @@ dry-run mode
 .It Fl k
 keep going on errors
 .El
-.Pp
-.Nm xbump
-.Ar pkgname
-.Op Ar git\ commit\ options
+.It Nm xbump Ar pkgname Op Ar git\ commit\ options
 .Nd git commit a new package or package update
-.Pp
-.Nm xcheckmypkgs
-.Op Ar email
+.It Nm xcheckmypkgs Op Ar email
 .Nd check your packages for updates
-.Pp
-.Nm xcheckrestart
-.Op Fl v
+.It Nm xcheckrestart Op Fl v
 .Nd list programs using outdated libraries
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl v
 verbose mode, also print the library names
 .El
-.Pp
-.Nm xchroot
-.Ar directory
-.Ar [command ...]
+.It Nm xchroot Ar directory Op Ar command\ ...
 .Nd chroot into a Void (or other Linux) installation
-.Pp
-.Nm xclash
+.It Nm xclash
 .Nd detect file conflicts between XBPS packages
-.Pp
-.Nm xdbg
-.Ar pkgs ...
+.It Nm xdbg Ar pkgs ...
 .Nd list debugging packages for pkgs and recursive dependencies
-.Pp
-.Nm xdiff
-.Op Fl u | l
-.Op Ar basedir
+.It Nm xdiff Op Fl u | l Op Ar basedir
 .Nd merge/diff/list XBPS .new-* files
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl l
@@ -64,22 +42,16 @@ list .new files
 .It Fl u
 print unified diffs
 .El
-.Pp
-.Nm xdistdir
-.Nd figure out XBPS_DISTDIR
-.Pp
-.Nm xdowngrade
-.Ar pkgfiles.xbps ...
+.It Nm xdistdir
+.Nd figure out
+.Ev XBPS_DISTDIR
+.It Nm xdowngrade Ar pkgfiles.xbps ...
 .Nd install XBPS package directly from .xbps file
-.Pp
-.Nm xetcchanges
-.Nd show diff of /etc against binary packages
-.Pp
-.Nm xgensum
-.Op Fl f
-.Op Fl c
-.Op Fl i
-.Ar template
+.It Nm xetcchanges
+.Nd show diff of
+.Pa /etc
+against binary packages
+.It Nm xgensum Op Fl f Op Fl c Op Fl i Ar template
 .Nd update SHA256 sum in templates
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl f
@@ -89,32 +61,21 @@ use content checksum
 .It Fl i
 replace checksum in-place
 .El
-.Pp
-.Nm xgrep
-.Ar pattern
-.Ar pkgs ...
+.It Nm xgrep Ar pattern Ar pkgs ...
 .Nd search files limited to XBPS package contents
-.Pp
-.Nm xhog
+.It Nm xhog
 .Nd list installed XBPS packages ordered by size
-.Pp
-.Nm xi
-.Ar pkgs ...
-.Nd like xbps-install -S, but take cwd repo and sudo/su into account
-.Pp
-.Nm xilog
-.Op Ar pattern
+.It Nm xi Ar pkgs ...
+.Nd like
+.Ql xbps-install -S ,
+but take cwd repo and sudo/su into account
+.It Nm xilog Op Ar pattern
 .Nd list installed packages by install-date
-.Pp
-.Nm xlg
-.Ar pkg
+.It Nm xlg Ar pkg
 .Nd open short commit log for XBPS template
-.Pp
-.Nm xlint
-.Ar template
+.It Nm xlint Ar template
 .Nd scan XBPS template for common mistakes
-.Pp
-.Nm xlocate
+.It Nm xlocate
 .Oo
 .Fl g | S |
 .Ar pattern
@@ -126,57 +87,35 @@ Update a git based xlocate database
 .It Fl S
 Sync with the official git based xlocate database
 .El
-.Pp
-.Nm xlog
-.Ar pkg
+.It Nm xlog Ar pkg
 .Nd open commit log for XBPS template
-.Pp
-.Nm xls
-.Ar pkg ...
+.It Nm xls Ar pkg ...
 .Nd list files contained in pkg (including binpkgs)
-.Pp
-.Nm xmandoc
-.Ar manpage
+.It Nm xmandoc Ar manpage
 .Nd read manpage of possibly not installed package
-.Pp
-.Nm xmksv
-.Op Ar newsvdir
+.It Nm xmksv Op Ar newsvdir
 .Nd create new runit service templates
-.Pp
-.Nm xmypkgs
-.Op Ar email
+.It Nm xmypkgs Op Ar email
 .Nd list all pkgs maintained by you
-.Pp
-.Nm xnew
-.Op Fl a
-.Ar pkg
-.Op Ar subpkgs ...
+.It Nm xnew Op Fl a Ar pkg Op Ar subpkgs ...
 .Nd create XBPS template
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl a
 append subpkgs to existing pkg
 .El
 .Pp
-.Nm xnodev
+.It Nm xnodev
 .Nd list not installed -devel packages for installed packages
 .Pp
-.Nm xoptdiff
-.Op Fl q
-.Op Ar pkgs ...
+.It Nm xoptdiff Op Fl q Op Ar pkgs ...
 .Nd show template options which differ from binary package
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl q
 quiet mode, show package names only
 .El
-.Pp
-.Nm xpcdeps
-.Ar pcfile ...
+.It Nm xpcdeps Ar pcfile ...
 .Nd finds package matching the Requires: section of pkg-config files
-.Pp
-.Nm xpkg
-.Op Fl R Ar repo
-.Op Fl r Ar rootdir
-.Op Fl amOHDvV
+.It Nm xpkg Op Fl R Ar repo Op Fl r Ar rootdir Op Fl amOHDvV
 .Nd convenient package lister
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl R Ar repo
@@ -201,57 +140,35 @@ show version numbers
 .It Fl V
 show version numbers and description
 .El
-.Pp
-.Nm xpstree
+.It Nm xpstree
 .Nd display tree view of xbps-src processes
-.Pp
-.Nm xq
-.Op Fl R
-.Ar pkg ...
+.It Nm xq Op Fl R Ar pkg ...
 .Nd query information about XBPS package
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl R
 query remote repos
 .El
-.Pp
-.Nm xrecent
-.Op Ar repourl | arch
+.It Nm xrecent Op Ar repourl | arch
 .Nd list packages in repo ordered by build date
-.Pp
-.Nm xrevbump
-.Ar message
-.Ar templates ...
+.It Nm xrevbump Ar message Ar templates ...
 .Nd increase template revision and commit
-.Pp
-.Nm xrevshlib
-.Ar package
+.It Nm xrevshlib Ar package
 .Nd list packages shlib-dependent on package or its subpackages
-.Pp
-.Nm xrs
-.Ar pattern
+.It Nm xrs Ar pattern
 .Nd like xbps-query -Rs, but take cwd repo into account
-.Pp
-.Nm xsrc
-.Ar pkg
+.It Nm xsrc Ar pkg
 .Nd list source files for XBPS template
-.Pp
-.Nm xsubpkg
-.Op Fl m
-.Ar pkg
+.It Nm xsubpkg Op Fl m Ar pkg
 .Nd list all subpackages of a package
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl m
 only print main package
 .El
-.Pp
-.Nm xuname
+.It Nm xuname
 .Nd display system info relevant for debugging Void
-.Pp
-.Nm xvoidstrap
-.Ar dir
-.Op Ar packages
+.It Nm xvoidstrap Ar dir Op Ar packages
 .Nd bootstrap a new Void installation
-.Pp
+.El
 .Sh DESCRIPTION
 Tools working on the void-packages tree use
 .Nm xdistdir
