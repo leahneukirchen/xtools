@@ -247,9 +247,18 @@ wrksrc
 xml_catalogs
 xml_entries" | tr '\n' '|')
 
+void_packages="$(xdistdir)/"
 ret=0
-for template; do
-	if [ -f "$template" ]; then
+for argument; do
+	template=
+	if [ -f "$argument" ]; then
+		template="$argument"
+	else
+		_template="${void_packages}srcpkgs/$argument/template"
+		[ -f "$_template" ] && template="$_template"
+	fi
+
+	if [ "$template" ]; then
 	exists_once "$template"
 	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
 	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
@@ -336,7 +345,7 @@ for template; do
 	header
 	file_end
 	else
-	echo no such template "$template" 1>&2
+	echo no such template "$argument" 1>&2
 	fi | sort -t: -n -k2 | grep . && ret=1
 done
 exit $ret
