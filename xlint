@@ -302,7 +302,6 @@ for template; do
 	scan 'homepage=.*\$' "homepage should not use variables"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan 'maintainer=.*<.*@users.noreply.github.com>.*' "maintainer needs a valid address for sending mail"
-	scan 'nonfree=' "use repository=nonfree"
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' \
 		"custom variables should use _ prefix: \2"
 	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \2"
