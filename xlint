@@ -247,7 +247,7 @@ wrksrc
 xml_catalogs
 xml_entries" | tr '\n' '|')
 
-void_packages="$(xdistdir)/"
+void_packages="$(xdistdir 2>/dev/null)/"
 ret=0
 for argument; do
 	template=

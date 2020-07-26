@@ -6,7 +6,7 @@ totop() {
 }
 
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
-XBPS_DISTDIR="$(xdistdir)" || XBPS_DISTDIR=.
+XBPS_DISTDIR="$(xdistdir 2>/dev/null)" || XBPS_DISTDIR=.
 ADDREPO="
 	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH
 	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/nonfree
