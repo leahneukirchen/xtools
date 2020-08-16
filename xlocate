@@ -6,7 +6,7 @@
 : ${XLOCATE_CONF:="${XDG_CONFIG_HOME}/xlocate.conf"}
 
 if [ -f "${XLOCATE_CONF}" ]; then
-    . "${XLOCATE_CONF}";
+	. "${XLOCATE_CONF}";
 fi
 
 : ${XLOCATE_GIT:=$XDG_CACHE_HOME/xlocate.git}
@@ -31,7 +31,7 @@ xupdategit() {
 			file = substr($0, s+2)
 			sub(" *\\([^)]*\\)$", "", file)
 			print file >>pkg
-	       	}'
+			}'
 	printf '%s\n' ./* |
 		LC_ALL= xargs -d'\n' -I'{}' -n1 -P "$(nproc)" -r -- \
 			sort -o {} {}
@@ -81,6 +81,7 @@ if [ -d "$XLOCATE_GIT" ]; then
 	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
 		sed 's/^@://; s/:/\t/' | grep .
 else
+	echo "xlocate: database not found, using xbps-query." 1>&2
 	xbps-query --regex -Ro -- "$@" |
 		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
 fi
