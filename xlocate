@@ -82,6 +82,6 @@ if [ -d "$XLOCATE_GIT" ]; then
 		sed 's/^@://; s/:/\t/' | grep .
 else
 	echo "xlocate: database not found, using xbps-query." 1>&2
-	xbps-query --regex -Ro -- "$@" |
+	xbps-query --regex -Ro '.*'"$@" |
 		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
 fi
