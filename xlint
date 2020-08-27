@@ -184,6 +184,8 @@ go_package
 go_mod_mode
 homepage
 hostmakedepends
+ignore_elf_dirs
+ignore_elf_files
 keep_libtool_archives
 kernel_hooks_version
 lib32depends
