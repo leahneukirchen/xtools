@@ -78,6 +78,7 @@ but take cwd repo and sudo/su into account
 .It Nm xlocate
 .Oo
 .Fl g | S |
+.Op Fl i
 .Ar pattern
 .Oc
 .Nd locate files in all XBPS packages
@@ -86,6 +87,9 @@ but take cwd repo and sudo/su into account
 Update a git based xlocate database, useful for local repositories
 .It Fl S
 Sync with the official git based xlocate database, which is recommended before using the tool
+.It Fl i
+Case-insensitive matching. This flag has no effect when no xlocate database is present; in that instance, matching is always case-insensitive, due to the design of
+.Xr xbps-query 1 .
 .El
 .It Nm xlog Ar pkg
 .Nd open commit log for XBPS template

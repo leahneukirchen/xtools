@@ -1,5 +1,5 @@
 #!/bin/sh
-# xlocate [-g | -S | PATTERN] - locate files in all XBPS packages
+# xlocate [-g | -S | [-i] PATTERN] - locate files in all XBPS packages
 
 : ${XDG_CACHE_HOME:=~/.cache}
 : ${XDG_CONFIG_HOME:=~/.config}
@@ -11,6 +11,8 @@ fi
 
 : ${XLOCATE_GIT:=$XDG_CACHE_HOME/xlocate.git}
 : ${XLOCATE_REPO:=https://alpha.de.repo.voidlinux.org/xlocate/xlocate.git}
+
+NOCASE=
 
 if command -v pv >/dev/null; then
 	PROGRESS="pv -l"
@@ -60,9 +62,15 @@ case "$1" in
 -S)
 	xsyncgit
 	exit $?;;
+-i)
+	NOCASE=1
+	shift
+	PATTERN="$@";;
 '')
-	echo "Usage: xlocate [-g | -S | PATTERN]" 1>&2
+	echo "Usage: xlocate [-g | -S | [-i] PATTERN]" 1>&2
 	exit 1;;
+*)
+	PATTERN="$@";;
 esac
 
 if [ -d "$XLOCATE_GIT" ]; then
@@ -78,10 +86,15 @@ if [ -d "$XLOCATE_GIT" ]; then
 			echo "xlocate: database outdated, please run xlocate -g." 1>&2
 		fi
 	fi
-	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
+	if [ ! "$NOCASE" ]; then
+		CMD='grep'
+	else
+		CMD='grep -i'
+	fi
+	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" $CMD -- "$PATTERN" @ |
 		sed 's/^@://; s/:/\t/' | grep .
 else
 	echo "xlocate: database not found, using xbps-query." 1>&2
-	xbps-query --regex -Ro '.*'"$@" |
+	xbps-query --regex -Ro '.*'"$PATTERN" |
 		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
 fi
