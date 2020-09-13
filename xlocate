@@ -81,7 +81,6 @@ if [ -d "$XLOCATE_GIT" ]; then
 	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
 		sed 's/^@://; s/:/\t/' | grep .
 else
-	echo "xlocate: database not found, using xbps-query." 1>&2
-	xbps-query --regex -Ro '.*'"$@" |
-		sed 's/ *([^)]*)$//; s/^\([^ ]*\)-[^-]*: /\1\t/'
+	echo "xlocate: database not found, please use xlocate -S." 1>&2
+	exit 1
 fi
