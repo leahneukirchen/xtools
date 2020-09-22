@@ -32,6 +32,13 @@ fi
 
 . "$template"
 
+# pick the first supported arch. This is required for packages unavailable for
+# the host arch
+FLAG_a=
+if ! "$XBPS_DISTDIR/xbps-src" show-avail $pkgname ; then
+	FLAG_a="-a $("$XBPS_DISTDIR/xbps-src" show $pkgname | sed -En -e 's/archs:[[:space:]]*([.*]*)/\1/p' | sed -e 's/\*$//' | grep -v -e '^~' | head -n1 )"
+fi
+
 # Try to source the build-style as well. This is required for R-cran packages.
 if [ -f "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"  ]; then
 	. "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"
@@ -50,7 +57,7 @@ if [ "$FLAG_f" = -f ]; then
 	"$XBPS_DISTDIR/xbps-src" $FLAG_h -I clean $pkgname
 fi
 
-"$XBPS_DISTDIR/xbps-src" $FLAG_h -I fetch $pkgname
+"$XBPS_DISTDIR/xbps-src" $FLAG_h $FLAG_a -I fetch $pkgname
 
 ret=0
 sums=""
