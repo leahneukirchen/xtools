@@ -9,6 +9,7 @@ for f in /proc/[0-9]*; do
 		grep -v -e /SYSV \
 			-e /.cache/fontconfig \
 			-e /var/cache/fontconfig \
+			-e /usr/share/glib-2.0/schemas/gschemas.compiled \
 			-e /dev/shm \
 			-e /home \
 			-e /memfd \
