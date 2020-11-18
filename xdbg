@@ -2,18 +2,23 @@
 # xdbg PKGS... - list debugging packages for PKGS and recursive dependencies
 
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
-XBPS_DISTDIR="$(xdistdir 2>/dev/null)" || XBPS_DISTDIR=.
+if [ -n "$XBPS_HOSTDIR" ]; then
+	XBPS_BINPKGS="$XBPS_HOSTDIR/binpkgs"
+else
+	XBPS_DISTDIR="$(xdistdir 2>/dev/null)" || XBPS_DISTDIR=.
+	XBPS_BINPKGS="$XBPS_DISTDIR/hostdir/binpkgs"
+fi
 ADDREPO="
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/nonfree
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/multilib
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/multilib/nonfree
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/$BRANCH/debug
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/nonfree
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/multilib
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/multilib/nonfree
-	--repository=$XBPS_DISTDIR/hostdir/binpkgs/debug
+	--repository=$XBPS_BINPKGS/$BRANCH
+	--repository=$XBPS_BINPKGS/$BRANCH/nonfree
+	--repository=$XBPS_BINPKGS/$BRANCH/multilib
+	--repository=$XBPS_BINPKGS/$BRANCH/multilib/nonfree
+	--repository=$XBPS_BINPKGS/$BRANCH/debug
+	--repository=$XBPS_BINPKGS
+	--repository=$XBPS_BINPKGS/nonfree
+	--repository=$XBPS_BINPKGS/multilib
+	--repository=$XBPS_BINPKGS/multilib/nonfree
+	--repository=$XBPS_BINPKGS/debug
 "
 
 alldbg() {
