@@ -209,6 +209,7 @@ meson_builddir
 meson_cmd
 meson_crossfile
 mutable_files
+no_generic_pkgconfig_link
 nocross
 nodebug
 nopie
