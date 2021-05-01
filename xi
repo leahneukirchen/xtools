@@ -27,11 +27,13 @@ if BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null) && [ -n "$BRANCH" ]; t
 fi
 
 which_sudo() {
-	if command -v sudo >/dev/null && sudo -l | grep -q -e ' ALL$' -e xbps-install; then
+	if [ "$(id -u)" = "0" ]; then
+		return
+	elif command -v sudo >/dev/null && sudo -l | grep -q -e ' ALL$' -e xbps-install; then
 		echo sudo
 	elif command -v doas >/dev/null && [ -f /etc/doas.conf ]; then
 		echo doas
-	elif [ "$(id -u)" != 0 ]; then
+	else
 		echo su
 	fi
 }
