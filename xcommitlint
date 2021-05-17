@@ -39,6 +39,9 @@ do
 	length > 80 { print C ": long line: " $0; exit 1 }
 	!subject {
 		if (length > 50) { print C ": subject line is a bit long"; }
+		if (!($0 ~ "^New package:" || $0 ~ ".*: update to")) {
+			print C " is not a new package or an update?"
+		}
 		subject = 1; next
 	}
 	/^$/ { body = 1; next }
