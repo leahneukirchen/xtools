@@ -1,0 +1,49 @@
+#!/bin/sh
+# xcommitlint [base commit] - basic check commit messages
+
+die () {
+	printf '%s\n' "$*"
+	exit 1
+}
+
+distdir=$(xdistdir 2>/dev/null) || exit
+cd "$distdir"
+
+if GIT_CMD=$(command -v chroot-git 2>/dev/null); then
+	:
+elif GIT_CMD=$(command -v git 2>/dev/null); then
+	:
+else
+	die either git or chroot-git is required
+fi
+
+BASECOMMIT=$1
+
+if [ -n "$BASECOMMIT" ]; then
+	BASECOMMIT=$("$GIT_CMD" rev-parse --verify "$BASECOMMIT") || exit
+elif BASECOMMIT=$("$GIT_CMD" rev-parse --verify FETCH_HEAD 2>/dev/null); then
+	:
+elif BASECOMMIT=$("$GIT_CMD" rev-parse --verify ORIG_HEAD 2>/dev/null); then
+	:
+else
+	die base commit not found
+fi
+
+status=0
+for commit in $("$GIT_CMD" rev-list --reverse "$BASECOMMIT"..HEAD)
+do
+	"$GIT_CMD" cat-file commit "$commit" |
+	awk -vC="$commit" '
+	/^$/ && !msg { msg = 1; next }
+	!msg { next }
+	length > 80 { print C ": long line: " $0; exit 1 }
+	!subject {
+		if (length > 50) { print C ": subject line is a bit long"; }
+		subject = 1; next
+	}
+	/^$/ { body = 1; next }
+	!body { print C ": second line must be blank"; exit 1 }
+	' || status=1
+done
+
+exit $status
