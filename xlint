@@ -123,6 +123,26 @@ file_end() {
 	fi
 }
 
+revision_reset() {
+	[ "${revision}" = 1 ] && return
+	[ true = $(git -C "$(dirname $template)" rev-parse --is-inside-work-tree 2>/dev/null) ] || return
+	remote=${XLINT_UPSTREAM:-$(git -C "$(dirname $template)" remote -v | grep -P [:/]void-linux/void-packages | head -n1 | cut -f1)}
+	[ "$remote" ] || return
+	prev_version=$(git -C "$(dirname $template)" cat-file blob ${remote}/master:./$(basename $template) 2>/dev/null | grep -Po '^version=\K.*')
+	xbps-uhelper cmpver "$version" "$prev_version"
+	[ $? = 1 ] || return
+	if [ "$prev_version" ]; then
+		prev_reverts=$(git -C "$(dirname $template)" cat-file blob ${remote}/master:./$(basename $template) 2>/dev/null | grep -Po '^reverts=\K.*')
+		case "$prev_reverts" in
+			*"$version"_*) return;;
+		esac
+		action=update
+	else
+		action=creation
+	fi
+	scan "^revision=" "revision should be set to 1 on ${action}"
+}
+
 variables=$(echo -n "#.*
 _.*
 .*_descr
@@ -346,7 +366,9 @@ for argument; do
 	scan 'python_version=.*#[[:space:]]*unverified' 'verify python_version and remove "#unverified"'
 	pkgname=$(grep -Po "^pkgname=\K.*" "$template")
 	version=$(grep -Po "^version=\K.*" "$template")
+	revision=$(grep -Po "^revision=\K.*" "$template")
 	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
+	revision_reset
 	variables_order
 	header
 	file_end
