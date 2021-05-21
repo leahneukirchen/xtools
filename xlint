@@ -123,14 +123,20 @@ file_end() {
 	fi
 }
 
-revision_reset() {
-	[ "${revision}" = 1 ] && return
+version_control() {
 	[ true = $(git -C "$(dirname $template)" rev-parse --is-inside-work-tree 2>/dev/null) ] || return
 	remote=${XLINT_UPSTREAM:-$(git -C "$(dirname $template)" remote -v | grep -P [:/]void-linux/void-packages | head -n1 | cut -f1)}
 	[ "$remote" ] || return
 	prev_version=$(git -C "$(dirname $template)" cat-file blob ${remote}/master:./$(basename $template) 2>/dev/null | grep -Po '^version=\K.*')
 	xbps-uhelper cmpver "$version" "$prev_version"
-	[ $? = 1 ] || return
+	case "$?" in
+		1) revision_reset;;
+		-1|255) reverts_on_downgrade;;
+	esac
+}
+
+revision_reset() {
+	[ "${revision}" = 1 ] && return
 	if [ "$prev_version" ]; then
 		prev_reverts=$(git -C "$(dirname $template)" cat-file blob ${remote}/master:./$(basename $template) 2>/dev/null | grep -Po '^reverts=\K.*')
 		case "$prev_reverts" in
@@ -141,6 +147,13 @@ revision_reset() {
 		action=creation
 	fi
 	scan "^revision=" "revision should be set to 1 on ${action}"
+}
+
+reverts_on_downgrade() {
+	case "$reverts" in
+		*"$prev_version"_*) ;;
+		*) scan "^version=" "missing reverts= for downgrade $prev_version to $version ";;
+	esac
 }
 
 variables=$(echo -n "#.*
@@ -367,8 +380,9 @@ for argument; do
 	pkgname=$(grep -Po "^pkgname=\K.*" "$template")
 	version=$(grep -Po "^version=\K.*" "$template")
 	revision=$(grep -Po "^revision=\K.*" "$template")
+	reverts=$(grep -Po "^reverts=\K.*" "$template")
 	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
-	revision_reset
+	version_control
 	variables_order
 	header
 	file_end
