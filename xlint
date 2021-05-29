@@ -285,7 +285,10 @@ for argument; do
 
 	: "${LICENSE_LIST:=/usr/share/spdx/license.lst}"
 	if [ -f "${LICENSE_LIST}" ]; then
-		sed -n 's/license="\(.*\)"/\1/p' "$template" | tr , "\n" | while read -r l; do
+		sed -n 's/license="\(.*\)"/\1/p' "$template" |
+		sed 's/ WITH /,/g' |
+		tr , "\n" |
+		while read -r l; do
 			case "$l" in
 				custom:*|'Public Domain') continue ;;
 			esac
