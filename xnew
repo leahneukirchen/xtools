@@ -94,4 +94,4 @@ EOF
 	echo "}" >>$srcdir/$PKG/template
 done
 
-exec ${EDITOR:-vi} +3 $srcdir/$PKG/template
+exec ${VISUAL:-${EDITOR:-vi}} +3 $srcdir/$PKG/template
