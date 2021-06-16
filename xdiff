@@ -2,7 +2,7 @@
 # xdiff [-u|-l] [DIR] - merge/diff/list XBPS .new-* files
 
 mergeutil() {
-	vim -d "$1" "$2" && rm -vi "$1"
+	"${EDITOR:-vim}" -d "$1" "$2" && rm -vi "$1"
 }
 
 listutil() {
