@@ -44,7 +44,6 @@ variables_order() {
 			wrksrc=*) curr_index=7;;
 			create_wrksrc=*) curr_index=8;;
 			build_wrksrc=*) curr_index=9;;
-			only_for_archs=*) continue;;
 			build_style=*) curr_index=11;;
 			build_helper=*) curr_index=11;;
 			cmake_args=*) curr_index=12;;
@@ -219,7 +218,6 @@ noshlibprovides
 nostrip
 nostrip_files
 noverifyrdeps
-only_for_archs
 patch_args
 pkgname
 preserve
