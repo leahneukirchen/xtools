@@ -303,7 +303,7 @@ for argument; do
 	scan 'vinstall.* 0?755.*usr/bin' "use vbin"
 	scan 'vinstall.* usr/share/man' "use vman"
 	scan 'vinstall.* usr/share/licenses' "use vlicense"
-	scan '^  ' "indent with tabs" | once
+	scan '^  ' "please indent with tabs" | once
 	scan '[\t ]$' "trailing whitespace"
 	scan '[^\\]`' "use \$() instead of backticks"
 	scan '^pkgname="[^$]+"' "pkgname must not be quoted"
