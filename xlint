@@ -272,7 +272,7 @@ for argument; do
 	scan 'license=.*SSPL' "Uses the SSPL license, which is not packageable"
 	scan 'license=.*LGPL[^-]' "license LGPL without version"
 	if ! grep -q vlicense "$template"; then
-		for l in custom AGPL MIT BSD ISC; do
+		for l in custom AGPL MIT BSD ISC X11; do
 			scan "license=.*$l" "license '$l', but no use of vlicense"
 		done
 	else
