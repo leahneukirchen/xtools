@@ -210,6 +210,8 @@ meson_builddir
 meson_cmd
 meson_crossfile
 mutable_files
+nofixperms
+nocheckperms
 no_generic_pkgconfig_link
 nocross
 nodebug
