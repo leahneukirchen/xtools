@@ -252,7 +252,98 @@ wrksrc
 xml_catalogs
 xml_entries" | tr '\n' '|')
 
+old_accounts=$(echo -n "at
+avahi
+bitlbee
+boinc
+caddy
+chrony
+clocksd
+colord
+couchpotato
+cups
+dbus
+deluge
+dictd
+dnscrypt_proxy
+dnsmasq
+elastic
+elog
+etcd
+fcron
+ftp
+gdm
+gerbera
+gitolite
+gogs
+gpsd
+h2o
+haproxy
+icinga
+inadyn
+inspircd
+jenkins
+kube
+ldap
+libvirt
+lidarr
+lightdm
+mail
+minidlna
+monero
+mopidy
+mpd
+munge
+mysql
+named
+nbd
+ndhc
+nethack
+nginx
+nsd
+nslcd
+ntpd
+nut
+openntpd
+orientdb
+polkitd
+postfix
+postgres
+privoxy
+prosody
+pulse
+puppet
+quassel
+radicale
+redis
+relaysrv
+rmilter
+rpc
+rspamd
+rsvlog
+rtkit
+sddm
+shadowsocks
+sndiod
+squid
+storm
+suricata
+synapse
+taskd
+tomcat
+tor
+transmission
+tss
+tuntox
+umurmur
+usbmux
+voidupdates
+x2gouser
+xbmc
+znc" | tr '\n' '|')
+
 void_packages="$(xdistdir 2>/dev/null)/"
+
 ret=0
 for argument; do
 	template=
@@ -350,6 +441,7 @@ for argument; do
 	pkgname=$(grep -Po "^pkgname=\K.*" "$template")
 	version=$(grep -Po "^version=\K.*" "$template")
 	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
+	scan "system_accounts=.*\b(?!($old_accounts))[a-zA-Z]" 'new accounts should be prefixed with underscore'
 	variables_order
 	header
 	file_end
