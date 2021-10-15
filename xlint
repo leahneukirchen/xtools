@@ -31,6 +31,13 @@ exists_once() {
 	done
 }
 
+explain_make_check() {
+	awk "-vtemplate=$template" -vOFS=: '
+		/make_check=[^#]*$/ && !match(prev, /^[:blank:]*#/) {print(template, FNR, " explain why the tests fail")}
+		{prev=$0}
+	' $template
+}
+
 variables_order() {
 	local curr_index max_index max_index_line variables_end message line
 	max_index=0
@@ -445,6 +452,7 @@ for argument; do
 	variables_order
 	header
 	file_end
+	explain_make_check
 	else
 	echo no such template "$argument" 1>&2
 	fi | sort -t: -n -k2 | grep . && ret=1
