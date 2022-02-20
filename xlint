@@ -1,5 +1,7 @@
 #!/bin/sh
 # xlint TEMPLATE - scan XBPS template for common mistakes
+# xlint :PKGNAME - lint template as staged in the git index
+# xlint :        - lint all templates staged in the git index
 
 export LC_ALL=C
 
@@ -16,7 +18,7 @@ once() {
 
 header() {
 	if [ "$(head -n1 "$template")" != "# Template file for '$pkgname'" ]; then
-		echo "$template:1: Header should be: # Template file for '$pkgname'"
+		echo "$argument:1: Header should be: # Template file for '$pkgname'"
 	fi
 }
 
@@ -24,9 +26,9 @@ exists_once() {
 	for var in pkgname version revision short_desc maintainer license \
 		   homepage; do
 		case "$(grep -c "^${var}=" "$template")" in
-			0) echo "$template: '$var' missing!";;
+			0) echo "$argument: '$var' missing!";;
 			1) ;;
-			*) echo "$template: '$var' defined more than once";;
+			*) echo "$argument: '$var' defined more than once";;
 		esac
 	done
 }
@@ -101,7 +103,7 @@ variables_order() {
 		if [ "$variables_end" ]; then
 			break
 		elif [ "$curr_index" -lt "$max_index" ]; then
-			message="$template: Place $max_index_line= after ${line%%=*}="
+			message="$argument: Place $max_index_line= after ${line%%=*}="
 		elif [ "$curr_index" -gt "$max_index" ]; then
 			max_index="$curr_index"
 			max_index_line="${line%%=*}"
@@ -254,10 +256,21 @@ xml_entries" | tr '\n' '|')
 
 void_packages="$(xdistdir 2>/dev/null)/"
 ret=0
+
+if [ "$1" = ":" ]; then
+    # get a list of all templates staged in the git index
+	set -- $(git -C "$void_packages" diff --cached --name-only |
+        sed -ne 's|^srcpkgs/\([^/]*\)/template$|:\1|p')
+fi
+
 for argument; do
 	template=
 	if [ -f "$argument" ]; then
 		template="$argument"
+    elif [ "${argument#:}" != "$argument" ]; then
+		trap "rm -- ${tmpfile:=$(mktemp)}" EXIT INT TERM
+        git -C "$void_packages" show ":srcpkgs/${argument#:}/template" \
+            > ${template:=$tmpfile} || continue
 	else
 		_template="${void_packages}srcpkgs/$argument/template"
 		[ -f "$_template" ] && template="$_template"
