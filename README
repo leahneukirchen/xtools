@@ -69,8 +69,10 @@ COMMANDS
      xlg pkg
         – open short commit log for XBPS template
 
-     xlint template | pkgname
+     xlint template | pkgname | :pkgname | :
         – scan XBPS template for common mistakes
+        - use ':pkgname' to lint template as staged in the git index
+        - use ':' to lint all templates staged in the git index
 
      xlocate
         [-g | -S | pattern] – locate files in all XBPS packages

@@ -9,7 +9,7 @@ scan() {
 	local rx="$1" msg="$2"
 	grep -P -Hn -e "$rx" "$template" |
 		grep -v -P -e "[^:]*:[^:]*:\s*#" |
-		sed "s/^\([^:]*:[^:]*:\)\(.*\)/\1 $msg/"
+		sed "s/^[^:]*:\([^:]*\):\(.*\)/$argument:\1: $msg/"
 }
 
 once() {
@@ -349,19 +349,20 @@ void_packages="$(xdistdir 2>/dev/null)/"
 ret=0
 
 if [ "$1" = ":" ]; then
-    # get a list of all templates staged in the git index
+	# get a list of all templates staged in the git index
 	set -- $(git -C "$void_packages" diff --cached --name-only |
-        sed -ne 's|^srcpkgs/\([^/]*\)/template$|:\1|p')
+		sed -ne 's|^srcpkgs/\([^/]*\)/template$|:\1|p')
 fi
 
 for argument; do
 	template=
 	if [ -f "$argument" ]; then
 		template="$argument"
-    elif [ "${argument#:}" != "$argument" ]; then
+	elif [ "${argument#:}" != "$argument" ]; then
 		trap "rm -- ${tmpfile:=$(mktemp)}" EXIT INT TERM
-        git -C "$void_packages" show ":srcpkgs/${argument#:}/template" \
-            > ${template:=$tmpfile} || continue
+		# get template as staged in the git index
+		git -C "$void_packages" show ":srcpkgs/${argument#:}/template" \
+			> ${template:=$tmpfile} || continue
 	else
 		_template="${void_packages}srcpkgs/$argument/template"
 		[ -f "$_template" ] && template="$_template"
@@ -460,6 +461,6 @@ for argument; do
 	file_end
 	else
 	echo no such template "$argument" 1>&2
-	fi | sort -t: -n -k2 | grep . && ret=1
+	fi | sort -t: -n -k2 -k3 | grep . && ret=1
 done
 exit $ret
