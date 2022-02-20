@@ -7,9 +7,12 @@ export LC_ALL=C
 
 scan() {
 	local rx="$1" msg="$2"
-	grep -P -Hn -e "$rx" "$template" |
-		grep -v -P -e "[^:]*:[^:]*:\s*#" |
-		sed "s/^[^:]*:\([^:]*\):\(.*\)/$argument:\1: $msg/"
+	grep -P -hn -e "$rx" "$template" |
+		grep -v -P -e "[^:]*:\s*#" |
+		sed "s/^\([^:]*\):\(.*\)/\1: $msg/" |
+		while read line; do
+			echo "$argument:$line"
+		done
 }
 
 once() {
