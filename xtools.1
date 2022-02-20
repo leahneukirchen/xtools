@@ -73,8 +73,18 @@ but take cwd repo and sudo/su into account
 .Nd list installed packages by install-date
 .It Nm xlg Ar pkg
 .Nd open short commit log for XBPS template
-.It Nm xlint Ar template | pkgname
+.It Nm xlint Ar template | pkgname | Cm \&: Ns Ar pkgname | Cm \&:
 .Nd scan XBPS template for common mistakes
+.Bl -dash -offset 0n -width 0n -compact
+.It
+use
+.Sq Cm \&: Ns Ar pkgname
+to lint template as staged in the git index
+.It
+use
+.Sq Cm \&:
+to lint all templates staged in the git index
+.El
 .It Nm xlocate
 .Oo
 .Fl g | S |
