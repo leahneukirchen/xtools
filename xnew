@@ -59,6 +59,7 @@ short_desc=""
 maintainer="$(git config user.name) <$(git config user.email)>"
 license="GPL-3.0-or-later"
 homepage="$homepage"
+#changelog=""
 distfiles="$distfiles"
 checksum=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb
 EOF
