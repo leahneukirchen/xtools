@@ -1,4 +1,4 @@
-#compdef xbuildbarf xbulk xbump xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xq xrecent xrevbump xrevshlib xsrc xsubpkg
+#compdef xbuildbarf xbulk xbump xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xpkgdiff xq xrecent xrevbump xrevshlib xsrc xsubpkg
 
 _xbps  # force autoload
 
@@ -98,6 +98,18 @@ _xpkg() {
 		'-V[show version numbers and description]'
 }
 
+_xpkgdiff() {
+	_arguments : \
+		'-S[compare package metadata]' \
+		'-c[compare a file from package]:file name:_files:package:_xbps_all_packages' \
+		'-f[compare package file lists]' \
+		'-p[compare package properties]' \
+		'-r[reverse diff (compare local to remote)]' \
+		'-x[compare package dependencies]' \
+		'-t[compare the full package dependency tree for -x]' \
+		'*:package:_xtools_just_packages'
+}
+
 _xq() {
 	_arguments : \
 		'-R[include remote information too]' \
@@ -136,6 +148,7 @@ _xtools() {
 		xmypkgs) _xmypkgs "$@";;
 		xoptdiff) _xoptdiff "$@";;
 		xpkg) _xpkg "$@";;
+		xpkgdiff) _xpkgdiff "$@";;
 		xq) _xq "$@";;
 		xrecent) _xtools_one_arch "$@";;
 		xrevbump) _xrevbump "$@";;
