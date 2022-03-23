@@ -150,6 +150,30 @@ show version numbers
 .It Fl V
 show version numbers and description
 .El
+.It Nm xpkgdiff Op Fl Sfrxt Op Fl c Ar file Op Fl p Ar prop,... Ar pkg
+.Nd compare a package in the repositories to the locally-built version
+.Bl -dash -offset 0n -width 0n -compact
+.It
+run from within a void-packages checkout
+.It
+set DIFF to change the diff program used
+.El
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl S
+compare package metadata
+.It Fl f
+compare package file lists
+.It Fl r
+reverse diff (compare local to remote)
+.It Fl x
+compare package dependencies
+.It Fl t
+compare the full package dependency tree. Only used with -x (equivalent to xbps-query --fulldeptree -x)
+.It Fl c Ar file
+compare a file from the package (equivalent to xbps-query --cat)
+.It Fl p Ar prop,...
+compare properties of the package
+.El
 .It Nm xpstree
 .Nd display tree view of xbps-src processes
 .It Nm xq Op Fl R Ar pkg ...

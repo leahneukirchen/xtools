@@ -1,0 +1,84 @@
+#!/bin/sh
+# xpkgdiff [-r] [-f|-x [-t]|-S|-c FILE|-p PROP[,...]] PKG - compare PKG between remote to local repositories
+
+usage() {
+	echo "Usage: xpkgdiff [-r] [-f|-x [-t]|-S|-c FILE|-p PROP[,...]] PKG"
+	exit 1
+}
+
+: ${DIFF:="diff -u --color"}
+
+# by default, don't sort
+SORT='cat'
+
+TMPDIR=$(mktemp --tmpdir -d "xpkgdiff.XXXXX")
+
+while getopts Sc:fhp:rtx flag; do
+	case $flag in
+		S) QUERY='--show' ;;
+		c) QUERY="--cat=$OPTARG" ;;
+		f) QUERY='--files'; SORT='sort' ;;
+		p) QUERY="--property $OPTARG" ;;
+		r) REVERSE=1 ;;
+		t) FULLTREE=1 ;;
+		x) QUERY='--deps'; SORT='sort' ;;
+		h|?) usage ;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+
+[ "$#" -eq 0 ] && usage
+[ -z "$QUERY" ] && usage
+
+if [ "$QUERY" = '--deps' ] && [ -n "$FULLTREE" ]; then
+	QUERY='--fulldeptree --deps'
+fi
+
+BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+if [ -n "$XBPS_HOSTDIR" ]; then
+	XBPS_BINPKGS="$XBPS_HOSTDIR/binpkgs"
+else
+	XBPS_DISTDIR="$(xdistdir 2>/dev/null)" || XBPS_DISTDIR=.
+	XBPS_BINPKGS="$XBPS_DISTDIR/hostdir/binpkgs"
+fi
+REPO="
+	--repository=$XBPS_BINPKGS/$BRANCH
+	--repository=$XBPS_BINPKGS/$BRANCH/nonfree
+	--repository=$XBPS_BINPKGS/$BRANCH/multilib
+	--repository=$XBPS_BINPKGS/$BRANCH/multilib/nonfree
+	--repository=$XBPS_BINPKGS/$BRANCH/debug
+	--repository=$XBPS_BINPKGS
+	--repository=$XBPS_BINPKGS/nonfree
+	--repository=$XBPS_BINPKGS/multilib
+	--repository=$XBPS_BINPKGS/multilib/nonfree
+	--repository=$XBPS_BINPKGS/debug
+"
+
+pkg="$1"
+
+if xbps-query $pkg >/dev/null; then
+	xbps-query -R $QUERY $pkg | $SORT > "$TMPDIR/${pkg}.repo"
+else
+	echo "Package '$pkg' not found in repositories" > "$TMPDIR/${pkg}.repo"
+fi
+# ignore-conf-repos here and not in the actual query
+# because --fulldeptree will probably fail without
+# being able to read from other repos
+if xbps-query --ignore-conf-repos $REPO $pkg >/dev/null; then
+	xbps-query $REPO $QUERY $pkg | $SORT > "$TMPDIR/${pkg}.local"
+else
+	echo "Package '$pkg' not found in local repositories" > "$TMPDIR/${pkg}.local"
+fi
+
+if [ -z "$REVERSE" ]; then
+	FILE1="${pkg}.repo"
+	FILE2="${pkg}.local"
+else
+	FILE1="${pkg}.local"
+	FILE2="${pkg}.repo"
+fi
+
+$DIFF $TMPDIR/$FILE1 $TMPDIR/$FILE2
+
+rm -rf $TMPDIR
