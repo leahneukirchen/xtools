@@ -75,11 +75,14 @@ COMMANDS
         - use ':' to lint all templates staged in the git index
 
      xlocate
-        [-g | -S | pattern] – locate files in all XBPS packages
-          -g  Update a git based xlocate database, useful for local
-              repositories
-          -S  Sync with the official git based xlocate database, which is
-              recommended before using the tool
+        [-g [<repository> ...] | -S | pattern] – locate files in all XBPS packages
+          -g [<repository> ...]
+              Update a git based xlocate database, useful for local
+              repositories, if any repository(ies) is/are specified, generates
+              index for only those repositories
+          -S  Sync with the xlocate database and xbps repositories as specified
+              in $XLOCATE_XBPS_REPOS environment variable (defaulting to the official
+              xlocate repository). Syncing is recommended before using the tool
 
      xlog pkg
         – open commit log for XBPS template

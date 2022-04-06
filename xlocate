@@ -1,42 +1,114 @@
-#!/bin/sh
-# xlocate [-g | -S | PATTERN] - locate files in all XBPS packages
+#!/bin/bash
+# xlocate [-g [<repository> ...] | -S | PATTERN] - locate files in all XBPS packages
+# By default tries to pull from precompiled git repo and uses xbps-query as a fallback
 
 : ${XDG_CACHE_HOME:=~/.cache}
 : ${XDG_CONFIG_HOME:=~/.config}
 : ${XLOCATE_CONF:="${XDG_CONFIG_HOME}/xlocate.conf"}
+
 
 if [ -f "${XLOCATE_CONF}" ]; then
 	. "${XLOCATE_CONF}";
 fi
 
 : ${XLOCATE_GIT:=$XDG_CACHE_HOME/xlocate.git}
-: ${XLOCATE_REPO:=https://alpha.de.repo.voidlinux.org/xlocate/xlocate.git}
+: ${XLOCATE_XBPS_REPOS:=https://alpha.de.repo.voidlinux.org/xlocate/xlocate.git}  # url(s) and path(s) separated by |
+XLOCATE_XBPS_REPOS=(${XLOCATE_XBPS_REPOS//|/ })
 
+
+set -e
 if command -v pv >/dev/null; then
 	PROGRESS="pv -l"
 else
 	PROGRESS=cat
 fi
 
-xupdategit() {
-	set -e
+xinitgit() {
 	DIR=$(mktemp -dt xlocate.XXXXXX)
 	DIR=$(/usr/bin/realpath -e "$DIR")
-	git init -q $DIR
 	cd $DIR
-	xbps-query -M -Ro '*' | $PROGRESS | awk '
+	git init -q
+	git checkout -b master -q
+}
+
+xgenindex() {
+	if [[ $# -eq 0 ]]; then
+		pkg_list=$(xbps-query -M -Ro '*')
+	else
+		repository_option=$(echo "$@" | awk 'BEGIN { RS=" "; ORS=" " } {print "--repository="$0}')
+		pkg_list=$(xbps-query $repository_option -Mio '*')
+	fi
+
+	echo "$pkg_list" | $PROGRESS | awk '
 		$0 ~ ": " {
 			s = index($0, ": ")
 			pkg = substr($0, 1, s-1)
 			file = substr($0, s+2)
 			sub(" *\\([^)]*\\)$", "", file)
 			print file >>pkg
-			}'
+		}'
+}
+
+xcommitgit() {
 	printf '%s\n' ./* |
 		LC_ALL= xargs -d'\n' -I'{}' -n1 -P "$(nproc)" -r -- \
 			sort -o {} {}
-	git add ./*
-	git -c user.name=xupdategit -c user.email=xupdategit@none commit -q -m 'xupdategit'
+
+	if [[ -n $(git status --porcelain) ]]; then
+		git add ./*
+		git -c user.name=xupdategit -c user.email=xupdategit@none commit -q -m "$1"
+	fi
+}
+
+xupdategit() {
+	update_status=".git/update_status"
+	if [[ -f "$XLOCATE_GIT/update_status" ]]; then
+		git pull "$XLOCATE_GIT" master &>/dev/null
+		cp "$XLOCATE_GIT/update_status" $update_status
+	else
+		touch $update_status
+	fi
+
+	for ((i=0; i<${#XLOCATE_XBPS_REPOS[@]}; i++)); do
+		remote_name="origin$i"  commit_name="xupdategit: ${XLOCATE_XBPS_REPOS[i]}"
+
+		latest_hash=$(set -o pipefail; git ls-remote ${XLOCATE_XBPS_REPOS[i]} 2>/dev/null | grep HEAD | cut -f1); remote_ret=$?
+		[[ -z $latest_hash ]] && latest_hash=$(set -o pipefail; ls ${XLOCATE_XBPS_REPOS[i]}/*-repodata 2>/dev/null | xargs -r -n1 sha1sum | sha1sum | cut -d' ' -f1); local_ret=$?
+
+		if [[ $((remote_ret&local_ret)) = 0 && -f $update_status && $(sed -n $((i+1))p $update_status) = $latest_hash ]]; then
+			continue
+		elif [[ -z $rebuild || ! -f "$update_status" ]]; then
+			# Drops all commits and update_status matching and below
+			git rev-parse HEAD &> /dev/null \
+			&& GIT_SEQUENCE_EDITOR="sed -i '/${commit_name//\//\\/}/,\$s/^pick/drop/'" git rebase -i --root \
+			&& sed -i "$((i+1)),\$d" "$update_status"
+			[[ $(wc -l < $update_status) = 0 ]] && git update-ref -d HEAD
+			rebuild=1
+		fi
+
+		if [[ $remote_ret -eq 0 ]]; then
+			git remote add $remote_name ${XLOCATE_XBPS_REPOS[i]}
+			branch_name=$(git remote show $remote_name | sed -n '/HEAD branch/s/.*: //p')
+			echo "fetching ${XLOCATE_XBPS_REPOS[i]}"
+			git fetch $remote_name $branch_name
+
+			# only checkout file we're not having from higher priority repo
+			git rev-parse HEAD &> /dev/null \
+			&& git diff-tree -r --diff-filter=A HEAD $remote_name/$branch_name --name-only --no-commit-id | while IFS= read -r file; do git checkout $remote_name/$branch_name -- ":/$file"; done \
+			|| git checkout $remote_name/$branch_name -- '*'
+		else
+			echo "generating index for ${XLOCATE_XBPS_REPOS[i]}"
+			xgenindex ${XLOCATE_XBPS_REPOS[i]}
+
+			# only keep file we're not having from higher priority repo
+			git diff --diff-filter=M --name-only | while IFS= read -r file; do git restore -- ":/$file"; done
+		fi
+		echo "$latest_hash" >> "$update_status"
+		xcommitgit "$commit_name"
+	done
+}
+
+xfinalizegit() {
 	git repack -ad
 	rm -rf "$XLOCATE_GIT" .git/COMMIT_EDITMSG .git/description \
 		.git/index .git/hooks .git/logs
@@ -45,38 +117,28 @@ xupdategit() {
 	rm -rf "$DIR"
 }
 
-xsyncgit() {
-	if ! [ -d "$XLOCATE_GIT" ]; then
-		[ -n "${XLOCATE_GIT%/*}" ] && mkdir -p "${XLOCATE_GIT%/*}"
-		git clone --bare "$XLOCATE_REPO" "$XLOCATE_GIT"
-	fi
-	git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
-}
 
 case "$1" in
 -g)
-	xupdategit
+	repos=${@:2}
+	xinitgit && xgenindex "$repos" && xcommitgit "xgenindex: $repos" && xfinalizegit
 	exit $?;;
 -S)
-	xsyncgit
+	xinitgit && xupdategit && xfinalizegit
 	exit $?;;
 '')
-	echo "Usage: xlocate [-g | -S | PATTERN]" 1>&2
+	echo "Usage: xlocate [-g [<repository> ...] | -S | PATTERN]" 1>&2
 	exit 1;;
 esac
 
 if [ -d "$XLOCATE_GIT" ]; then
-	if [ -f "$XLOCATE_GIT/refs/heads/master" ]; then
+	if [[ -f "$XLOCATE_GIT/refs/heads/master" ]]; then
 		BASE="$XLOCATE_GIT/refs/heads/master"
-	elif [ -f "$XLOCATE_GIT/FETCH_HEAD" ]; then
+	elif [[ -f "$XLOCATE_GIT/FETCH_HEAD" ]]; then
 		BASE="$XLOCATE_GIT/FETCH_HEAD"
 	fi
-	if [ -z "$BASE" ] || find /var/db/xbps/ -name '*repodata' -newer "$BASE" | grep -q .; then
-		if grep -q origin "$XLOCATE_GIT/config"; then
-			echo "xlocate: database outdated, please run xlocate -S." 1>&2
-		else
-			echo "xlocate: database outdated, please run xlocate -g." 1>&2
-		fi
+		if [[ -z "$BASE" ]] || find /var/db/xbps $(echo "${XLOCATE_XBPS_REPOS[@]}" | xargs ls -d 2>/dev/null) -name '*repodata' -newer "$BASE" | grep -q .; then
+		echo "xlocate: database outdated, please run xlocate -S." 1>&2
 	fi
 	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
 		sed 's/^@://; s/:/\t/' | grep .
