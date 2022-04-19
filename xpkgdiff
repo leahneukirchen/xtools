@@ -57,8 +57,8 @@ REPO="
 
 pkg="$1"
 
-if xbps-query -R $pkg >/dev/null; then
-	xbps-query -R $QUERY $pkg | $SORT > "$TMPDIR/${pkg}.repo"
+if xbps-query -MR $pkg >/dev/null; then
+	xbps-query -MR $QUERY $pkg | $SORT > "$TMPDIR/${pkg}.repo"
 else
 	echo "Package '$pkg' not found in repositories" > "$TMPDIR/${pkg}.repo"
 fi
