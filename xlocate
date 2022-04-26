@@ -12,6 +12,15 @@ fi
 : ${XLOCATE_GIT:=$XDG_CACHE_HOME/xlocate.git}
 : ${XLOCATE_REPO:=https://alpha.de.repo.voidlinux.org/xlocate/xlocate.git}
 
+if command -v git >/dev/null 2>&1; then
+	GIT_CMD=$(command -v git)
+elif command -v chroot-git >/dev/null 2>&1; then
+	GIT_CMD=$(command -v chroot-git)
+else
+	echo "xlocate: git command not found." 1>&2
+	exit 1
+fi
+
 if command -v pv >/dev/null; then
 	PROGRESS="pv -l"
 else
@@ -22,7 +31,7 @@ xupdategit() {
 	set -e
 	DIR=$(mktemp -dt xlocate.XXXXXX)
 	DIR=$(/usr/bin/realpath -e "$DIR")
-	git init -q $DIR
+	$GIT_CMD init -q $DIR
 	cd $DIR
 	xbps-query -M -Ro '*' | $PROGRESS | awk '
 		$0 ~ ": " {
@@ -35,9 +44,9 @@ xupdategit() {
 	printf '%s\n' ./* |
 		LC_ALL= xargs -d'\n' -I'{}' -n1 -P "$(nproc)" -r -- \
 			sort -o {} {}
-	git add ./*
-	git -c user.name=xupdategit -c user.email=xupdategit@none commit -q -m 'xupdategit'
-	git repack -ad
+	$GIT_CMD add ./*
+	$GIT_CMD -c user.name=xupdategit -c user.email=xupdategit@none commit -q -m 'xupdategit'
+	$GIT_CMD repack -ad
 	rm -rf "$XLOCATE_GIT" .git/COMMIT_EDITMSG .git/description \
 		.git/index .git/hooks .git/logs
 	[ -n "${XLOCATE_GIT%/*}" ] && mkdir -p "${XLOCATE_GIT%/*}"
@@ -48,9 +57,9 @@ xupdategit() {
 xsyncgit() {
 	if ! [ -d "$XLOCATE_GIT" ]; then
 		[ -n "${XLOCATE_GIT%/*}" ] && mkdir -p "${XLOCATE_GIT%/*}"
-		git clone --bare "$XLOCATE_REPO" "$XLOCATE_GIT"
+		$GIT_CMD clone --bare "$XLOCATE_REPO" "$XLOCATE_GIT"
 	fi
-	git -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
+	$GIT_CMD -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 }
 
 case "$1" in
@@ -78,7 +87,7 @@ if [ -d "$XLOCATE_GIT" ]; then
 			echo "xlocate: database outdated, please run xlocate -g." 1>&2
 		fi
 	fi
-	git -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
+	$GIT_CMD -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
 		sed 's/^@://; s/:/\t/' | grep .
 else
 	echo "xlocate: database not found, please use xlocate -S." 1>&2
