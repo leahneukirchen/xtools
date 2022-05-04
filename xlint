@@ -45,8 +45,11 @@ explain_make_check() {
 
 variables_order() {
 	local curr_index max_index max_index_line variables_end message line
+	local line_number max_index_line_number
 	max_index=0
+	line_number=0
 	while IFS="" read -r line; do
+		line_number=$((line_number + 1))
 		case "$line" in
 			pkgname=*) curr_index=1;;
 			reverts=*) curr_index=2;;
@@ -113,10 +116,11 @@ variables_order() {
 		if [ "$variables_end" ]; then
 			break
 		elif [ "$curr_index" -lt "$max_index" ]; then
-			message="$argument: Place $max_index_line= after ${line%%=*}="
+			message="$argument:$max_index_line_number: Place $max_index_line= after ${line%%=*}="
 		elif [ "$curr_index" -gt "$max_index" ]; then
 			max_index="$curr_index"
 			max_index_line="${line%%=*}"
+			max_index_line_number=$line_number
 			if [ "$message" ]; then
 				echo "$message"
 				message=
