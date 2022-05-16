@@ -15,6 +15,10 @@ scan() {
 		done
 }
 
+regex_escape() {
+	sed 's/\([.*+]\)/\\\1/g'
+}
+
 once() {
 	head -n 1
 }
@@ -468,8 +472,11 @@ for argument; do
 	scan '^\t*[^ ]*\(\)$' 'do not use a newline before function opening brace'
 	scan 'python_version=.*#[[:space:]]*unverified' 'verify python_version and remove "#unverified"'
 	pkgname=$(grep -Po "^pkgname=\K.*" "$template" | once)
+	pkgname_re=$(echo "$pkgname" | regex_escape)
 	version=$(grep -Po "^version=\K.*" "$template" | once)
-	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
+	version_re=$(echo "$version" | regex_escape)
+	scan '^wrksrc="?(\$\{?pkgname\}?|'$pkgname_re')-(\$\{?version\}?|'$version_re')"?$' 'unnecessary wrksrc definition'
+	scan "distfiles=.*\Q$version_re\E" 'use ${version} in distfiles instead'
 	scan "system_accounts=.*\b(?!($old_accounts))[a-zA-Z]" 'new accounts should be prefixed with underscore'
 	variables_order
 	header
