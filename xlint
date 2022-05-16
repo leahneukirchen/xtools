@@ -425,6 +425,7 @@ for argument; do
 	scan 'vinstall.* usr/share/man' "use vman"
 	scan 'vinstall.* usr/share/licenses' "use vlicense"
 	scan '^  ' "please indent with tabs" | once
+	scan '^ +\t' "bad indentation: space before tabs"
 	scan '[\t ]$' "trailing whitespace"
 	scan '[^\\]`' "use \$() instead of backticks"
 	scan '^pkgname="[^$]+"' "pkgname must not be quoted"
