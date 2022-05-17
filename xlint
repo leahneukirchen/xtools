@@ -41,8 +41,8 @@ exists_once() {
 }
 
 explain_make_check() {
-	awk "-vtemplate=$template" -vOFS=: '
-		/make_check=[^#]*$/ && prev !~ /^[[:blank:]]*#/ {print(template, FNR, " explain why the tests fail")}
+	awk "-vargument=$argument" -vOFS=: '
+		/make_check=[^#]*$/ && prev !~ /^[[:blank:]]*#/ {print(argument, FNR, " explain why the tests fail")}
 		{prev=$0}
 	' $template
 }
@@ -136,9 +136,9 @@ variables_order() {
 
 file_end() {
 	if [ "$(tail -c 1 $template)" ]; then
-		echo "$template:$(( $(wc -l < $template) + 1 )): File does not end with newline character"
+		echo "$argument:$(( $(wc -l < $template) + 1 )): File does not end with newline character"
 	elif [ -z "$(tail -c 2 $template)" ]; then
-		echo "$template:$(wc -l < $template): Last line is empty"
+		echo "$argument:$(wc -l < $template): Last line is empty"
 	fi
 }
 
@@ -377,9 +377,10 @@ for argument; do
 	if [ -f "$argument" ]; then
 		template="$argument"
 	elif [ "${argument#:}" != "$argument" ]; then
+		argument="${argument#:}"
 		trap "rm -- ${tmpfile:=$(mktemp)}" EXIT INT TERM
 		# get template as staged in the git index
-		git -C "$void_packages" show ":srcpkgs/${argument#:}/template" \
+		git -C "$void_packages" show ":srcpkgs/$argument/template" \
 			> ${template:=$tmpfile} || continue
 	else
 		_template="${void_packages}srcpkgs/$argument/template"
