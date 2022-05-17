@@ -38,7 +38,7 @@ exists_once() {
 
 explain_make_check() {
 	awk "-vtemplate=$template" -vOFS=: '
-		/make_check=[^#]*$/ && prev !~ /^[[:blank:]]*#/ {print(template, FNR, " explain why the tests fail"); print prev}
+		/make_check=[^#]*$/ && prev !~ /^[[:blank:]]*#/ {print(template, FNR, " explain why the tests fail")}
 		{prev=$0}
 	' $template
 }
