@@ -1,7 +1,12 @@
 #!/bin/sh -e
 # xvoidstrap DIR [PACKAGES...] - bootstrap a new Void installation
 #
-# (Setting XBPS_ARCH=x86_64-musl works.)
+# Environment variables honored:
+# - XBPS_ARCH: equivalent to XVOIDSTRAP_ARCH, for compatibility
+# - XVOIDSTRAP_ARCH: set this when target architecture is different from host
+# - XVOIDSTRAP_MIRROR: defaults to https://alpha.de.repo.voidlinux.org/current
+
+: "${XVOIDSTRAP_MIRROR:=https://alpha.de.repo.voidlinux.org/current}"
 
 fail() {
 	printf '%s\n' "$1" 1>&2
@@ -26,21 +31,83 @@ esac
 [ -d "$CHROOT/etc" ] && fail 'directory contains /etc, bailing out'
 [ -d "$CHROOT/usr" ] && fail 'directory contains /usr, bailing out'
 
+# copy static qemu binary into chroot if needed
+qemu_static=""
+xv_machine="${XVOIDSTRAP_ARCH%-musl}"
+if [ "$XVOIDSTRAP_ARCH" ] && [ "$(uname -m)" != "$xv_machine" ]; then
+	case "$xv_machine" in
+		i686) qemu_static="/usr/bin/qemu-i386-static" ;;
+		arm*) qemu_static="/usr/bin/qemu-arm-static" ;;
+		*) qemu_static="/usr/bin/qemu-${xv_machine}-static" ;;
+	esac
+	if ! [ -x "$qemu_static" ]; then
+		fail 'install qemu-user-static to perform cross bootstrap'
+	fi
+	install -d -m 0755 "${CHROOT}/usr/bin"
+	cp "$qemu_static" "${CHROOT}${qemu_static}"
+fi
+
 chown root:root "$CHROOT"
 chmod 0755 "$CHROOT"
 mkdir -p "$CHROOT/boot" "$CHROOT/dev"
 mkdir -p -m 0555 "$CHROOT/proc" "$CHROOT/sys"
+
+mount -t proc none "$CHROOT/proc"
 
 if [ -d /var/db/xbps/keys ]; then
 	mkdir -p "$CHROOT/var/db/xbps/keys"
 	cp -a /var/db/xbps/keys/* "$CHROOT/var/db/xbps/keys"
 fi
 
+# compatibility, XBPS_ARCH used to be left alone
+if [ -z "$XVOIDSTRAP_ARCH" ] && [ "$XBPS_ARCH" ]; then
+	XVOIDSTRAP_ARCH="$XBPS_ARCH"
+	unset XBPS_ARCH
+fi
+
+if [ "$XVOIDSTRAP_ARCH" ]; then
+	export XBPS_TARGET_ARCH="${XVOIDSTRAP_ARCH}"
+fi
+
 xbps-install \
-	-R ${XVOIDSTRAP_MIRROR:-https://alpha.de.repo.voidlinux.org/current} \
-	-R ${XVOIDSTRAP_MIRROR:-https://alpha.de.repo.voidlinux.org/current}/musl \
-	-S -r "$CHROOT" \
+	-R ${XVOIDSTRAP_MIRROR} \
+	-R ${XVOIDSTRAP_MIRROR}/musl \
+	-R ${XVOIDSTRAP_MIRROR}/aarch64 \
+	-SUy -r "$CHROOT" \
 	${@:-base-system lvm2 cryptsetup grub}
+
+if [ "$XVOIDSTRAP_ARCH" ]; then
+	unset XBPS_TARGET_ARCH
+	export XBPS_ARCH="${XVOIDSTRAP_ARCH}"
+fi
+
+xbps-reconfigure -r "$CHROOT" -f base-files
+
+if [ "$qemu_static" ]; then
+	# test that static qemu is taking effect to avoid less direct exec
+	# format error messages from the xbps-reconfigure invocations below
+	chroot "$CHROOT" true >/dev/null 2>&1 || fail \
+		"Could not execute binary in chroot.\nbinfmt-support and qemu-user-static are not set up correctly."
+fi
+
+chroot "$CHROOT" xbps-reconfigure -f base-files
+chroot "$CHROOT" xbps-reconfigure -af
+
+if [ "$qemu_static" ]; then
+	# delete the static qemu binary installed above if and only if
+	# qemu-user-static was not installed during bootstrap
+	chroot "$CHROOT" xbps-query qemu-user-static || {
+		if [ "$?" = "2" ]; then
+			rm -f -- "${CHROOT}${qemu_static}"
+		fi
+	}
+fi
+
+if [ "$XVOIDSTRAP_ARCH" ]; then
+	unset XBPS_ARCH
+fi
+
+umount "$CHROOT/proc"
 
 printf '\n'
 cat <<EOF | tee ${CHROOT}/checklist
