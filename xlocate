@@ -10,7 +10,7 @@ if [ -f "${XLOCATE_CONF}" ]; then
 fi
 
 : ${XLOCATE_GIT:=$XDG_CACHE_HOME/xlocate.git}
-: ${XLOCATE_REPO:=https://alpha.de.repo.voidlinux.org/xlocate/xlocate.git}
+: ${XLOCATE_REPO:=https://repo-default.voidlinux.org/xlocate/xlocate.git}
 
 if command -v git >/dev/null 2>&1; then
 	GIT_CMD=$(command -v git)
