@@ -47,22 +47,6 @@ explain_make_check() {
 	' $template
 }
 
-check_multiline_vars() {
-	for q in '"' "'"; do
-		awk "-vargument=$argument" "-vquote=$q" -vOFS=: '
-			BEGIN {
-				reBegin="^[^=]+=" quote "[^" quote "=]*$"; reEnd="^[^" quote "=]*" quote "$";
-				firstLine="^[^ ].*=" quote ".*$"; lastLine="^( [[:graph:]]|" quote "$)"
-			}
-			($0 ~ reBegin),($0 ~ reEnd) {
-				if ($0 !~ firstLine && $0 !~ lastLine)
-					print(argument, FNR, " indent multi-line continuations with a single space")
-				if ($0 ~ /\\$/)
-					print(argument, FNR, " do not use backslashes to end lines in multi-line continuations")
-			}' $template
-	done | sort -u -k2
-}
-
 variables_order() {
 	local curr_index max_index max_index_line variables_end message line
 	local line_number max_index_line_number
@@ -500,7 +484,6 @@ for argument; do
 	header
 	file_end
 	explain_make_check
-	check_multiline_vars
 	else
 	echo no such template "$argument" 1>&2
 	fi | sort -t: -n -k2 -k3 | grep . && ret=1
