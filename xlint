@@ -191,6 +191,7 @@ conflicts
 create_wrksrc
 depends
 disable_parallel_build
+disable_parallel_check
 distfiles
 dkms_modules
 fetch_cmd
