@@ -10,10 +10,7 @@ if [ "$(id -u)" -ne 0 ]; then
 	fail 'xchroot needs to run as root'
 fi
 
-case "$1" in
-	/*) CHROOT=$1; shift;;
-	*) fail 'no absolute chroot dir given';;
-esac
+CHROOT=$1; shift
 
 [ -d "$CHROOT" ] || fail 'not a directory'
 [ -d "$CHROOT/dev" ] || fail 'no /dev in chroot'
