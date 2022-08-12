@@ -51,10 +51,11 @@ _xdowngrade() {
 }
 
 _xgensum() {
-	_arguments : \
+	_arguments -s : \
 		'-f[force downloading of files]' \
 		'-c[use content checksum]' \
 		'-i[substitute in-place]' \
+		'-H[Absolute path to hostdir]:hostdir:_files -/' \
 		':available templates:_path_files -g "*(/)|template(N)"'
 }
 

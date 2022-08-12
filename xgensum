@@ -1,21 +1,22 @@
 #!/bin/bash
 # xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE - update SHA256 sums in templates
 
-case "$1" in
-	-f) FLAG_f=$1; shift
-esac
+usage() {
+	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE' 1>&2
+	exit 1
+}
 
-case "$1" in
-	-c) FLAG_c=$1; shift
-esac
+while getopts fciH:h flag; do
+	case $flag in
+		f) FLAG_f=1 ;;
+		c) FLAG_c=1 ;;
+		i) FLAG_i='-i' ;;
+		H) FLAG_h="-H $OPTARG" ;;
+		h|?) usage ;;
+	esac
+done
 
-case "$1" in
-	-i*) FLAG_i=$1; shift
-esac
-
-case "$1" in
-	-H*) FLAG_h="-H $2"; shift; shift
-esac
+shift $(( OPTIND - 1 ))
 
 XBPS_DISTDIR=$(xdistdir) || exit 1
 
@@ -26,8 +27,7 @@ elif [ -f "$1/template" ]; then
 elif [ -f "$XBPS_DISTDIR/srcpkgs/$1/template" ]; then
 	template="$XBPS_DISTDIR/srcpkgs/$1/template"
 else
-	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE' 1>&2
-	exit 1
+	usage
 fi
 
 . "$template"
@@ -47,7 +47,7 @@ fi
 XBPS_SRCDISTDIR=$("$XBPS_DISTDIR/xbps-src" $FLAG_h show-var XBPS_SRCDISTDIR | tail -1)
 srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
 
-if [ "$FLAG_f" = -f ]; then
+if [ -n "$FLAG_f" ]; then
 	for f in $distfiles; do
 		curfile="${f#*>}"
 		curfile="${curfile##*/}"
@@ -65,7 +65,7 @@ for f in $distfiles; do
 	curfile="${f#*>}"
 	curfile="${curfile##*/}"
 	distfile="$srcdir/$curfile"
-	if [ "$FLAG_c" = -c ];then
+	if [ -n "$FLAG_c" ];then
 		sum="@"
 		case ${distfile} in
 		*tar.lzma|*.tar|*.txz|*.tar.xz|*.tbz|*.tar.gz)
