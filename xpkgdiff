@@ -6,12 +6,14 @@ usage() {
 	exit 1
 }
 
+cleanup() {
+	rm -rf $TMPDIR
+}
+
 : ${DIFF:="diff -u --color"}
 
 # by default, don't sort
 SORT='cat'
-
-TMPDIR=$(mktemp --tmpdir -d "xpkgdiff.XXXXX")
 
 while getopts Sc:fhp:rtx flag; do
 	case $flag in
@@ -30,6 +32,10 @@ shift $(($OPTIND - 1))
 
 [ "$#" -eq 0 ] && usage
 [ -z "$QUERY" ] && usage
+
+TMPDIR=$(mktemp --tmpdir -d "xpkgdiff.XXXXX")
+
+trap cleanup EXIT INT TERM
 
 if [ "$QUERY" = '--deps' ] && [ -n "$FULLTREE" ]; then
 	QUERY='--fulldeptree --deps'
@@ -80,5 +86,3 @@ else
 fi
 
 $DIFF $TMPDIR/$FILE1 $TMPDIR/$FILE2
-
-rm -rf $TMPDIR
