@@ -2,14 +2,15 @@
 
 _xbps  # force autoload
 
+_xtools_archs=( {aarch64,armv{6,7}l,i686,x86_64}{,-musl} )
+
 _xtools_all_packages() {
 	compadd "$@" -- $(xdistdir)/srcpkgs/*(:t)
 }
 
 _xtools_one_arch() {
-	local archs=( {aarch64,armv{6,7}l,i686,x86_64}{,-musl} )
 	_arguments : \
-		":architecture:($archs)"
+		":architecture:($_xtools_archs)"
 }
 
 _xtools_one_template() {
@@ -108,6 +109,7 @@ _xpkgdiff() {
 		'-r[reverse diff (compare local to remote)]' \
 		'-x[compare package dependencies]' \
 		'-t[compare the full package dependency tree for -x]' \
+		'-a[architecture]:architecture:('"$_xtools_archs"')' \
 		'*:package:_xtools_just_packages'
 }
 

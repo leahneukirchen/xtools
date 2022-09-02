@@ -150,7 +150,7 @@ show version numbers
 .It Fl V
 show version numbers and description
 .El
-.It Nm xpkgdiff Op Fl Sfrxt Op Fl c Ar file Op Fl p Ar prop,... Ar pkg
+.It Nm xpkgdiff Op Fl Sfrxt Op Fl a Ar arch Op Fl R Ar url Op Fl c Ar file Op Fl p Ar prop,... Ar pkg
 .Nd compare a package in the repositories to the locally-built version
 .Bl -dash -offset 0n -width 0n -compact
 .It
@@ -173,6 +173,10 @@ compare the full package dependency tree. Only used with -x (equivalent to xbps-
 compare a file from the package (equivalent to xbps-query --cat)
 .It Fl p Ar prop,...
 compare properties of the package
+.It Fl a Ar arch
+set architecture for comparison
+.It Fl R Ar url
+set remote repository url
 .El
 .It Nm xpstree
 .Nd display tree view of xbps-src processes

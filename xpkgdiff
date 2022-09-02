@@ -1,21 +1,23 @@
 #!/bin/sh
-# xpkgdiff [-r] [-f|-x [-t]|-S|-c FILE|-p PROP[,...]] PKG - compare PKG between remote to local repositories
+# xpkgdiff [-r] [-R URL] [-a ARCH] [-f|-x [-t]|-S|-c FILE|-p PROP[,...]] PKG - compare PKG between remote to local repositories
 
 usage() {
-	echo "Usage: xpkgdiff [-r] [-f|-x [-t]|-S|-c FILE|-p PROP[,...]] PKG"
+	echo "Usage: xpkgdiff [-r] [-R URL] [-a ARCH] [-f|-x [-t]|-S|-c FILE|-p PROP[,...]] PKG"
 	exit 1
 }
 
 cleanup() {
 	rm -rf $TMPDIR
+	exit 0
 }
 
 : ${DIFF:="diff -u --color"}
+: ${ARCH:=$XBPS_TARGET_ARCH}
 
 # by default, don't sort
 SORT='cat'
 
-while getopts Sc:fhp:rtx flag; do
+while getopts Sc:fhp:rtxa:R: flag; do
 	case $flag in
 		S) QUERY='--show' ;;
 		c) QUERY="--cat=$OPTARG" ;;
@@ -24,6 +26,8 @@ while getopts Sc:fhp:rtx flag; do
 		r) REVERSE=1 ;;
 		t) FULLTREE=1 ;;
 		x) QUERY='--deps'; SORT='sort' ;;
+		a) ARCH="$OPTARG" ;;
+		R) REMOTE_BASEURL="$OPTARG" ;;
 		h|?) usage ;;
 	esac
 done
@@ -32,6 +36,32 @@ shift $(($OPTIND - 1))
 
 [ "$#" -eq 0 ] && usage
 [ -z "$QUERY" ] && usage
+
+if [ -z "$ARCH" ]; then
+	# if arch is not set, just add the value of -R to the list
+	REMOTE_REPOS=" --repository=$REMOTE_BASEURL "
+else
+	[ "$ARCH" != "$XBPS_TARGET_ARCH" ] && export XBPS_TARGET_ARCH="$ARCH"
+	: ${REMOTE_BASEURL:="https://repo-default.voidlinux.org/current"}
+	case "$ARCH" in
+		aarch64*)
+			REMOTE_BASEURL=${REMOTE_BASEURL%/}/aarch64;;
+		*-musl)
+			REMOTE_BASEURL=${REMOTE_BASEURL%/}/musl;;
+		*)
+			REMOTE_BASEURL=${REMOTE_BASEURL%/};;
+	esac
+
+	# if arch is set, add all the standard repos for that arch, and ignore conf repos
+	REMOTE_REPOS="
+		-i
+		--repository=$REMOTE_BASEURL
+		--repository=$REMOTE_BASEURL/nonfree
+		--repository=$REMOTE_BASEURL/multilib
+		--repository=$REMOTE_BASEURL/multilib/nonfree
+		--repository=$REMOTE_BASEURL/debug
+	"
+fi
 
 TMPDIR=$(mktemp --tmpdir -d "xpkgdiff.XXXXX")
 
@@ -63,8 +93,8 @@ REPO="
 
 pkg="$1"
 
-if xbps-query -MR $pkg >/dev/null; then
-	xbps-query -MR $QUERY $pkg | $SORT > "$TMPDIR/${pkg}.repo"
+if xbps-query -MR $REMOTE_REPOS $pkg >/dev/null; then
+	xbps-query -MR $REMOTE_REPOS $QUERY $pkg | $SORT > "$TMPDIR/${pkg}.repo"
 else
 	echo "Package '$pkg' not found in repositories" > "$TMPDIR/${pkg}.repo"
 fi
