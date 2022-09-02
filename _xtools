@@ -105,7 +105,7 @@ _xpkgdiff() {
 		'-S[compare package metadata]' \
 		'-c[compare a file from package]:file name:_files:package:_xbps_all_packages' \
 		'-f[compare package file lists]' \
-		'-p[compare package properties]' \
+		'-p[compare package properties]:property:($_xbps_properties)' \
 		'-r[reverse diff (compare local to remote)]' \
 		'-x[compare package dependencies]' \
 		'-t[compare the full package dependency tree for -x]' \
