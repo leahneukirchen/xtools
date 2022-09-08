@@ -14,10 +14,8 @@ fi
 
 umask 0022
 
-case "$1" in
-	/*) CHROOT=$1; shift;;
-	*) fail 'no absolute chroot dir given';;
-esac
+CHROOT=$1
+shift
 
 [ -d "$CHROOT" ] || fail 'not a directory'
 
@@ -39,6 +37,7 @@ fi
 xbps-install \
 	-R ${XVOIDSTRAP_MIRROR:-https://repo-default.voidlinux.org/current} \
 	-R ${XVOIDSTRAP_MIRROR:-https://repo-default.voidlinux.org/current}/musl \
+	-R ${XVOIDSTRAP_MIRROR:-https://repo-default.voidlinux.org/current}/aarch64 \
 	-S -r "$CHROOT" \
 	${@:-base-system lvm2 cryptsetup grub}
 
