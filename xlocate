@@ -87,8 +87,8 @@ if [ -d "$XLOCATE_GIT" ]; then
 			echo "xlocate: database outdated, please run xlocate -g." 1>&2
 		fi
 	fi
-	$GIT_CMD -c grep.lineNumber=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
-		sed 's/^@://; s/:/\t/' | grep .
+	$GIT_CMD -c grep.lineNumber=false -c grep.column=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
+		sed 's/^@://' | column -ts: | grep .
 else
 	echo "xlocate: database not found, please use xlocate -S." 1>&2
 	exit 1
