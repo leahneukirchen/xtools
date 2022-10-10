@@ -47,6 +47,20 @@ explain_make_check() {
 	' $template
 }
 
+check_multiline() {
+	msg="variable set continuation should start with a single space"
+	awk -v msg="$msg" -v argument="$argument" -e '
+	!multiline && /^[^[:space:]=-]+=["'\''][^"'\'']*$/ {
+		quote = substr($0, index($0, "=")+1, 1);
+		multiline = 1; next;
+	}
+	multiline && ! /^ [^[:space:]]/ {
+		printf "%s:%d: %s\n", argument, NR, msg
+	}
+	multiline && match($0, quote) { multiline = 0; next; }
+	' "$template"
+}
+
 variables_order() {
 	local curr_index max_index max_index_line variables_end message line
 	local line_number max_index_line_number
@@ -484,6 +498,7 @@ for argument; do
 	scan '-D([[:alnum:]_-]+)=\$\(vopt_if \1 true false\)' 'use $(vopt_bool ...) instead of -D...=$(vopt_if ...)'
 	variables_order
 	header
+	check_multiline
 	file_end
 	explain_make_check
 	else
