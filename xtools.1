@@ -188,8 +188,10 @@ query remote repos
 .El
 .It Nm xrecent Op Ar repourl | arch
 .Nd list packages in repo ordered by build date
-.It Nm xrevbump Ar message Ar templates ...
-.Nd increase template revision and commit
+.It Nm xrevbump Ar message Ar templates ... Op Ar -- git commit options
+.Nd increase template revision and commit. Use
+.Sq Cm \&-
+to read templates from stdin.
 .It Nm xrevshlib Ar package
 .Nd list packages shlib-dependent on package or its subpackages
 .It Nm xrs Ar pattern
