@@ -1,19 +1,16 @@
 #!/bin/bash
-# xrevbump MESSAGE TEMPLATES... - increase template revision and commit
-
+# xrevbump MESSAGE TEMPLATES... -- git commit options - increase template revision and commit
 # TEMPLATES can be "-", then read linewise from stdin.
 
 MESSAGE=$1
 shift
 
 if [ $# -eq 0 ]; then
-	printf "Usage: xrevbump MESSAGE TEMPLATES...\n" 2>&1
+	printf "Usage: xrevbump MESSAGE TEMPLATES... -- git commit options\n" 2>&1
         exit 1
 fi
 
-seen=' '
-nl='
-'
+declare -a seen
 
 bump() {
 	t="$1"
@@ -32,29 +29,47 @@ bump() {
 
 	. "$t"
 
-	case "$seen" in
+	case "${seen[@]}" in
 	*" $pkgname "*)
 		printf "%s: bumped already.\n" "$t"
 		;;
 	*)
-		revision=$((revision + 1))
-		printf "%s: bump to revision %d\n" "$t" "$revision"
-
-		sed -i -e "/^revision=/s/=.*/=$revision/" "$t"
-		git -C "${t%/*}" commit -m "$pkgname: $MESSAGE" template
-		seen="$seen $pkgname "
+		if ! $(git diff HEAD "$t" | grep -q '^[-+]revision='); then
+			revision=$((revision + 1))
+			printf "%s: bump to revision %d\n" "$t" "$revision"
+			sed -i -e "/^revision=/s/=.*/=$revision/" "$t"
+		else
+			printf "%s: committing\n" "$t"
+		fi
+		git -C "${t%/*}" commit $commit_args -m "$pkgname: $MESSAGE" . || printf "\033[1;31m%s: failed to commit!\033[0m\n" "$t"
+		seen+=($pkgname)
 		;;
 	esac
 }
 
 XBPS_DISTDIR="$(xdistdir)"
 
+declare -a templates
+
 if [ "$1" = - ]; then
-	while IFS="$nl" read -r t; do
-		bump "$t"
-	done
+	shift
+	if [ "$1" =  -- ]; then
+		shift
+		commit_args="$@"
+	fi
+	IFS=$'\n' read -d '' -r -a templates
 else
 	for t; do
-		bump "$t"
+		if [ "$1" =  -- ]; then
+			shift
+			commit_args="$@"
+			break
+		fi
+		templates+=($t)
+		shift
 	done
 fi
+
+for t in "${templates[@]}"; do
+	bump "$t"
+done
