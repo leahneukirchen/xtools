@@ -27,6 +27,12 @@ else
 	PROGRESS=cat
 fi
 
+if command -v column >/dev/null; then
+	COLUMN="column -ts: -l2"
+else
+	COLUMN='sed s/:/\t/'
+fi
+
 xupdategit() {
 	set -e
 	DIR=$(mktemp -dt xlocate.XXXXXX)
@@ -88,7 +94,7 @@ if [ -d "$XLOCATE_GIT" ]; then
 		fi
 	fi
 	$GIT_CMD -c grep.lineNumber=false -c grep.column=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
-		sed 's/^@://' | column -ts: -l2 | grep .
+		sed 's/^@://' | $COLUMN | grep .
 else
 	echo "xlocate: database not found, please use xlocate -S." 1>&2
 	exit 1
