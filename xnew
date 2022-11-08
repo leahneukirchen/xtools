@@ -31,7 +31,7 @@ case "$PKG" in
 	done
 	version=${version%.}
 	PKG=${PKG%-*}
-	distfiles="$homepage\${pkgname}-\${version}.$ext"
+	distfiles="$homepage$pkgname-\${version}.$ext"
 esac
 
 if [ -z "$append" ]; then
