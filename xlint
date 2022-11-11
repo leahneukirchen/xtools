@@ -389,6 +389,7 @@ for argument; do
 	if [ "$template" ]; then
 	exists_once "$template"
 	scan 'short_desc=.*\."' "unwanted trailing dot in short_desc"
+	scan 'short_desc=.*[[:space:]]"' "unwanted trailing space in short_desc"
 	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
 	scan 'short_desc=["'\''](An?|The) ' "short_desc should not start with an article"
 	scan 'short_desc=["'\''][\t ]' "short_desc should not start with whitespace"
