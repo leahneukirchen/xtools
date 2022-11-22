@@ -15,6 +15,10 @@ scan() {
 		done
 }
 
+check_old_vars() {
+	sed -E 's/^([^:]+:[0-9]+:).*: ('"$old_variables"')=.*$/\1 \2 is deprecated and should not be used/'
+}
+
 regex_escape() {
 	sed 's/\([.*+]\)/\\\1/g'
 }
@@ -271,6 +275,9 @@ version
 xml_catalogs
 xml_entries" | tr '\n' '|')
 
+old_variables=$(echo -n "long_desc
+wrksrc" | tr '\n' '|')
+
 old_accounts=$(echo -n "at
 avahi
 bitlbee
@@ -444,7 +451,7 @@ for argument; do
 	scan 'homepage=.*\$' "homepage should not use variables"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan 'maintainer=.*<.*@users.noreply.github.com>.*' "maintainer needs a valid address for sending mail"
-	scan '^(?!\s*('"$variables"'))[^\s=-]+=' "custom variables should use _ prefix: \\\2"
+	scan '^(?!\s*('"$variables"'))[^\s=-]+=' "custom variables should use _ prefix: \\\2" | check_old_vars
 	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \\\2"
 	scan '^(.*)-docs_package().*' 'use <pkgname>-doc subpackage for documentation'
 	scan 'distfiles=.*github.com.*/archive/.*\.zip[\"]?$' 'Use the distfile .tar.gz instead of .zip'
@@ -464,7 +471,6 @@ for argument; do
 	scan 'distfiles=.*xorg\.freedesktop\.org/wiki/' 'use $XORG_HOME'
 	scan 'usr/lib/python3.[0-9]/site-packages' 'use $py3_sitelib'
 	scan 'pycompile_module=' 'do not set pycompile_module, it is autodetected'
-	scan '^wrksrc=' 'wrksrc should not be defined'
 	scan '^\t*function\b' 'do not use the function keyword'
 	scan '^\t*[^ ]*  *\(\)' 'do not use space before function parenthesis'
 	scan '^\t*[^ ]*\(\)(|   *){' 'use one space after function parenthesis'
@@ -479,7 +485,7 @@ for argument; do
 	scan "cargo update (--package|-p) [A-Za-z_][A-Za-z0-9_]*(?!\:[0-9]+\.[0-9]+\.[0-9]+)(\s.+)?$" '"cargo update" commands should include the specific version we are updating from in the --package SPEC' 
 	scan "cargo update (--package|-p) [A-Za-z_][A-Za-z0-9_-]*\:[0-9]+\.[0-9]+\.[0-9]+(?!--precise [0-9]+\.[0-9]+\.[0-9]+)$" '"cargo update" commands should include the specific version we are updating to, using --precise' 
 	scan '-D([[:alnum:]_-]+)=\$\(vopt_if \1 true false\)' 'use $(vopt_bool ...) instead of -D...=$(vopt_if ...)'
-	variables_order
+	variables_order | grep -Pv "($old_variables)="
 	header
 	file_end
 	explain_make_check
