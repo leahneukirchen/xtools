@@ -448,6 +448,7 @@ for argument; do
 	scan '^reverts=.*-.*' "reverts must not contain package name"
 	scan '^reverts=(?!.*_.*).*' "reverts without revision"
 	scan 'archs=.?noarch.?' "noarch is deprecated and should no longer be used"
+	scan '^build_style="[^$]+"' "build_style must not be quoted"
 	scan 'replaces=(?=.*\w)[^<>]*$' "replaces needs depname with version"
 	scan 'homepage=.*\$' "homepage should not use variables"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
