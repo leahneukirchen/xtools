@@ -17,21 +17,23 @@ CHROOT=$1; shift
 [ -d "$CHROOT/proc" ] || fail 'no /proc in chroot'
 [ -d "$CHROOT/sys" ] || fail 'no /sys in chroot'
 
-mount --rbind /dev "$CHROOT/dev"
-mount --rbind /proc "$CHROOT/proc"
-mount --rbind /sys "$CHROOT/sys"
+for _fs in dev proc sys; do
+	mount --rbind "/$_fs" "$CHROOT/$_fs"
+	mount --make-rslave "$CHROOT/$_fs"
+done
+
 touch "$CHROOT/etc/resolv.conf"
 mount --bind /etc/resolv.conf "$CHROOT/etc/resolv.conf"
 
 cleanup() {
-	umount -R "$CHROOT/dev" "$CHROOT/etc/resolv.conf" "$CHROOT/proc" "$CHROOT/sys"
+	umount -R "$CHROOT/dev" "$CHROOT/proc" "$CHROOT/sys" "$CHROOT/etc/resolv.conf"
 }
 
 trap cleanup EXIT INT
 
-if [ -f "$CHROOT/$SHELL" ]; then
+if [ -x "$CHROOT/$SHELL" ]; then
 	INNER_SHELL="$SHELL"
-elif [ -f "$CHROOT/bin/bash" ]; then
+elif [ -x "$CHROOT/bin/bash" ]; then
 	INNER_SHELL="/bin/bash"
 else
 	INNER_SHELL="/bin/sh"
