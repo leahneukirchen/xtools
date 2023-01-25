@@ -85,10 +85,7 @@ use
 .Sq Cm \&:
 to lint all templates staged in the git index
 .El
-.It Nm xlocate
-.Oo
-.Fl g | S |
-.Ar pattern
+.It Nm xlocate Fl g | Fl S | Ar pattern
 .Oc
 .Nd locate files in all XBPS packages
 .Bl -tag -offset 2n -width 2n -compact
@@ -113,10 +110,8 @@ Sync with the official git based xlocate database, which is recommended before u
 .It Fl a
 append subpkgs to existing pkg
 .El
-.Pp
 .It Nm xnodev
 .Nd list not installed -devel packages for installed packages
-.Pp
 .It Nm xoptdiff Op Fl q Op Ar pkgs ...
 .Nd show template options which differ from binary package
 .Bl -tag -offset 2n -width 2n -compact
