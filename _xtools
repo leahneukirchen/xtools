@@ -133,7 +133,7 @@ _xsubpkg() {
 
 _xtools() {
 	case "$service" in
-		xbuildbarf) _xtools_one_arch "@";;
+		xbuildbarf) _xtools_one_arch "$@";;
 		xbulk) _xbulk "$@";;
 		xbump) _xtools_one_template "$@";;
 		xcheckrestart) _xcheckrestart "$@";;
