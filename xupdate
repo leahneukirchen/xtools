@@ -1,0 +1,54 @@
+#!/bin/bash
+# xupdate [-f] [-i] [-H hostdir] TEMPLATE
+
+# xmypkgs [email] | xargs -d'\n' -P0 -n1 xupdate [-f] [-H <hostdir>]
+
+usage() {
+	echo 'Usage: xupdate [-f] [-i] [-H hostdir] TEMPLATE' 1>&2
+	exit 1
+}
+
+while getopts fhH:i opt; do
+	case $opt in
+		f) FLAG_f=1 ;;
+		H) FLAH_H="-H $OPTARG" ;;
+		i) FLAG_i='-i' ;;
+		h|?) usage ;;
+	esac
+done
+
+shift $(( OPTIND - 1 ))
+
+XBPS_DISTDIR=$(xdistdir) || exit 1
+
+if [ -f "$1" ]; then
+	template="$1"
+elif [ -f "$1/template" ]; then
+	template="$1/template"
+elif [ -f "$XBPS_DISTDIR/srcpkgs/$1/template" ]; then
+	template="$XBPS_DISTDIR/srcpkgs/$1/template"
+else
+	usage
+fi
+
+. "$template"
+
+latest_version="$("$XBPS_DISTDIR/xbps-src" update-check "$pkgname" \
+	| tail -n1 \
+	| sed -e 's/.*-\([^-]\+\)$/\1/')"
+
+: ${latest_version:="$version"}
+
+if [ -z "$FLAG_i" ]; then
+	template_backup="$(mktemp "$pkgname-template-backup.XXXXX")"
+	cat "$template" > "$template_backup"
+fi
+
+sed -i -e "s/^version=.*/version=$latest_version/" "$template"
+
+xgensum $FLAG_f $FLAG_i $FLAG_H "$template"
+
+if [ -z "$FLAG_i" ]; then
+	cat "$template_backup" > "$template"
+	rm -f "$template_backup"
+fi
