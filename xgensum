@@ -1,15 +1,14 @@
 #!/bin/bash
-# xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE - update SHA256 sums in templates
+# xgensum [-f] [-i] [-H hostdir] TEMPLATE - update SHA256 sums in templates
 
 usage() {
-	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE' 1>&2
+	echo 'Usage: xgensum [-f] [-i] [-H hostdir] TEMPLATE' 1>&2
 	exit 1
 }
 
-while getopts fciH:h flag; do
+while getopts fiH:h flag; do
 	case $flag in
 		f) FLAG_f=1 ;;
-		c) FLAG_c=1 ;;
 		i) FLAG_i='-i' ;;
 		H) FLAG_h="-H $OPTARG" ;;
 		h|?) usage ;;
@@ -59,13 +58,21 @@ fi
 
 "$XBPS_DISTDIR/xbps-src" $FLAG_h $FLAG_a -I fetch $pkgname
 
+previous_sums="$(sed -n -e "/^checksum=/,/^[^ \t]/{
+		/^\(checksum=\|[ \t]\+\)/!d
+		s/checksum=\|\"\|^[ \t]//g
+		p
+	}" "$template" | tr -s '[[:space:]]' '\t')"
+
+i=0
 ret=0
 sums=""
 for f in $distfiles; do
 	curfile="${f#*>}"
 	curfile="${curfile##*/}"
 	distfile="$srcdir/$curfile"
-	if [ -n "$FLAG_c" ];then
+	i=$(( i + 1 ))
+	if [ -n "$(echo "$previous_sums" | cut -f$i | grep '@')" ]; then
 		sum="@"
 		case ${distfile} in
 		*tar.lzma|*.tar|*.txz|*.tar.xz|*.tbz|*.tar.gz)
