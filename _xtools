@@ -1,4 +1,4 @@
-#compdef xbuildbarf xbulk xbump xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xpkgdiff xq xrecent xrevbump xrevshlib xsrc xsubpkg
+#compdef xbuildbarf xbulk xbump xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xpkgdiff xq xrecent xrevbump xrevshlib xsrc xsubpkg xupdate
 
 _xbps  # force autoload
 
@@ -54,9 +54,8 @@ _xdowngrade() {
 _xgensum() {
 	_arguments -s : \
 		'-f[force downloading of files]' \
-		'-c[use content checksum]' \
 		'-i[substitute in-place]' \
-		'-H[Absolute path to hostdir]:hostdir:_files -/' \
+		'-H[absolute path to hostdir]:hostdir:_files -/' \
 		':available templates:_path_files -g "*(/)|template(N)"'
 }
 
@@ -127,8 +126,16 @@ _xrevbump() {
 
 _xsubpkg() {
 	_arguments : \
-		'-m[list master package]'\
+		'-m[list master package]' \
 		'*:package:_xbps_all_packages'
+}
+
+_xupdate() {
+	_arguments : \
+		'-f[force downloading of files]' \
+		'-i[substitute in-place]' \
+		'-H[absolute path to hostdir]:hostdir:_files -/' \
+		':available templates:_path_files -g "*(/)|template(N)"'
 }
 
 _xtools() {
@@ -158,6 +165,7 @@ _xtools() {
 		xrevshlib) _xtools_one_template "$@";;
 		xsrc) _xtools_one_template "$@";;
 		xsubpkg) _xsubpkg "$@";;
+		xupdate) _xupdate "$@";;
 	esac
 }
 
