@@ -1,8 +1,6 @@
 #!/bin/bash
 # xupdate [-f] [-i] [-H hostdir] TEMPLATE
 
-# xmypkgs [email] | xargs -d'\n' -P0 -n1 xupdate [-f] [-H <hostdir>]
-
 usage() {
 	echo 'Usage: xupdate [-f] [-i] [-H hostdir] TEMPLATE' 1>&2
 	exit 1
@@ -37,14 +35,16 @@ latest_version="$("$XBPS_DISTDIR/xbps-src" update-check "$pkgname" \
 	| tail -n1 \
 	| sed -e 's/.*-\([^-]\+\)$/\1/')"
 
-: ${latest_version:="$version"}
-
 if [ -z "$FLAG_i" ]; then
 	template_backup="$(mktemp "$pkgname-template-backup.XXXXX")"
 	cat "$template" > "$template_backup"
 fi
 
-sed -i -e "s/^version=.*/version=$latest_version/" "$template"
+[ -n "$latest_version" ] && sed -ie "s/^revision=.*/revision=1/" "$template"
+
+: ${latest_version:="$version"}
+
+sed -ie "s/^version=.*/version=$latest_version/" "$template"
 
 xgensum $FLAG_f $FLAG_i $FLAG_H "$template"
 
