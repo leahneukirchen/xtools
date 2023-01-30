@@ -32,8 +32,11 @@ fi
 . "$template"
 
 latest_version="$("$XBPS_DISTDIR/xbps-src" update-check "$pkgname" \
+	| grep -e '->' \
 	| tail -n1 \
-	| sed -e 's/.*-\([^-]\+\)$/\1/')"
+	| sed -e 's/.*-\(.*\)/\1/')"
+
+echo "$latest_version"
 
 if [ -z "$FLAG_i" ]; then
 	template_backup="$(mktemp "$pkgname-template-backup.XXXXX")"
