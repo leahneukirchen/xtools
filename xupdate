@@ -40,11 +40,11 @@ if [ -z "$FLAG_i" ]; then
 	cat "$template" > "$template_backup"
 fi
 
-[ -n "$latest_version" ] && sed -ie "s/^revision=.*/revision=1/" "$template"
+[ -n "$latest_version" ] && sed -i -e "s/^revision=.*/revision=1/" "$template"
 
 : ${latest_version:="$version"}
 
-sed -ie "s/^version=.*/version=$latest_version/" "$template"
+sed -i -e "s/^version=.*/version=$latest_version/" "$template"
 
 xgensum $FLAG_f $FLAG_i $FLAG_H "$template"
 
