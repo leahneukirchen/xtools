@@ -99,7 +99,6 @@ use
 to lint all templates staged in the git index
 .El
 .It Nm xlocate Fl g | Fl S | Ar pattern
-.Oc
 .Nd locate files in all XBPS packages
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl g
@@ -190,7 +189,8 @@ reverse diff (compare local to remote)
 .It Fl x
 compare package dependencies
 .It Fl t
-compare the full package dependency tree. Only used with -x (equivalent to xbps-query --fulldeptree -x)
+compare the full package dependency tree.
+Only used with -x (equivalent to xbps-query --fulldeptree -x)
 .It Fl a Ar arch
 set architecture for comparison
 .It Fl R Ar url
@@ -212,7 +212,7 @@ query remote repos
 .El
 .It Nm xrecent Op Ar repourl | arch
 .Nd list packages in repo ordered by build date
-.It Nm xrevbump Ar message Ar templates ... Op Ar -- git commit options
+.It Nm xrevbump Ar message Ar templates ... Op Ar -\&- git commit options
 .Nd increase template revision and commit. Use
 .Sq Cm \&-
 to read templates from stdin.
@@ -234,6 +234,7 @@ only print main package
 .Nd display system info relevant for debugging Void
 .It Nm xvoidstrap Ar dir Op Ar packages
 .Nd bootstrap a new Void installation
+.El
 .Sh DESCRIPTION
 Tools working on the void-packages tree use
 .Nm xdistdir

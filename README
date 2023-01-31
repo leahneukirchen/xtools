@@ -134,7 +134,7 @@ COMMANDS
           -f  compare package file lists
           -r  reverse diff (compare local to remote)
           -x  compare package dependencies
-          -t  compare the full package dependency tree. Only used with -x
+          -t  compare the full package dependency tree.  Only used with -x
               (equivalent to xbps-query --fulldeptree -x)
           -a arch
               set architecture for comparison
