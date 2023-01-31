@@ -10,7 +10,11 @@
 .Nd Display build logs of last build
 .It Nm xbuildbarf Op Ar arch
 .Nd Spy on current buildbot output
-.It Nm xbulk Op Fl n Op Fl k Op Ar xbps-src\ flags Ar pkgs ...
+.It Nm xbulk \
+Oo Fl n Oc \
+Oo Fl k Oc \
+Oo Ar xbps-src\ flags Oc \
+Ar pkgs ...
 .Nd simple XBPS bulk builder
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl n
@@ -34,7 +38,9 @@ verbose mode, also print the library names
 .Nd detect file conflicts between XBPS packages
 .It Nm xdbg Ar pkgs ...
 .Nd list debugging packages for pkgs and recursive dependencies
-.It Nm xdiff Op Fl u | l Op Ar basedir
+.It Nm xdiff \
+Oo Fl u | l Oc \
+Op Ar basedir
 .Nd merge/diff/list XBPS .new-* files
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl l
@@ -51,7 +57,12 @@ print unified diffs
 .Nd show diff of
 .Pa /etc
 against binary packages
-.It Nm xgensum Op Fl f Op Fl c Op Fl i Ar template
+.It Nm xgensum \
+Oo Fl f Oc \
+Oo Fl c Oc \
+Oo Fl i Oc \
+Oo Fl H Ar hostdir Oc \
+Ar template
 .Nd update SHA256 sum in templates
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl f
@@ -60,6 +71,8 @@ force (re-)download of distfiles
 use content checksum
 .It Fl i
 replace checksum in-place
+.It Fl H
+absolute path to hostdir
 .El
 .It Nm xgrep Ar pattern Ar pkgs ...
 .Nd search files limited to XBPS package contents
@@ -104,7 +117,10 @@ Sync with the official git based xlocate database, which is recommended before u
 .Nd create new runit service templates
 .It Nm xmypkgs Op Ar email
 .Nd list all pkgs maintained by you
-.It Nm xnew Op Fl a Ar pkg Op Ar subpkgs ...
+.It Nm xnew \
+Oo Fl a Oc \
+Ar pkg \
+Op Ar subpkgs ...
 .Nd create XBPS template
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl a
@@ -112,7 +128,9 @@ append subpkgs to existing pkg
 .El
 .It Nm xnodev
 .Nd list not installed -devel packages for installed packages
-.It Nm xoptdiff Op Fl q Op Ar pkgs ...
+.It Nm xoptdiff \
+Oo Fl q Oc \
+Op Ar pkgs ...
 .Nd show template options which differ from binary package
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl q
@@ -120,14 +138,12 @@ quiet mode, show package names only
 .El
 .It Nm xpcdeps Ar pcfile ...
 .Nd finds package matching the Requires: section of pkg-config files
-.It Nm xpkg Op Fl R Ar repo Op Fl r Ar rootdir Op Fl amOHDvV
+.It Nm xpkg \
+Oo Fl amOHDvV Oc \
+Oo Fl r Ar rootdir Oc \
+Oo Fl R Ar repo Oc
 .Nd convenient package lister
 .Bl -tag -offset 2n -width 2n -compact
-.It Fl R Ar repo
-consider only packages from
-.Ar repo
-.It Fl r Ar rootdir
-specifies a full path for the target root directory
 .It Fl a
 list all packages (default: only installed)
 .It Fl m
@@ -144,8 +160,19 @@ list installed packages not from remote repos
 show version numbers
 .It Fl V
 show version numbers and description
+.It Fl r Ar rootdir
+specifies a full path for the target root directory
+.It Fl R Ar repo
+consider only packages from
+.Ar repo
 .El
-.It Nm xpkgdiff Op Fl Sfrxt Op Fl a Ar arch Op Fl R Ar url Op Fl c Ar file Op Fl p Ar prop,... Ar pkg
+.It Nm xpkgdiff \
+Oo Fl Sfrxt Oc \
+Oo Fl a Ar arch Oc \
+Oo Fl R Ar url Oc \
+Oo Fl c Ar file Oc \
+Oo Fl p Ar prop,... Oc \
+Ar pkg
 .Nd compare a package in the repositories to the locally-built version
 .Bl -dash -offset 0n -width 0n -compact
 .It
@@ -164,18 +191,20 @@ reverse diff (compare local to remote)
 compare package dependencies
 .It Fl t
 compare the full package dependency tree. Only used with -x (equivalent to xbps-query --fulldeptree -x)
-.It Fl c Ar file
-compare a file from the package (equivalent to xbps-query --cat)
-.It Fl p Ar prop,...
-compare properties of the package
 .It Fl a Ar arch
 set architecture for comparison
 .It Fl R Ar url
 set remote repository url
+.It Fl c Ar file
+compare a file from the package (equivalent to xbps-query --cat)
+.It Fl p Ar prop,...
+compare properties of the package
 .El
 .It Nm xpstree
 .Nd display tree view of xbps-src processes
-.It Nm xq Op Fl R Ar pkg ...
+.It Nm xq \
+Oo Fl R Oc \
+Ar pkg ...
 .Nd query information about XBPS package
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl R
@@ -193,7 +222,9 @@ to read templates from stdin.
 .Nd like xbps-query -Rs, but take cwd repo into account
 .It Nm xsrc Ar pkg
 .Nd list source files for XBPS template
-.It Nm xsubpkg Op Fl m Ar pkg
+.It Nm xsubpkg \
+Oo Fl m Oc \
+Ar pkg
 .Nd list all subpackages of a package
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl m
@@ -203,7 +234,6 @@ only print main package
 .Nd display system info relevant for debugging Void
 .It Nm xvoidstrap Ar dir Op Ar packages
 .Nd bootstrap a new Void installation
-.El
 .Sh DESCRIPTION
 Tools working on the void-packages tree use
 .Nm xdistdir
