@@ -91,8 +91,9 @@ COMMANDS
      xmandoc manpage
         – read manpage of possibly not installed package
 
-     xmksv [newsvdir]
-        – create new runit service templates
+     xmksv [-l] [newsvdir ...]
+        – create new runit service templates. Also creates log service if -l
+        is passed.
 
      xmypkgs [email]
         – list all pkgs maintained by you

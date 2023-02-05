@@ -1,5 +1,10 @@
 #!/bin/sh -e
-# xmksv [NEWSVDIR...] - create new runit service templates
+# xmksv [-l] [NEWSVDIR...] - create new runit service templates
+
+if [ "$1" = "-l" ]; then
+	MKLOG=1
+	shift
+fi
 
 cd ${SVDIR:-/etc/sv}
 
@@ -10,5 +15,16 @@ for SRV; do
 	if [ -w /run/runit ]; then
 		ln -s /run/runit/supervise."$(printf %s "$SRV" | tr / -)" \
 			"$SRV/supervise"
+	fi
+	if [ -n "$MKLOG" ]; then
+		mkdir "$SRV/log"
+		cat <<EOF | install -m755 /dev/stdin "$SRV/log/run"
+#!/bin/sh
+exec vlogger -t $SRV -f daemon
+EOF
+		if [ -w /run/runit ]; then
+			ln -s /run/runit/supervise."$(printf %s "$SRV/log" | tr / -)" \
+				"$SRV/log/supervise"
+		fi
 	fi
 done

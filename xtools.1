@@ -112,8 +112,12 @@ Sync with the official git based xlocate database, which is recommended before u
 .Nd list files contained in pkg (including binpkgs)
 .It Nm xmandoc Ar manpage
 .Nd read manpage of possibly not installed package
-.It Nm xmksv Op Ar newsvdir
-.Nd create new runit service templates
+.It Nm xmksv Oo Fl l Oc \
+Op Ar newsvdir ...
+.Nd create new runit service templates.
+Also creates log service if
+.Fl l
+is passed.
 .It Nm xmypkgs Op Ar email
 .Nd list all pkgs maintained by you
 .It Nm xnew \
