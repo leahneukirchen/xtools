@@ -136,6 +136,7 @@ _xtools() {
 		xbuildbarf) _xtools_one_arch "$@";;
 		xbulk) _xbulk "$@";;
 		xbump) _xtools_one_template "$@";;
+		xchangelog) _xtools_one_template "$@";;
 		xcheckrestart) _xcheckrestart "$@";;
 		xdbg) _xtools_just_packages "$@";;
 		xdiff) _xdiff "$@";;

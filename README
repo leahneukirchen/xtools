@@ -18,6 +18,9 @@ COMMANDS
      xbump pkgname [git commit options]
         – git commit a new package or package update
 
+     xchangelog template | pkgname
+        – open package changelog
+
      xcheckmypkgs [email]
         – check your packages for updates
 
