@@ -1,0 +1,46 @@
+#!/bin/bash
+# xchangelog PKGNAME - open package changelog
+
+XBPS_DISTDIR=$(xdistdir) || exit 1
+
+pkg=$1
+[ -z "$pkg" ] && pkg=$(basename "$PWD")
+
+if [ -f "$pkg" ]; then
+	template="$pkg"
+elif [ -f "$pkg/template" ]; then
+	template="$pkg/template"
+elif [ -f "$XBPS_DISTDIR/srcpkgs/$pkg/template" ]; then
+	template="$XBPS_DISTDIR/srcpkgs/$pkg/template"
+else
+	echo "No such template: $pkg" >&2
+	exit 1
+fi
+
+. "$template"
+
+if [ -z "$changelog" ]; then
+	echo "No changelog defined in template" >&2
+	exit 1
+fi
+
+if ! [ -t 1 ]; then
+	curl -s -- "$changelog"
+elif curl -sI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -i "^text/plain"; then
+	if [ -n "$PAGER" ]; then
+		curl -s -- "$changelog" | "$PAGER"
+	elif type less >/dev/null; then
+		curl -s -- "$changelog" | less
+	else
+		curl -s -- "$changelog"
+	fi
+else
+	if type xdg-open >/dev/null; then
+		xdg-open "$changelog"
+	elif [ -n "$BROWSER" ]; then
+		"$BROWSER" "$changelog"
+	else
+		echo 'Cannot open changelog in web browser, please install xdg-open or define $BROWSER' >&2
+		exit 1
+	fi
+fi
