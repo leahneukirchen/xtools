@@ -20,7 +20,7 @@ for SRV; do
 		mkdir "$SRV/log"
 		cat <<EOF | install -m755 /dev/stdin "$SRV/log/run"
 #!/bin/sh
-exec vlogger -t $SRV -f daemon
+exec vlogger -t $SRV -p daemon
 EOF
 		if [ -w /run/runit ]; then
 			ln -s /run/runit/supervise."$(printf %s "$SRV/log" | tr / -)" \
