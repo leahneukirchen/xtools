@@ -100,13 +100,19 @@ use
 .Sq Cm \&:
 to lint all templates staged in the git index
 .El
-.It Nm xlocate Fl g | Fl S | Ar pattern
+.It Nm xlocate Fl g | Fl S | Oo Fl EFGPiw Oc Ar pattern
 .Nd locate files in all XBPS packages
 .Bl -tag -offset 2n -width 2n -compact
 .It Fl g
 Update a git based xlocate database, useful for local repositories
 .It Fl S
 Sync with the official git based xlocate database, which is recommended before using the tool
+.It Fl E | Fl F | Fl G | Fl P | Fl i | Fl w
+Modifies how
+.Ar pattern
+is matched. See
+.Xr git-grep 1
+for more info
 .El
 .It Nm xlog Ar pkg
 .Nd open commit log for XBPS template
