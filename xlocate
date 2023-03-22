@@ -1,5 +1,5 @@
 #!/bin/sh
-# xlocate [-g | -S | PATTERN] - locate files in all XBPS packages
+# xlocate [-g | -S | [-EFGPiw] PATTERN] - locate files in all XBPS packages
 
 : ${XDG_CACHE_HOME:=~/.cache}
 : ${XDG_CONFIG_HOME:=~/.config}
@@ -68,17 +68,29 @@ xsyncgit() {
 	$GIT_CMD -C "$XLOCATE_GIT" fetch -u -f "$XLOCATE_REPO" master:master
 }
 
-case "$1" in
--g)
+usage() {
+	echo "Usage: xlocate [-g | -S | [-EFGPiw] PATTERN]" >&2
+}
+
+while getopts gSEFGPiwh flag; do
+	case $flag in
+		g) UPDATE=1 ;;
+		S) SYNC=1 ;;
+		[EFGPiw]) GREP_FLAGS="$GREP_FLAGS -$flag" ;;
+		h) usage; exit 0 ;;
+		?) usage; exit 1 ;;
+	esac
+done
+
+shift $(( OPTIND - 1 ))
+
+if [ -n "$UPDATE" ]; then
 	xupdategit
-	exit $?;;
--S)
+	exit $?
+elif [ -n "$SYNC" ]; then
 	xsyncgit
-	exit $?;;
-'')
-	echo "Usage: xlocate [-g | -S | PATTERN]" >&2
-	exit 1;;
-esac
+	exit $?
+fi
 
 if [ -d "$XLOCATE_GIT" ]; then
 	if [ -f "$XLOCATE_GIT/refs/heads/master" ]; then
@@ -93,7 +105,7 @@ if [ -d "$XLOCATE_GIT" ]; then
 			echo "xlocate: database outdated, please run xlocate -g." >&2
 		fi
 	fi
-	$GIT_CMD -c grep.lineNumber=false -c grep.column=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
+	$GIT_CMD -c grep.lineNumber=false -c grep.column=false --git-dir="$XLOCATE_GIT" grep $GREP_FLAGS -- "$@" @ |
 		sed 's/^@://' | $COLUMN | grep .
 else
 	echo "xlocate: database not found, please use xlocate -S." >&2
