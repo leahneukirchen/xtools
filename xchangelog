@@ -26,7 +26,7 @@ fi
 
 if ! [ -t 1 ]; then
 	curl -s -- "$changelog"
-elif curl -sI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -i "^text/plain"; then
+elif curl -sI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -qi "^text/plain"; then
 	if [ -n "$PAGER" ]; then
 		curl -s -- "$changelog" | "$PAGER"
 	elif type less >/dev/null; then
