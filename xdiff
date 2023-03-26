@@ -21,6 +21,11 @@ fi
 
 DIR=${1:-/etc}
 
+if ! [ -d "$DIR" ] ; then
+    echo "$DIR is not a valid directory" >&2
+    exit 1
+fi
+
 for newfile in $(find "$DIR" -name '*.new-*_*' | sort -V); do
 	$DIFF "$newfile" "${newfile%.new-*_*}"
 done
