@@ -29,6 +29,8 @@ if ! [ -t 1 ]; then
 elif curl -sI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -qi "^text/plain"; then
 	if [ -n "$PAGER" ]; then
 		curl -s -- "$changelog" | "$PAGER"
+	elif [[ "$changelog" = *".md" ]] && type mdless >/dev/null; then
+		curl -s -- "$changelog" | mdless
 	elif type less >/dev/null; then
 		curl -s -- "$changelog" | less
 	else
