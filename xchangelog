@@ -25,16 +25,16 @@ if [ -z "$changelog" ]; then
 fi
 
 if ! [ -t 1 ]; then
-	curl -s -- "$changelog"
-elif curl -sI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -qi "^text/plain"; then
+	curl -sL -- "$changelog"
+elif curl -sLI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -qi "^text/plain"; then
 	if [ -n "$PAGER" ]; then
-		curl -s -- "$changelog" | "$PAGER"
+		curl -sL -- "$changelog" | "$PAGER"
 	elif [[ "$changelog" = *".md" ]] && type mdless >/dev/null; then
-		curl -s -- "$changelog" | mdless
+		curl -sL -- "$changelog" | mdless
 	elif type less >/dev/null; then
-		curl -s -- "$changelog" | less
+		curl -sL -- "$changelog" | less
 	else
-		curl -s -- "$changelog"
+		curl -sL -- "$changelog"
 	fi
 else
 	if type xdg-open >/dev/null; then
