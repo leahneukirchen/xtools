@@ -1,13 +1,13 @@
 #!/bin/sh
 # xmypkgs [EMAIL] - list all pkgs maintained by you (or EMAIL)
 
-EMAIL=${1-$(git config user.email)}
+XDISTDIR="$(xdistdir)" || exit 1
+EMAIL=${1-$(git -C "$XDISTDIR" config user.email)}
 if [ -z "$EMAIL" ]; then
 	echo "who are you? tell your email address." 2>&1
 	exit 1
 fi
 
-cd "$(xdistdir)" &&
-git grep -l -F "<$EMAIL>" -- 'srcpkgs/*/template' |
+git -C "$XDISTDIR" grep -l -F "<$EMAIL>" -- 'srcpkgs/*/template' |
 	cut -d/ -f2 |
 	sort
