@@ -470,6 +470,7 @@ for argument; do
 	scan 'distfiles=.*freedesktop\.org/software' 'use $FREEDESKTOP_SITE'
 	scan 'distfiles=.*download.kde.org/stable' 'use $KDE_SITE'
 	scan 'distfiles=.*xorg\.freedesktop\.org/wiki/' 'use $XORG_HOME'
+	scan 'distfiles=.*crates.io/api/' 'use https://static.crates.io/crates/pkgname/pkgname-${version}.crate'
 	scan 'usr/lib/python3.[0-9]/site-packages' 'use $py3_sitelib'
 	scan 'pycompile_module=' 'do not set pycompile_module, it is autodetected'
 	scan '^\t*function\b' 'do not use the function keyword'
