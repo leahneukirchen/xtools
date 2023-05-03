@@ -31,6 +31,8 @@ elif curl -sLI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -qi "^te
 		curl -sL -- "$changelog" | "$PAGER"
 	elif [[ "$changelog" = *".md" ]] && type mdless >/dev/null; then
 		curl -sL -- "$changelog" | mdless
+	elif [[ "$changelog" = *".rst" ]] && type rst2ansi >/dev/null; then
+		curl -sL -- "$changelog" | rst2ansi | less -r
 	elif type less >/dev/null; then
 		curl -sL -- "$changelog" | less
 	else
