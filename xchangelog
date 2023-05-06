@@ -19,8 +19,10 @@ fi
 
 . "$template"
 
+[ -n "$changelog" ] || changelog=$(xbps-query -p changelog "$pkg" || xbps-query -Rp changelog "$pkg")
+
 if [ -z "$changelog" ]; then
-	echo "No changelog defined in template" >&2
+	echo "changelog not available" >&2
 	exit 1
 fi
 
