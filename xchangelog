@@ -2,6 +2,7 @@
 # xchangelog PKGNAME - open package changelog
 
 XBPS_DISTDIR=$(xdistdir) || exit 1
+FILTER=cat
 
 pkg=$1
 [ -z "$pkg" ] && pkg=$(basename "$PWD")
@@ -24,27 +25,38 @@ if [ -z "$changelog" ]; then
 	exit 1
 fi
 
-if ! [ -t 1 ]; then
-	curl -sL -- "$changelog"
-elif curl -sLI -w "%{content_type}" -o /dev/null -- "$changelog" | grep -qi "^text/plain"; then
-	if [ -n "$PAGER" ]; then
-		curl -sL -- "$changelog" | "$PAGER"
-	elif [[ "$changelog" = *".md" ]] && type mdless >/dev/null; then
-		curl -sL -- "$changelog" | mdless
-	elif [[ "$changelog" = *".rst" ]] && type rst2ansi >/dev/null; then
-		curl -sL -- "$changelog" | rst2ansi | less -r
-	elif type less >/dev/null; then
-		curl -sL -- "$changelog" | less
-	else
-		curl -sL -- "$changelog"
+if [ -t 1 ]; then
+	if type less >/dev/null; then
+		: "${PAGER:=less -r}"
 	fi
+	content_type="$(curl -sLI -w "%{content_type}" -o /dev/null -- "$changelog")"
+	case "$content_type" in
+	"text/plain"*)
+		if [[ "$changelog" = *".md" ]] && type mdcat >/dev/null; then
+			FILTER="mdcat"
+		elif [[ "$changelog" = *".rst" ]] && type rst2ansi >/dev/null; then
+			FILTER="rst2ansi"
+		fi
+		;;
+	"text/markdown"*)
+		if type mdcat >/dev/null; then
+			FILTER="mdcat"
+		fi
+		;;
+	*)
+		if type xdg-open >/dev/null; then
+			xdg-open "$changelog"
+		elif [ -n "$BROWSER" ]; then
+			"$BROWSER" "$changelog"
+		else
+			echo 'Cannot open changelog in web browser, please install xdg-open or define $BROWSER' >&2
+			exit 1
+		fi
+		exit 0
+		;;
+	esac
 else
-	if type xdg-open >/dev/null; then
-		xdg-open "$changelog"
-	elif [ -n "$BROWSER" ]; then
-		"$BROWSER" "$changelog"
-	else
-		echo 'Cannot open changelog in web browser, please install xdg-open or define $BROWSER' >&2
-		exit 1
-	fi
+	: "${PAGER:=cat}"
 fi
+
+curl -sL -- "$changelog" | $FILTER | $PAGER
