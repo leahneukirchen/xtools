@@ -41,5 +41,5 @@ for argument; do
 			$XSHELLCHECK_ARGS \
 			-xa "${void_packages}/common/scripts/template_shellcheck_shim" || ret="$?"
 	fi
-done | $filter
+done
 exit $ret

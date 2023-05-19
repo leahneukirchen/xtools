@@ -226,6 +226,20 @@ to read templates from stdin.
 .Nd list packages shlib-dependent on package or its subpackages
 .It Nm xrs Ar pattern
 .Nd like xbps-query -Rs, but take cwd repo into account
+.It Nm xshellcheck Ar template | pkgname | Cm \&: Ns Ar pkgname | Cm \&:
+.Nd scan XBPS template for common shell mistakes.
+Requires
+.Xr shellcheck 1 .
+.Bl -dash -offset 0n -width 0n -compact
+.It
+use
+.Sq Cm \&: Ns Ar pkgname
+to lint template as staged in the git index
+.It
+use
+.Sq Cm \&:
+to lint all templates staged in the git index
+.El
 .It Nm xsrc Ar pkg
 .Nd list source files for XBPS template
 .It Nm xsubpkg \

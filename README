@@ -169,6 +169,12 @@ COMMANDS
      xrs pattern
         – like xbps-query -Rs, but take cwd repo into account
 
+     xshellcheck template | pkgname | :pkgname | :
+        – scan XBPS template for common shell mistakes. Requires
+        shellcheck(1).
+        - use ‘:pkgname’ to lint template as staged in the git index
+        - use ‘:’ to lint all templates staged in the git index
+
      xsrc pkg
         – list source files for XBPS template
 
