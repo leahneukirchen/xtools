@@ -1,0 +1,45 @@
+#!/bin/sh
+# xshellcheck TEMPLATE - scan XBPS template for shell scripting issues
+# xshellcheck :PKGNAME - shellcheck template as staged in the git index
+# xshellcheck :        - shellcheck all templates staged in the git index
+# use the env var XSHELLCHECK_ARGS to pass arguments to shellcheck
+
+if ! type shellcheck >/dev/null 2>&1; then
+	echo "xshellcheck: could not find shellcheck binary" >&2
+	echo "xshellcheck: is shellcheck installed?" >&2
+	exit 1
+fi
+
+void_packages="$(xdistdir 2>/dev/null)/"
+
+ret=0
+
+if [ "$1" = ":" ]; then
+	# get a list of all templates staged in the git index
+	set -- $(git -C "$void_packages" diff --cached --name-only |
+		sed -ne 's|^srcpkgs/\([^/]*\)/template$|:\1|p')
+fi
+
+for argument; do
+	template=
+	if [ -f "$argument" ]; then
+		template="$argument"
+	elif [ "${argument#:}" != "$argument" ]; then
+		argument="${argument#:}"
+		trap "rm -r -- ${tmpdir:=$(mktemp -d)}" EXIT INT TERM
+		# get template as staged in the git index
+		git -C "$void_packages" show ":srcpkgs/$argument/template" \
+			> ${template:=${tmpdir}/template} || continue
+	else
+		_template="${void_packages}srcpkgs/$argument/template"
+		[ -f "$_template" ] && template="$_template"
+	fi
+
+	if [ "$template" ]; then
+		shellcheck --norc -s bash \
+			-P "${template%/*}" \
+			$XSHELLCHECK_ARGS \
+			-xa "${void_packages}/common/scripts/template_shellcheck_shim" || ret="$?"
+	fi
+done | $filter
+exit $ret
