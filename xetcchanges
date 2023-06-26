@@ -5,7 +5,8 @@ xbps-query -o ${1:-"/etc/*"} |
 	awk 'function q(a) { gsub("\\47", "\47\\\47\47", a); return "\47"a"\47" }
 	{
 		sub(" \\([^)]*\\)$", "")
-		sub(" -> .*$", "")
+		if (sub(" -> .*$", ""))
+			next
 		i = index($0, ": ")
 		pkg = substr($0, 1, i-1)
 		file = substr($0, i+2)
