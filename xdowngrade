@@ -3,7 +3,7 @@
 
 for f; do
 	if ! [ -r "$f" ]; then
-		echo "$0: no such package: $f" 2>&1
+		echo "$0: no such package: $f" >&2
 		exit 2
 	fi
 done
@@ -12,7 +12,7 @@ ln -s -r -t "$T/" -- "$@"
 xbps-rindex -a $T/*
 n=$(xbps-query -i --repository="$T/" -L 2>/dev/null | awk '{print $1}')
 if [ -z "$n" ] || [ "$n" -ne "$#" ]; then
-	echo "$0: failed to register all $# packages." 2>&1
+	echo "$0: failed to register all $# packages." >&2
 	exit 2
 fi
 pkg=

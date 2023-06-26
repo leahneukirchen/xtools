@@ -53,7 +53,7 @@ grab_local() {
 grab_requires() {
 	for pkg; do
 		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" 2>/dev/null |
-		{ grep . || { echo "xpcdeps: No pkg-config file for $pkg found." 1>&2 ; exit 1; } } |
+		{ grep . || { echo "xpcdeps: No pkg-config file for $pkg found." >&2 ; exit 1; } } |
 		create_pcfile "$pkg"
 	done
 }
@@ -61,7 +61,7 @@ grab_requires() {
 get_package_from_requires() {
 	while read -r pkg ; do
 		xlocate "usr/\(lib\|share\)/pkgconfig/$pkg.pc" 2>/dev/null |
-		{ grep . || { printf -- "UNKNOWN PKG PLEASE FIX -> %s\\n" "$pkg" 1>&2 ; return; } } |
+		{ grep . || { printf -- "UNKNOWN PKG PLEASE FIX -> %s\\n" "$pkg" >&2 ; return; } } |
 		while read -r pkgname file ; do
 			file="${file##*/}"
 			printf "%s -> %s\\n" "${pkgname%-*}" "${file%*.pc}"

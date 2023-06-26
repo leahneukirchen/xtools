@@ -2,7 +2,7 @@
 # xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE - update SHA256 sums in templates
 
 usage() {
-	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE' 1>&2
+	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE' >&2
 	exit 1
 }
 

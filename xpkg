@@ -27,7 +27,7 @@ while getopts R:r:vVmOHDLa flag; do
   -L       list installed packages not from remote repos
   -v       show version numbers
   -V       show version numbers and description
-" $0 1>&2
+" $0 >&2
 		exit 1;;
 	esac
 done

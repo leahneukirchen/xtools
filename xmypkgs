@@ -4,7 +4,7 @@
 XDISTDIR="$(xdistdir)" || exit 1
 EMAIL=${1-$(git -C "$XDISTDIR" config user.email)}
 if [ -z "$EMAIL" ]; then
-	echo "who are you? tell your email address." 2>&1
+	echo "who are you? tell your email address." >&2
 	exit 1
 fi
 

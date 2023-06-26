@@ -492,7 +492,7 @@ for argument; do
 	file_end
 	explain_make_check
 	else
-	echo no such template "$argument" 1>&2
+	echo no such template "$argument" >&2
 	fi | sort -t: -n -k2 -k3 | grep . && ret=1
 done
 exit $ret
