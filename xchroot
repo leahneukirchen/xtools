@@ -2,7 +2,7 @@
 # xchroot DIR [CMD...] - chroot into a Void (or other Linux) installation
 
 fail() {
-	printf '%s\n' "$1" 1>&2
+	printf '%s\n' "$1" >&2
 	exit 1
 }
 

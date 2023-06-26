@@ -17,7 +17,7 @@ if command -v git >/dev/null 2>&1; then
 elif command -v chroot-git >/dev/null 2>&1; then
 	GIT_CMD=$(command -v chroot-git)
 else
-	echo "xlocate: git command not found." 1>&2
+	echo "xlocate: git command not found." >&2
 	exit 1
 fi
 
@@ -76,7 +76,7 @@ case "$1" in
 	xsyncgit
 	exit $?;;
 '')
-	echo "Usage: xlocate [-g | -S | PATTERN]" 1>&2
+	echo "Usage: xlocate [-g | -S | PATTERN]" >&2
 	exit 1;;
 esac
 
@@ -88,14 +88,14 @@ if [ -d "$XLOCATE_GIT" ]; then
 	fi
 	if [ -z "$BASE" ] || find /var/db/xbps/ -name '*repodata' -newer "$BASE" | grep -q .; then
 		if grep -q origin "$XLOCATE_GIT/config"; then
-			echo "xlocate: database outdated, please run xlocate -S." 1>&2
+			echo "xlocate: database outdated, please run xlocate -S." >&2
 		else
-			echo "xlocate: database outdated, please run xlocate -g." 1>&2
+			echo "xlocate: database outdated, please run xlocate -g." >&2
 		fi
 	fi
 	$GIT_CMD -c grep.lineNumber=false -c grep.column=false --git-dir="$XLOCATE_GIT" grep -- "$@" @ |
 		sed 's/^@://' | $COLUMN | grep .
 else
-	echo "xlocate: database not found, please use xlocate -S." 1>&2
+	echo "xlocate: database not found, please use xlocate -S." >&2
 	exit 1
 fi

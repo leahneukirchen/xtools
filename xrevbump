@@ -6,7 +6,7 @@ MESSAGE=$1
 shift
 
 if [ $# -eq 0 ]; then
-	printf "Usage: xrevbump MESSAGE TEMPLATES... -- git commit options\n" 2>&1
+	printf "Usage: xrevbump MESSAGE TEMPLATES... -- git commit options\n" >&2
         exit 1
 fi
 

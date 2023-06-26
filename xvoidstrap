@@ -4,7 +4,7 @@
 # (Setting XBPS_ARCH=x86_64-musl works.)
 
 fail() {
-	printf '%s\n' "$1" 1>&2
+	printf '%s\n' "$1" >&2
 	exit 1
 }
 
