@@ -6,7 +6,7 @@
 export LC_ALL=C
 
 scan() {
-	local rx="$1" msg="$(echo $2 | sed 's,/,\\/,g')"
+	local rx="$1" msg="$(printf '%s\n' "$2" | sed 's,/,\\/,g')"
 	grep -P -hn -e "$rx" "$template" |
 		grep -v -P -e "[^:]*:\s*#" |
 		sed "s/^\([^:]*\):\(.*\)/\1: $msg/" |
@@ -452,8 +452,8 @@ for argument; do
 	scan 'homepage=.*\$' "homepage should not use variables"
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan 'maintainer=.*<.*@users.noreply.github.com>.*' "maintainer needs a valid address for sending mail"
-	scan '^(?!\s*('"$variables"'))[^\s=-]+=' "custom variables should use _ prefix: \\\2" | check_old_vars
-	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \\\2"
+	scan '^(?!\s*('"$variables"'))[^\s=-]+=' "custom variables should use _ prefix: \\2" | check_old_vars
+	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \\2"
 	scan '^(.*)-docs_package().*' 'use <pkgname>-doc subpackage for documentation'
 	scan 'distfiles=.*github.com.*/archive/.*\.zip[\"]?$' 'Use the distfile .tar.gz instead of .zip'
 	scan 'distfiles=.*downloads\.sourceforge\.net' 'use $SOURCEFORGE_SITE'
