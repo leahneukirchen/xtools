@@ -1,0 +1,14 @@
+#!/bin/sh
+# xnews [PATTERN] - list news messages for recently installed packages
+#
+if type less >/dev/null; then
+	: "${PAGER:=less}"
+else
+	: "${PAGER:=cat}"
+fi
+
+for pkg in $(xbps-query -p install-date -s '' |
+	sort -t: -k2 -r | cut -d: -f1 | grep -e "${1:-.}"); do
+	xbps-query -p install-msg "$pkg" |
+		awk -v pkg="$pkg" 'NR == 1 { print pkg ":" } { print "  " $0 }'
+done | $PAGER

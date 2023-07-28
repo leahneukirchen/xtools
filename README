@@ -105,6 +105,9 @@ COMMANDS
         – create XBPS template
           -a  append subpkgs to existing pkg
 
+     xnews [pattern]
+        – list news messages for packages by install-date
+
      xnodev
         – list not installed -devel packages for installed packages
 
