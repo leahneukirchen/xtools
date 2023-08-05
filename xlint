@@ -400,7 +400,7 @@ for argument; do
 	scan 'short_desc=["'\''][a-z]' "short_desc should start uppercase"
 	scan 'short_desc=["'\''](An?|The) ' "short_desc should not start with an article"
 	scan 'short_desc=["'\''][\t ]' "short_desc should not start with whitespace"
-	scan 'short_desc=["'\''].{73}' "short_desc should be less than 72 chars"
+	scan 'short_desc=["'\''].{74}' "short_desc should be at most 72 chars"
 	scan 'license=.*[^NL]GPL[^-]' "license GPL without version"
 	scan 'license=.*SSPL' "Uses the SSPL license, which is not packageable"
 	scan 'license=.*LGPL[^-]' "license LGPL without version"
