@@ -1,0 +1,1 @@
+complete -c xhog -f
