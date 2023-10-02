@@ -72,11 +72,12 @@ usage() {
 	echo "Usage: xlocate [-g | -S | [-EFGPiw] PATTERN]" >&2
 }
 
-while getopts gSEFGPiwh flag; do
+while getopts gSEFGPiwe:h flag; do
 	case $flag in
 		g) UPDATE=1 ;;
 		S) SYNC=1 ;;
 		[EFGPiw]) GREP_FLAGS="$GREP_FLAGS -$flag" ;;
+		e) GREP_FLAGS="$GREP_FLAGS -e $OPTARG" ;;
 		h) usage; exit 0 ;;
 		?) usage; exit 1 ;;
 	esac
@@ -105,7 +106,7 @@ if [ -d "$XLOCATE_GIT" ]; then
 			echo "xlocate: database outdated, please run xlocate -g." >&2
 		fi
 	fi
-	$GIT_CMD -c grep.lineNumber=false -c grep.column=false --git-dir="$XLOCATE_GIT" grep $GREP_FLAGS -- "$@" @ |
+	$GIT_CMD -c grep.lineNumber=false -c grep.column=false --git-dir="$XLOCATE_GIT" grep $GREP_FLAGS "$@" @ |
 		sed 's/^@://' | $COLUMN | grep .
 else
 	echo "xlocate: database not found, please use xlocate -S." >&2
