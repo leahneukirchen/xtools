@@ -91,6 +91,9 @@ if [ -n "$UPDATE" ]; then
 elif [ -n "$SYNC" ]; then
 	xsyncgit
 	exit $?
+elif [ $# = 0 ]; then
+	usage
+	exit 1
 fi
 
 if [ -d "$XLOCATE_GIT" ]; then
