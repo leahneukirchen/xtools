@@ -72,12 +72,13 @@ usage() {
 	echo "Usage: xlocate [-g | -S | [-EFGPiw] PATTERN]" >&2
 }
 
+GOT_E=
 while getopts gSEFGPiwe:h flag; do
 	case $flag in
 		g) UPDATE=1 ;;
 		S) SYNC=1 ;;
 		[EFGPiw]) GREP_FLAGS="$GREP_FLAGS -$flag" ;;
-		e) GREP_FLAGS="$GREP_FLAGS -e $OPTARG" ;;
+		e) GREP_FLAGS="$GREP_FLAGS -e $OPTARG"; GOT_E=true ;;
 		h) usage; exit 0 ;;
 		?) usage; exit 1 ;;
 	esac
@@ -91,7 +92,7 @@ if [ -n "$UPDATE" ]; then
 elif [ -n "$SYNC" ]; then
 	xsyncgit
 	exit $?
-elif [ $# = 0 ]; then
+elif [ $# = 0 ] && [ -z "$GOT_E" ]; then
 	usage
 	exit 1
 fi
