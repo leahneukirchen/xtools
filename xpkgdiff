@@ -55,6 +55,7 @@ else
 	# if arch is set, add all the standard repos for that arch, and ignore conf repos
 	REMOTE_REPOS="
 		-i
+		--repository=$REMOTE_BASEURL/bootstrap
 		--repository=$REMOTE_BASEURL
 		--repository=$REMOTE_BASEURL/nonfree
 		--repository=$REMOTE_BASEURL/multilib
@@ -79,11 +80,13 @@ else
 	XBPS_BINPKGS="$XBPS_DISTDIR/hostdir/binpkgs"
 fi
 REPO="
+	--repository=$XBPS_BINPKGS/$BRANCH/bootstrap
 	--repository=$XBPS_BINPKGS/$BRANCH
 	--repository=$XBPS_BINPKGS/$BRANCH/nonfree
 	--repository=$XBPS_BINPKGS/$BRANCH/multilib
 	--repository=$XBPS_BINPKGS/$BRANCH/multilib/nonfree
 	--repository=$XBPS_BINPKGS/$BRANCH/debug
+	--repository=$XBPS_BINPKGS/bootstrap
 	--repository=$XBPS_BINPKGS
 	--repository=$XBPS_BINPKGS/nonfree
 	--repository=$XBPS_BINPKGS/multilib
