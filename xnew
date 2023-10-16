@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# xnew PKG - create XBPS template template
+# xnew [-a] PKG - create XBPS template template
 
 if [ "$1" = "-a" ]; then
 	append=1
