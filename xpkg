@@ -1,5 +1,5 @@
 #!/bin/bash
-# xpkg [-RamOHDLvV] - convenient package lister
+# xpkg [-rRamOHDLvV] - convenient package lister
 
 flags=
 filter0='/^.[^i*].\? /d'
@@ -17,16 +17,17 @@ while getopts R:r:vVmOHDLa flag; do
 		a) flags="$flags -R"; filter0=;;
 		v) filter2='s/:\? .*//';;
 		V) filter2=;;
-		?) printf "Usage: %s [-RamOHvV]
-  -R REPO  consider only packages from REPO
-  -a       list all packages (default: only installed)
-  -m	   list manual packages
-  -O       list orphaned packages
-  -H       list packages on hold
-  -D       list installed packages not in repo
-  -L       list installed packages not from remote repos
-  -v       show version numbers
-  -V       show version numbers and description
+		?) printf "Usage: %s [-rRamOHvV]
+  -r ROOTDIR specifies a full path for the target root directory
+  -R REPO    consider only packages from REPO
+  -a         list all packages (default: only installed)
+  -m         list manual packages
+  -O         list orphaned packages
+  -H         list packages on hold
+  -D         list installed packages not in repo
+  -L         list installed packages not from remote repos
+  -v         show version numbers
+  -V         show version numbers and description
 " $0 >&2
 		exit 1;;
 	esac
