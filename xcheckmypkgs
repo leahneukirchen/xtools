@@ -4,5 +4,5 @@
 cd "$(xdistdir)" &&
 for pkg in $(xmypkgs "$@"); do
 	echo "checking: $pkg"
-	./xbps-src update-check "$pkg" |grep -v '^=> Using'
+	./xbps-src update-check "$pkg" | grep -v '^=> Using'
 done
