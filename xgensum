@@ -1,9 +1,117 @@
 #!/bin/bash
-# xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE - update SHA256 sums in templates
+# xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATES ... - update SHA256 sums in templates
 
 usage() {
-	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATE' >&2
+	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATES ...' >&2
 	exit 1
+}
+
+gensum_template() {
+	local template="$1"
+
+	. "$template"
+
+	# pick the first supported arch. This is required for packages unavailable for
+	# the host arch
+	FLAG_a=
+	if ! "$XBPS_DISTDIR/xbps-src" show-avail "$pkgname" ; then
+		FLAG_a="-a $("$XBPS_DISTDIR/xbps-src" show "$pkgname" | sed -En -e 's/archs:[[:space:]]*([.*]*)/\1/p' | sed -e 's/\*$//' | grep -v -e '^~' | head -n1 )"
+	fi
+
+	# Try to source the build-style as well. This is required for R-cran packages.
+	if [ -f "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"  ]; then
+		. "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"
+	fi
+
+	XBPS_SRCDISTDIR=$("$XBPS_DISTDIR/xbps-src" $FLAG_h show-var XBPS_SRCDISTDIR | tail -1)
+	srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
+
+	if [ -n "$FLAG_f" ]; then
+		for f in $distfiles; do
+			curfile="${f#*>}"
+			curfile="${curfile##*/}"
+			distfile="$srcdir/$curfile"
+			rm -vf "$distfile"
+		done
+		"$XBPS_DISTDIR/xbps-src" $FLAG_h -I clean $pkgname
+	fi
+
+	"$XBPS_DISTDIR/xbps-src" $FLAG_h $FLAG_a -I fetch $pkgname
+
+	ret=0
+	sums=""
+	for f in $distfiles; do
+		curfile="${f#*>}"
+		curfile="${curfile##*/}"
+		distfile="$srcdir/$curfile"
+		if [ -n "$FLAG_c" ];then
+			sum="@"
+			case ${distfile} in
+			*tar.lzma|*.tar|*.txz|*.tar.xz|*.tbz|*.tar.gz)
+				sum+=$(xbps-uhelper digest <(tar xf "$distfile" --to-stdout)) || ret=1
+				;;
+			*.gz)
+				sum+=$(xbps-uhelper digest <(gunzip -c "$distfile")) || ret=1
+				;;
+			*.tar.bz2|*.bz2)
+				sum+=$(xbps-uhelper digest <(bunzip2 -c "$distfile")) || ret=1
+				;;
+			*.zip)
+				if command -v unzip &>/dev/null; then
+					sum+=$(xbps-uhelper digest <(unzip -p "$distfile"))
+					if [ $? -ne 0 ]; then
+						echo "$pkgver: extracting $curfile to pipe."
+						ret=1
+					fi
+				else
+					echo "$pkgver: cannot find unzip bin for extraction."
+					ret=1
+				fi
+				;;
+			*.rpm)
+				if command -v rpmextract &>/dev/null; then
+					sum+=$(xbps-uhelper digest <(rpm2cpio "$distfile" | bsdtar xf - --to-stdout))
+					if [ $? -ne 0 ]; then
+						echo "$pkgver: extracting $curfile to pipe."
+						ret=1
+					fi
+				else
+					echo "$pkgver: cannot find rpmextract for extraction."
+					ret=1
+				fi
+				;;
+			*.7z)
+				if command -v 7z &>/dev/null; then
+					sum+=$(xbps-uhelper digest <(7z x -o "$distfile"))
+					if [ $? -ne 0 ]; then
+						echo "$pkgver: extracting $curfile to pipe."
+						ret=1
+					fi
+				else
+					echo "$pkgver: cannot find 7z bin for extraction."
+					ret=1
+				fi
+				;;
+			*.txt|*.patch|*.diff)
+				sum+=$(xbps-uhelper digest "$distfile") || ret=1
+				;;
+			*)
+				sum=$(xbps-uhelper digest "$distfile") || ret=1
+
+			esac
+		else
+			sum=$(xbps-uhelper digest "$distfile") || ret=1
+		fi
+		sums+="${sum%  *}\n "
+	done
+
+	sed $FLAG_i -e "/^checksum=/,/^[^ \t]/{
+			/^[ \t]/d
+			s/^checksum=.*/checksum=\"${sums%\n }\"/
+			/^checksum=\"[^ ]*\"/s/\"//g
+		}" "$template" || ret=1
+
+	return $ret
 }
 
 while getopts fciH:h flag; do
@@ -20,116 +128,22 @@ shift $(( OPTIND - 1 ))
 
 XBPS_DISTDIR=$(xdistdir) || exit 1
 
-if [ -f "$1" ]; then
-	template="$1"
-elif [ -f "$1/template" ]; then
-	template="$1/template"
-elif [ -f "$XBPS_DISTDIR/srcpkgs/$1/template" ]; then
-	template="$XBPS_DISTDIR/srcpkgs/$1/template"
-else
-	usage
-fi
+rv=0
 
-. "$template"
-
-# pick the first supported arch. This is required for packages unavailable for
-# the host arch
-FLAG_a=
-if ! "$XBPS_DISTDIR/xbps-src" show-avail $pkgname ; then
-	FLAG_a="-a $("$XBPS_DISTDIR/xbps-src" show $pkgname | sed -En -e 's/archs:[[:space:]]*([.*]*)/\1/p' | sed -e 's/\*$//' | grep -v -e '^~' | head -n1 )"
-fi
-
-# Try to source the build-style as well. This is required for R-cran packages.
-if [ -f "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"  ]; then
-	. "${XBPS_DISTDIR}/common/environment/build-style/${build_style}.sh"
-fi
-
-XBPS_SRCDISTDIR=$("$XBPS_DISTDIR/xbps-src" $FLAG_h show-var XBPS_SRCDISTDIR | tail -1)
-srcdir="$XBPS_SRCDISTDIR/$pkgname-$version"
-
-if [ -n "$FLAG_f" ]; then
-	for f in $distfiles; do
-		curfile="${f#*>}"
-		curfile="${curfile##*/}"
-		distfile="$srcdir/$curfile"
-		rm -vf "$distfile"
-	done
-	"$XBPS_DISTDIR/xbps-src" $FLAG_h -I clean $pkgname
-fi
-
-"$XBPS_DISTDIR/xbps-src" $FLAG_h $FLAG_a -I fetch $pkgname
-
-ret=0
-sums=""
-for f in $distfiles; do
-	curfile="${f#*>}"
-	curfile="${curfile##*/}"
-	distfile="$srcdir/$curfile"
-	if [ -n "$FLAG_c" ];then
-		sum="@"
-		case ${distfile} in
-		*tar.lzma|*.tar|*.txz|*.tar.xz|*.tbz|*.tar.gz)
-			sum+=$(xbps-uhelper digest <(tar xf "$distfile" --to-stdout)) || ret=1
-			;;
-		*.gz)
-			sum+=$(xbps-uhelper digest <(gunzip -c "$distfile")) || ret=1
-			;;
-		*.tar.bz2|*.bz2)
-			sum+=$(xbps-uhelper digest <(bunzip2 -c "$distfile")) || ret=1
-			;;
-		*.zip)
-			if command -v unzip &>/dev/null; then
-				sum+=$(xbps-uhelper digest <(unzip -p "$distfile"))
-				if [ $? -ne 0 ]; then
-					echo "$pkgver: extracting $curfile to pipe."
-					ret=1
-				fi
-			else
-				echo "$pkgver: cannot find unzip bin for extraction."
-				ret=1
-			fi
-			;;
-		*.rpm)
-			if command -v rpmextract &>/dev/null; then
-				sum+=$(xbps-uhelper digest <(rpm2cpio "$distfile" | bsdtar xf - --to-stdout))
-				if [ $? -ne 0 ]; then
-					echo "$pkgver: extracting $curfile to pipe."
-					ret=1
-				fi
-			else
-				echo "$pkgver: cannot find rpmextract for extraction."
-				ret=1
-			fi
-			;;
-		*.7z)
-			if command -v 7z &>/dev/null; then
-				sum+=$(xbps-uhelper digest <(7z x -o "$distfile"))
-				if [ $? -ne 0 ]; then
-					echo "$pkgver: extracting $curfile to pipe."
-					ret=1
-				fi
-			else
-				echo "$pkgver: cannot find 7z bin for extraction."
-				ret=1
-			fi
-			;;
-		*.txt|*.patch|*.diff)
-			sum+=$(xbps-uhelper digest "$distfile") || ret=1
-			;;
-		*)
-			sum=$(xbps-uhelper digest $distfile) || ret=1
-
-		esac
+for template; do
+	if [ -f "$template" ]; then
+		:
+	elif [ -f "$template/template" ]; then
+		template="$template/template"
+	elif [ -f "$XBPS_DISTDIR/srcpkgs/$template/template" ]; then
+		template="$XBPS_DISTDIR/srcpkgs/$template/template"
 	else
-		sum=$(xbps-uhelper digest $distfile) || ret=1
+		echo "xgensum: could not find template: $template" >&2
+		rv=$(( rv + 1 ))
+		continue
 	fi
-	sums+="${sum%  *}\n "
+
+	( gensum_template "$template" ) || rv=$(( rv + 1 ))
 done
 
-sed $FLAG_i -e "/^checksum=/,/^[^ \t]/{
-		/^[ \t]/d
-		s/^checksum=.*/checksum=\"${sums%\n }\"/
-		/^checksum=\"[^ ]*\"/s/\"//g
-	}" "$template" || ret=1
-
-exit $ret
+exit $rv

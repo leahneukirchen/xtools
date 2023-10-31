@@ -51,7 +51,7 @@ COMMANDS
      xetcchanges
         – show diff of /etc against binary packages
 
-     xgensum [-f] [-c] [-i] [-H hostdir] template
+     xgensum [-f] [-c] [-i] [-H hostdir] templates ...
         – update SHA256 sum in templates
           -f  force (re-)download of distfiles
           -c  use content checksum
