@@ -12,11 +12,11 @@ if [ -z "$version" ]; then
 	exit 1
 fi
 
-spkpattern=$(xsubpkg "$pkg" | tr '\n' '|' | sed 's/\(.*\)|/^(\1)$/')
+spkpattern=$(xsubpkg "$pkg")
 shlibs=$(git diff common/shlibs | grep "^+[^+]" | \
 	sed "s/^+[^ ]\+ \(.*\)-[^-]\+_[0-9]\+$/\1/")
-if [ -n "$(echo "$shlibs" | grep -vE "$spkpattern")" ]; then
-	echo "common/shlibs contains uncommitted changes for other packages." >&2
+if [ -n "$(echo "$shlibs" | grep -vFx "$spkpattern")" ]; then
+	echo "common/shlibs contains uncommitted changes for other packages." 2>&1
 	exit 1
 elif [ -n "$shlibs" ]; then
 	git add common/shlibs
