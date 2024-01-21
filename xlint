@@ -37,9 +37,12 @@ exists_once() {
 	for var in pkgname version revision short_desc maintainer license \
 		   homepage; do
 		case "$(grep -c "^${var}=" "$template")" in
-			0) echo "$argument: '$var' missing!";;
+			0) echo "$argument:1: '$var' missing!";;
 			1) ;;
-			*) echo "$argument: '$var' defined more than once";;
+			*)
+				lines="$(grep -n "^${var}=" "$template" | awk -F: 'NR>1 { printf ", " } { printf "%s", $1 }')"
+				echo "$argument:${lines##*, }: '$var' defined more than once: previously on line(s) ${lines%,*}"
+				;;
 		esac
 	done
 }
