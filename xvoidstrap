@@ -57,5 +57,6 @@ Void post-install checklist
 - Make dracut hostonly: echo hostonly=yes >/etc/dracut.conf.d/hostonly.conf
 - Rebuild initrd and grub config: xbps-reconfigure -f linux5.??
 - Enable default services: ln -s /etc/sv/... /etc/runit/runsvdir/default/
+- Install and enable an ntpd, and optionally cron and syslog.
 
 EOF
