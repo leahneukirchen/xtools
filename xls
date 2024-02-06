@@ -1,5 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 # xls PKGS... - list files contained in PKGS (including binpkgs)
+# xtree PKGS... - list files contained in PKGS (including binpkgs) in a tree-style format
+
+PROG="${0##*/}"
+FILTER="cat"
+
+if [ "$PROG" = xtree ]; then
+	if type tree >/dev/null; then
+		FILTER="tree --noreport --fflinks --fromfile ."
+	else
+		echo "$PROG: could not find tree, falling back to xls" >&2
+	fi
+fi
 
 BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
 if [ -n "$XBPS_HOSTDIR" ]; then
@@ -21,6 +33,7 @@ ADDREPO="
 	--repository=$XBPS_BINPKGS/debug
 "
 
+set -o pipefail
 for pkg; do
-	xbps-query $ADDREPO -f $pkg
+	xbps-query $ADDREPO -f $pkg | $FILTER
 done

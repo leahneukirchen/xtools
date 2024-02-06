@@ -244,6 +244,14 @@ Ar pkg
 .It Fl m
 only print main package
 .El
+.It Nm xtree Ar pkg ...
+.Nd list files contained in pkg (including binpkgs) in a
+.Xr tree 1
+-style format.
+If
+.Nm tree
+is not installed, falls back to
+.Nm xls .
 .It Nm xuname
 .Nd display system info relevant for debugging Void
 .It Nm xvoidstrap Ar dir Op Ar packages
