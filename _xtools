@@ -1,4 +1,4 @@
-#compdef xbuildbarf xbulk xbump xchangelog xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xpkgdiff xq xrecent xrevbump xrevshlib xsrc xsubpkg
+#compdef xbuildbarf xbulk xbump xchangelog xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xpkgdiff xq xrecent xrevbump xrevshlib xsrc xsubpkg xtree
 
 _xbps  # force autoload
 
@@ -159,6 +159,7 @@ _xtools() {
 		xrevshlib) _xtools_one_template "$@";;
 		xsrc) _xtools_one_template "$@";;
 		xsubpkg) _xsubpkg "$@";;
+		xtree) _xtools_just_packages "$@";;
 	esac
 }
 
