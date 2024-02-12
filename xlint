@@ -462,7 +462,8 @@ for argument; do
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan 'maintainer=.*<.*@users.noreply.github.com>.*' "maintainer needs a valid address for sending mail"
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' "custom variables should use _ prefix: \\2" | check_old_vars
-	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \\2"
+	scan '^[^_ =][^ =]*=(""|''|)$' "variable set to empty string: \\2"
+	scan_warn '^_[^ =]*=(""|''|)$' "custom variable set to empty string: \\2"
 	scan '^(.*)-docs_package().*' 'use <pkgname>-doc subpackage for documentation'
 	scan 'distfiles=.*github.com.*/archive/.*\.zip[\"]?$' 'Use the distfile .tar.gz instead of .zip'
 	scan 'distfiles=.*downloads\.sourceforge\.net' 'use $SOURCEFORGE_SITE'
