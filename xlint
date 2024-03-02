@@ -484,8 +484,7 @@ for argument; do
 	pkgname=$(grep -Po "^pkgname=\K.*" "$template" | once)
 	pkgname_re=$(echo "$pkgname" | regex_escape)
 	version=$(grep -Po "^version=\K.*" "$template" | once)
-	version_re=$(echo "$version" | regex_escape)
-	scan "distfiles=.*\Q$version_re\E" 'use ${version} in distfiles instead'
+	scan "distfiles=.*\Q$version\E" 'use ${version} in distfiles instead'
 	scan "system_accounts=.*\b(?!($old_accounts))[a-zA-Z]" 'new accounts should be prefixed with underscore'
 	scan "cargo update (--package|-p) [A-Za-z_][A-Za-z0-9_]*(?!\:[0-9]+\.[0-9]+\.[0-9]+)(\s.+)?$" '"cargo update" commands should include the specific version we are updating from in the --package SPEC' 
 	scan "cargo update (--package|-p) [A-Za-z_][A-Za-z0-9_-]*\:[0-9]+\.[0-9]+\.[0-9]+(?!--precise [0-9]+\.[0-9]+\.[0-9]+)$" '"cargo update" commands should include the specific version we are updating to, using --precise' 
