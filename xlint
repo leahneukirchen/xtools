@@ -420,7 +420,8 @@ for argument; do
 	: "${LICENSE_LIST:=/usr/share/spdx/license.lst}"
 	if [ -f "${LICENSE_LIST}" ]; then
 		sed -n 's/license="\(.*\)"/\1/p' "$template" |
-		sed 's/ WITH /,/g' |
+		sed -E 's/ (WITH|OR|AND) /,/g' |
+		sed 's/[()]//g' |
 		tr , "\n" |
 		while read -r l; do
 			case "$l" in
