@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash
 # xbump PKGNAME [git commit options] - git commit a new package or package update
 
 cd $(xdistdir)
@@ -29,7 +29,15 @@ dirs="$dirs $(./xbps-src show "$pkg" |
 git add $dirs
 
 if git diff --quiet --cached --diff-filter=A -- srcpkgs/"$pkg"/template; then
-	msg="$pkg: update to $version."
+	msg="$pkg: update to $version"
+	newmaintainer=$(git diff HEAD srcpkgs/"$pkg"/template | grep '+maintainer=' | \
+		cut -d '=' -f 2 | tr -d '"')
+	if [[ "$newmaintainer" = "Orphaned"* ]]; then
+		msg+=", orphan"
+	elif [ "$newmaintainer" ]; then
+		msg+=", adopt"
+	fi
+	msg+="."
 else
 	msg="New package: $pkg-$version"
 fi
