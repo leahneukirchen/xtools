@@ -16,7 +16,7 @@ REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
 	/^\/repo-default.voidlinux.org\/current\/.*\/nonfree/ {n=n"n"}
 	/^\/repo-default.voidlinux.org\/current/ {r=r"r"}
 	/xdowngrade-/ {D=D"D"}
-	!/alpha.de.voidlinux.org/ && !/xdowngrade-/ {F=F"F"}
+	!/repo-default.voidlinux.org/ && !/xdowngrade-/ {F=F"F"}
 	END { print r m d n D F }
 ')
 
