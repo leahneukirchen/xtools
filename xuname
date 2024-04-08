@@ -11,12 +11,12 @@ VM=$(dmesg 2>/dev/null | awk '/Hypervisor detected/{print $NF}')
 CPU=$(awk '/^vendor_id/{print $NF;exit}' /proc/cpuinfo)
 [ -z "$CPU" ] && CPU=$(awk '/^platform/{print $NF;exit}' /proc/cpuinfo)
 REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
-	/^\/repo-default.voidlinux.org\/current\/multilib/ {m=m"m"}
-	/^\/repo-default.voidlinux.org\/current\/debug/ {d=d"d"}
-	/^\/repo-default.voidlinux.org\/current\/.*\/nonfree/ {n=n"n"}
-	/^\/repo-default.voidlinux.org\/current/ {r=r"r"}
+	/^\/repo-.*\.voidlinux\.org\/current\/multilib/ || /^\/mirrors\.servercentral\.com\/voidlinux\/current\/multilib/ {m=m"m"}
+	/^\/repo-.*\.voidlinux\.org\/current\/debug/ || /^\/mirrors\.servercentral\.com\/voidlinux\/current\/debug/ {d=d"d"}
+	/^\/repo-.*\.voidlinux\.org\/current\/.*\/nonfree/ || /^\/mirrors\.servercentral\.com\/voidlinux\/current\/.*\/nonfree/ {n=n"n"}
+	/^\/repo-.*\.voidlinux\.org\/current/ || /^\/mirrors\.servercentral\.com\/voidlinux\/current/ {r=r"r"}
 	/xdowngrade-/ {D=D"D"}
-	!/repo-default.voidlinux.org/ && !/xdowngrade-/ {F=F"F"}
+	!/^\/repo-.*\.voidlinux\.org/ && !/^\/mirrors\.servercentral\.com\/voidlinux/ && !/xdowngrade-/ {F=F"F"}
 	END { print r m d n D F }
 ')
 
