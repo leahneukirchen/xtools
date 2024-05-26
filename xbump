@@ -1,37 +1,50 @@
 #!/bin/sh -e
 # xbump PKGNAME [git commit options] - git commit a new package or package update
+# if PKGNAME is :, commit all staged templates, one per commit
 
 cd $(xdistdir)
 
-pkg=$1; shift
-[ -z "$pkg" ] && pkg=$(basename $PWD)
-version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[\t]*//p')
+pkg="$1"; shift
+git_opts="$*"
 
-if [ -z "$version" ]; then
-	echo cannot parse version
-	exit 1
-fi
-
-spkpattern=$(xsubpkg "$pkg")
-shlibs=$(git diff common/shlibs | grep "^+[^+]" | \
-	sed "s/^+[^ ]\+ \(.*\)-[^-]\+_[0-9]\+$/\1/")
-if [ -n "$(echo "$shlibs" | grep -vFx "$spkpattern")" ]; then
-	echo "common/shlibs contains uncommitted changes for other packages." 2>&1
-	exit 1
-elif [ -n "$shlibs" ]; then
-	git add common/shlibs
-	dirs=common/shlibs
-fi
-
-dirs="$dirs $(./xbps-src show "$pkg" |
-	sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')"
-
-git add $dirs
-
-if git diff --quiet --cached --diff-filter=A -- srcpkgs/"$pkg"/template; then
-	msg="$pkg: update to $version."
+if [ "$pkg" = ':' ]; then
+	# get a list of all templates staged in the git index
+	set -- $(git -C "$void_packages" diff --cached --name-only |
+		sed -ne 's|^srcpkgs/\([^/]*\)/template$|\1|p')
 else
-	msg="New package: $pkg-$version"
+    set -- "$pkg"
 fi
 
-git commit -m "$msg" "$@" $dirs
+for pkg; do
+    [ -z "$pkg" ] && pkg=$(basename $PWD)
+    version=$(./xbps-src show "$pkg" | sed -n '/^version/s/[^:]*:[\t]*//p')
+
+    if [ -z "$version" ]; then
+        echo "cannot parse version"
+        exit 1
+    fi
+
+    spkpattern=$(xsubpkg "$pkg")
+    shlibs=$(git diff common/shlibs | grep "^+[^+]" | \
+        sed "s/^+[^ ]\+ \(.*\)-[^-]\+_[0-9]\+$/\1/")
+    if [ -n "$(echo "$shlibs" | grep -vFx "$spkpattern")" ]; then
+        echo "common/shlibs contains uncommitted changes for other packages." 2>&1
+        exit 1
+    elif [ -n "$shlibs" ]; then
+        git add common/shlibs
+        dirs=common/shlibs
+    fi
+
+    dirs="$dirs $(./xbps-src show "$pkg" |
+        sed -n '/^\(pkgname\|subpackage\)/s/[^:]*:[\t]*/srcpkgs\//p')"
+
+    git add $dirs
+
+    if git diff --quiet --cached --diff-filter=A -- srcpkgs/"$pkg"/template; then
+        msg="$pkg: update to $version."
+    else
+        msg="New package: $pkg-$version"
+    fi
+
+    git commit -m "$msg" $git_opts $dirs
+done
