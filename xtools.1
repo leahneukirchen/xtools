@@ -23,7 +23,12 @@ dry-run mode
 keep going on errors
 .El
 .It Nm xbump Ar pkgname Op Ar git\ commit\ options
-.Nd git commit a new package or package update
+.Nd git commit a new package or package update.
+If
+.Ar pkgname
+is
+.Sq Cm \&: ,
+a commit will be made for each template staged in the git index.
 .It Nm xchangelog Ar template | pkgname
 .Nd open package changelog
 .It Nm xcheckmypkgs Op Ar email
