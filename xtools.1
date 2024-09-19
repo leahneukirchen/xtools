@@ -68,6 +68,7 @@ against binary packages
 Oo Fl f Oc \
 Oo Fl c Oc \
 Oo Fl i Oc \
+Oo Fl a Ar arch Oc \
 Oo Fl H Ar hostdir Oc \
 Ar templates\ ...
 .Nd update SHA256 sum in templates
@@ -78,6 +79,8 @@ force (re-)download of distfiles
 use content checksum
 .It Fl i
 replace checksum in-place
+.It Fl a
+architecture to generate the checksum for (default: native or first available architecture)
 .It Fl H
 absolute path to hostdir
 .El
