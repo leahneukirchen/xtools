@@ -1,9 +1,27 @@
 #!/bin/bash
-# xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATES ... - update SHA256 sums in templates
+# xgensum [-f] [-c] [-i] [-a arch] [-H hostdir] TEMPLATES ... - update SHA256 sums in templates
 
 usage() {
-	echo 'Usage: xgensum [-f] [-c] [-i] [-H hostdir] TEMPLATES ...' >&2
+	echo 'Usage: xgensum [-f] [-c] [-i] [-a arch] [-H hostdir] TEMPLATES ...' >&2
 	exit 1
+}
+
+target_is_native() {
+	tgt="$1"
+	host="$(uname -m)"
+	case "$host" in
+		x86_64)
+			case "$tgt" in
+				i686*|x86_64*) return 0 ;;
+			esac
+			;;
+		aarch64)
+			case "$tgt" in
+				armv7*|aarch64*) return 0 ;;
+			esac
+			;;
+	esac
+	return 1
 }
 
 gensum_template() {
@@ -11,11 +29,12 @@ gensum_template() {
 
 	. "$template"
 
-	# pick the first supported arch. This is required for packages unavailable for
-	# the host arch
-	FLAG_a=
-	if ! "$XBPS_DISTDIR/xbps-src" show-avail "$pkgname" ; then
-		FLAG_a="-a $("$XBPS_DISTDIR/xbps-src" show "$pkgname" | sed -En -e 's/archs:[[:space:]]*([.*]*)/\1/p' | sed -e 's/\*$//' | grep -v -e '^~' | head -n1 )"
+	if [ -z "$FLAG_a" ]; then
+		# pick the first supported arch. This is required for packages unavailable for
+		# the host arch
+		if ! "$XBPS_DISTDIR/xbps-src" show-avail "$pkgname" ; then
+			FLAG_a="-a $("$XBPS_DISTDIR/xbps-src" show "$pkgname" | sed -En -e 's/archs:[[:space:]]*([.*]*)/\1/p' | sed -e 's/\*$//' | grep -v -e '^~' | head -n1 )"
+		fi
 	fi
 
 	# Try to source the build-style as well. This is required for R-cran packages.
@@ -114,8 +133,11 @@ gensum_template() {
 	return $ret
 }
 
-while getopts fciH:h flag; do
+ARCH=
+
+while getopts fciH:a:h flag; do
 	case $flag in
+		a) ARCH="$OPTARG" ;;
 		f) FLAG_f=1 ;;
 		c) FLAG_c=1 ;;
 		i) FLAG_i='-i' ;;
@@ -127,6 +149,23 @@ done
 shift $(( OPTIND - 1 ))
 
 XBPS_DISTDIR=$(xdistdir) || exit 1
+
+if [ -n "$ARCH" ]; then
+	if target_is_native "$ARCH"; then
+		FLAG_a="-A $ARCH"
+		XBPS_TARGET_MACHINE="$ARCH"
+		if [ "$ARCH" = "${ARCH%-*}" ]; then
+			XBPS_TARGET_LIBC="glibc"
+		else
+			XBPS_TARGET_LIBC="${ARCH#*-}"
+		fi
+	else
+		FLAG_a="-a $ARCH"
+		if [ -f "${XBPS_DISTDIR}/common/cross-profiles/${ARCH}.sh" ]; then
+			. "${XBPS_DISTDIR}/common/cross-profiles/${ARCH}.sh"
+		fi
+	fi
+fi
 
 rv=0
 
