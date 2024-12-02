@@ -41,7 +41,7 @@ fi
 
 printf "\033[1m=> Entering chroot $CHROOT\033[m\n"
 export PS1="[xchroot $CHROOT] $PS1"
-chroot "$CHROOT" ${@:-$INNER_SHELL}
+chroot "$CHROOT" "${@:-$INNER_SHELL}"
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
 	printf "\033[1m=> Exited chroot $CHROOT\033[m\n"
