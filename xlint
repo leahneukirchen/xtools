@@ -243,9 +243,11 @@ no_generic_pkgconfig_link
 nocross
 nodebug
 nopie
+nopyprovides
 noshlibprovides
 nostrip
 nostrip_files
+noverifypydeps
 noverifyrdeps
 patch_args
 pkgname
@@ -253,6 +255,7 @@ preserve
 provides
 pycompile_dirs
 pycompile_module
+python_extras
 python_version
 register_shell
 replaces
