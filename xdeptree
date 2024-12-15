@@ -1,0 +1,90 @@
+#!/bin/bash
+
+get_deps() {
+	local parents="$1" pkg="$2"
+	local -i lvl="$3"
+	local -a deps
+
+	parents="${parents:+$parents/}$pkg"
+
+	if (( MAXLVL > 0 && lvl >= MAXLVL )); then
+		echo "${parents}"
+		return
+	fi
+
+	if [ "${cache[$pkg]+_}" ]; then
+		read -r -a deps <<< "${cache[$pkg]}"
+	else
+		mapfile -t deps < <( xbps-query ${REPO:+$ADDREPO} -x "$pkg" | xargs -rn1 xbps-uhelper getpkgdepname )
+		cache[$pkg]="${deps[*]}"
+	fi
+
+	if [ "${#deps[@]}" -eq 0 ]; then
+		echo "${parents}"
+	fi
+
+	lvl=$(( lvl + 1 ))
+	for dep in "${deps[@]}"; do
+		get_deps "$parents" "$dep" "$lvl"
+	done
+}
+
+usage() {
+	echo "Usage: xdeptree [-L level] [-R] <pkgname>" >&2
+}
+
+
+BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null)
+if [ -n "$XBPS_HOSTDIR" ]; then
+	XBPS_BINPKGS="$XBPS_HOSTDIR/binpkgs"
+else
+	XBPS_DISTDIR="$(xdistdir 2>/dev/null)" || XBPS_DISTDIR=.
+	XBPS_BINPKGS="$XBPS_DISTDIR/hostdir/binpkgs"
+fi
+ADDREPO="
+	--repository=$XBPS_BINPKGS/$BRANCH
+	--repository=$XBPS_BINPKGS/$BRANCH/nonfree
+	--repository=$XBPS_BINPKGS/$BRANCH/multilib
+	--repository=$XBPS_BINPKGS/$BRANCH/multilib/nonfree
+	--repository=$XBPS_BINPKGS/$BRANCH/debug
+	--repository=$XBPS_BINPKGS
+	--repository=$XBPS_BINPKGS/nonfree
+	--repository=$XBPS_BINPKGS/multilib
+	--repository=$XBPS_BINPKGS/multilib/nonfree
+	--repository=$XBPS_BINPKGS/debug
+"
+
+declare -i MAXLVL=0
+REPO=''
+
+while getopts L:Rh flag; do
+	case "$flag" in
+		L)
+			if ! [[ "$OPTARG" =~ ^[0-9]+$ ]]; then
+				usage; exit 1
+			fi
+			MAXLVL="$OPTARG"
+			;;
+		R) REPO=1 ;;
+		h) usage; exit 0 ;;
+		?) usage; exit 1 ;;
+	esac
+done
+
+shift $(( OPTIND - 1 ))
+
+PKG="$1"
+
+if [ -z "$PKG" ]; then
+	usage
+	exit 1
+fi
+
+if ! command -v tree >/dev/null 2>&1; then
+	echo "missing tree(1) command"
+	exit 1
+fi
+
+declare -A cache=()
+
+get_deps '' "$PKG" 0 | sort -u | tree -n --noreport --fromfile .

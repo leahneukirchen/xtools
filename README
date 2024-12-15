@@ -16,7 +16,8 @@ COMMANDS
           -k  keep going on errors
 
      xbump pkgname [git commit options]
-        – git commit a new package or package update
+        – git commit a new package or package update. If pkgname is ‘:’, a
+        commit will be made for each template staged in the git index.
 
      xchangelog template | pkgname
         – open package changelog
@@ -37,6 +38,12 @@ COMMANDS
      xdbg pkgs ...
         – list debugging packages for pkgs and recursive dependencies
 
+     xdeptree [-L level] [-R] pkgname
+        – generate a tree of a package's dependencies
+          -L level
+              Max depth of tree
+          -R  Query remote repos
+
      xdiff [-u | -l] [basedir]
         – merge/diff/list XBPS .new-* files
           -l  list .new files
@@ -51,11 +58,13 @@ COMMANDS
      xetcchanges
         – show diff of /etc against binary packages
 
-     xgensum [-f] [-c] [-i] [-H hostdir] templates ...
+     xgensum [-f] [-c] [-i] [-a arch] [-H hostdir] templates ...
         – update SHA256 sum in templates
           -f  force (re-)download of distfiles
           -c  use content checksum
           -i  replace checksum in-place
+          -a  architecture to generate the checksum for (default: native or
+              first available architecture)
           -H  absolute path to hostdir
 
      xgrep pattern pkgs ...
@@ -180,6 +189,10 @@ COMMANDS
      xsubpkg [-m] pkg
         – list all subpackages of a package
           -m  only print main package
+
+     xtree pkg ...
+        – list files contained in pkg (including binpkgs) in a tree(1) -style
+        format.  If tree is not installed, falls back to xls.
 
      xuname
         – display system info relevant for debugging Void
