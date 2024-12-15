@@ -45,6 +45,14 @@ verbose mode, also print the library names
 .Nd detect file conflicts between XBPS packages
 .It Nm xdbg Ar pkgs ...
 .Nd list debugging packages for pkgs and recursive dependencies
+.It Nm xdeptree Oo Fl L Ar level Oc Oo Fl R Oc Ar pkgname
+.Nd generate a tree of a package's dependencies
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl L Ar level
+Max depth of tree
+.It Fl R
+Query remote repos
+.El
 .It Nm xdiff \
 Oo Fl u | l Oc \
 Op Ar basedir
