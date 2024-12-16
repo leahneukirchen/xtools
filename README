@@ -7,9 +7,6 @@ COMMANDS
      xbarf
         – Display build logs of last build
 
-     xbuildbarf [arch]
-        – Spy on current buildbot output
-
      xbulk [-n] [-k] [xbps-src flags] pkgs ...
         – simple XBPS bulk builder
           -n  dry-run mode
