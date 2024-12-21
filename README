@@ -167,9 +167,6 @@ COMMANDS
         – query information about XBPS package
           -R  query remote repos
 
-     xrecent [repourl | arch]
-        – list packages in repo ordered by build date
-
      xrevbump message templates ... [-- git commit options]
         – increase template revision and commit. Use ‘-’ to read templates
         from stdin.
