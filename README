@@ -55,6 +55,15 @@ COMMANDS
      xetcchanges
         – show diff of /etc against binary packages
 
+     xgenfstab [-p | -P] [-t TAG | -L | -U] root
+        – Generate an fstab(5) for a given root.
+          -p  Exclude pseudo-filesystems (default behavior)
+          -P  Include pseudo-filesystems
+          -t TAG
+              Use TAG for identifiers (LABEL, UUID, PARTLABEL, PARTUUID)
+          -L  Use labels for identifiers (same as -t LABEL)
+          -U  Use UUIDs for identifiers (same as -t UUID)
+
      xgensum [-f] [-c] [-i] [-a arch] [-H hostdir] templates ...
         – update SHA256 sum in templates
           -f  force (re-)download of distfiles

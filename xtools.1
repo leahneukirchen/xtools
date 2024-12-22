@@ -70,6 +70,35 @@ print unified diffs
 .Nd show diff of
 .Pa /etc
 against binary packages
+.It Nm xgenfstab \
+Oo Fl p | P Oc \
+Oo Fl t Ar TAG | Fl L | Fl U Oc \
+Ar root
+.Nd Generate an
+.Xr fstab 5
+for a given root.
+.Bl -tag -offset 2n -width 2n -compact
+.It Fl p
+Exclude pseudo-filesystems (default behavior)
+.It Fl P
+Include pseudo-filesystems
+.It Fl t Ar TAG
+Use
+.Ar TAG
+for identifiers
+.Po Ar LABEL ,
+.Ar UUID ,
+.Ar PARTLABEL ,
+.Ar PARTUUID Pc
+.It Fl L
+Use labels for identifiers
+.Po same as
+.Fl t Ar LABEL Pc
+.It Fl U
+Use UUIDs for identifiers
+.Po same as
+.Fl t Ar UUID Pc
+.El
 .It Nm xgensum \
 Oo Fl f Oc \
 Oo Fl c Oc \

@@ -1,4 +1,4 @@
-#compdef xbulk xbump xchangelog xcheckrestart xdbg xdiff xdowngrade xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xpkgdiff xq xrecent xrevbump xrevshlib xsrc xsubpkg xtree
+#compdef xbulk xbump xchangelog xcheckrestart xdbg xdiff xdowngrade xgenfstab xgensum xgrep xi xilog xlg xlocate xlog xls xmypkgs xoptdiff xpkg xpkgdiff xq xrecent xrevbump xrevshlib xsrc xsubpkg xtree
 
 _xbps  # force autoload
 
@@ -49,6 +49,16 @@ _xdiff() {
 _xdowngrade() {
 	_arguments : \
 		'*:package files:_files -g \*.xbps'
+}
+
+_xgenfstab() {
+	_arguments -s : \
+		'(-P)-p[Exclude pseudo-filesystems]' \
+		'(-p)-P[Include pseudo-filesystems]' \
+		'(-L -U)-t[Use TAG for identifiers]:TAG:(LABEL UUID PARTLABEL PARTUUID)' \
+		'(-t -U)-L[Use labels for identifiers]' \
+		'(-t -L)-U[Use UUIDs for identifiers]' \
+		'1:directory:_files -/'
 }
 
 _xgensum() {
@@ -140,6 +150,7 @@ _xtools() {
 		xdbg) _xtools_just_packages "$@";;
 		xdiff) _xdiff "$@";;
 		xdowngrade) _xdowngrade "$@";;
+		xgenfstab) _xgenfstab "$@";;
 		xgensum) _xgensum "$@";;
 		xgrep) _xgrep "$@";;
 		xi) _xbps_install "$@";;
