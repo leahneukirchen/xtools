@@ -164,7 +164,7 @@ findmnt -Rcenruv -o source,target,fstype,fsroot,options "$ROOT" | \
 
 		# filetypes that should probably never be in fstab
 		case "$fstype" in
-			autofs|binfmt_misc|fuseblk|zfs) continue ;;
+			autofs|binfmt_misc|fuseblk|fuse-overlayfs|zfs) continue ;;
 		esac
 
 		if [ "$ROOT" != '/' ]; then
@@ -216,6 +216,7 @@ findmnt -Rcenruv -o source,target,fstype,fsroot,options "$ROOT" | \
 					die "could not find device mapper name of $dev"
 				fi
 				;;
+			/dev/zram*) continue ;; # may not be available at mount -a; should be added manually if using e.g. udev to mkswap
 			*)
 				if [ -f "$dev" ]; then
 					if [ "$ROOT" != '/' ]; then
