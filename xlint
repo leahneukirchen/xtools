@@ -69,8 +69,9 @@ variables_order() {
 			archs=*) curr_index=5;;
 			create_wrksrc=*) curr_index=8;;
 			build_wrksrc=*) curr_index=9;;
-			build_style=*) curr_index=11;;
-			build_helper=*) curr_index=11;;
+			build_style=*) curr_index=10;;
+			build_helper=*) curr_index=10;;
+			metapackage=*) curr_index=11;;
 			cmake_args=*) curr_index=12;;
 			cmake_builddir=*) curr_index=12;;
 			configure_args=*) curr_index=12;;
@@ -236,6 +237,7 @@ makedepends
 meson_builddir
 meson_cmd
 meson_crossfile
+metapackage
 mutable_files
 nofixperms
 nocheckperms
