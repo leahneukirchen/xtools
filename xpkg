@@ -5,7 +5,7 @@ flags=
 filter0='/^.[^i*].\? /d'
 filter1='s/^...\? //'
 filter2='s/-[^- ]* .*//'
-mode="--search="
+mode="--search ."
 
 while getopts R:r:vVmOHDLa flag; do
 	case "$flag" in
