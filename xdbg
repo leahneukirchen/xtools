@@ -22,7 +22,7 @@ ADDREPO="
 "
 
 alldbg() {
-	xbps-query --regex $ADDREPO -Rs '-dbg-[^-]*$' |
+	xbps-query --regex $ADDREPO -Rs -- '-dbg-[^-]*$' |
 		sed 's/^... //; s/-[^- ]* .*//' |
 		sort -u
 }
