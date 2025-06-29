@@ -97,6 +97,7 @@ variables_order() {
 			pycompile_dirs=*) curr_index=12;;
 			pycompile_module=*) curr_index=12;;
 			python_versions=*) curr_index=12;;
+			scons_use_destdir=*) curr_index=12;;
 			stackage=*) curr_index=12;;
 			conf_files=*) continue;;
 			make_dirs=*) continue;;
@@ -266,6 +267,7 @@ restricted
 reverts
 revision
 run_depends
+scons_use_destdir
 sgml_catalogs
 sgml_entries
 shlib_provides
