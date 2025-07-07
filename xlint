@@ -99,6 +99,7 @@ variables_order() {
 			python_versions=*) curr_index=12;;
 			scons_use_destdir=*) curr_index=12;;
 			stackage=*) curr_index=12;;
+			cabal_index_state=*) curr_index=12;;
 			conf_files=*) continue;;
 			make_dirs=*) continue;;
 			hostmakedepends=*) curr_index=15;;
@@ -188,6 +189,7 @@ build_options_default
 build_style
 build_helper
 build_wrksrc
+cabal_index_state
 changelog
 checkdepends
 checksum
