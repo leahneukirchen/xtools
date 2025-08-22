@@ -10,6 +10,7 @@ VM=$(dmesg 2>/dev/null | awk '/Hypervisor detected/{print $NF}')
 [ -z "$VM" ] && grep -q hypervisor /proc/cpuinfo && VM=VM
 CPU=$(awk '/^vendor_id/{print $NF;exit}' /proc/cpuinfo)
 [ -z "$CPU" ] && CPU=$(awk '/^platform/{print $NF;exit}' /proc/cpuinfo)
+[ -z "$CPU" ] && CPU=$(env LC_ALL=C lscpu | sed -n 's/^Vendor ID:[[:space:]]*//p')
 REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
 	/^\/repo-.*\.voidlinux\.org\/current\/multilib/ || /^\/mirrors\.servercentral\.com\/voidlinux\/current\/multilib/ {m=m"m"}
 	/^\/repo-.*\.voidlinux\.org\/current\/debug/ || /^\/mirrors\.servercentral\.com\/voidlinux\/current\/debug/ {d=d"d"}
