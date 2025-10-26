@@ -22,11 +22,19 @@ for _fs in dev proc sys; do
 	mount --make-rslave "$CHROOT/$_fs"
 done
 
-touch "$CHROOT/etc/resolv.conf"
-mount --bind /etc/resolv.conf "$CHROOT/etc/resolv.conf"
+if [ -e /etc/resolv.conf ]; then
+	resolv_mounted="1"
+	touch "$CHROOT/etc/resolv.conf"
+	mount --bind /etc/resolv.conf "$CHROOT/etc/resolv.conf"
+else
+	resolv_mounted=""
+fi
 
 cleanup() {
-	umount -R "$CHROOT/dev" "$CHROOT/proc" "$CHROOT/sys" "$CHROOT/etc/resolv.conf"
+	umount -R "$CHROOT/dev" "$CHROOT/proc" "$CHROOT/sys"
+	if [ -n "$resolv_mounted" ]; then
+		umount -R "$CHROOT/etc/resolv.conf"
+	fi
 }
 
 trap cleanup EXIT INT
