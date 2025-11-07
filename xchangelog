@@ -1,27 +1,32 @@
 #!/bin/bash
 # xchangelog PKGNAME - open package changelog
 
-XBPS_DISTDIR=$(xdistdir) || exit 1
+XBPS_DISTDIR="$(xdistdir)" || echo "xchangelog: falling back to package metadata" >&2
 FILTER=cat
 
-pkg=$1
-[ -z "$pkg" ] && pkg=$(basename "$PWD")
+pkg="$1"
 
-if [ -f "$pkg" ]; then
-	template="$pkg"
-elif [ -f "$pkg/template" ]; then
-	template="$pkg/template"
-elif [ -f "$XBPS_DISTDIR/srcpkgs/$pkg/template" ]; then
-	template="$XBPS_DISTDIR/srcpkgs/$pkg/template"
+if [ -n "$XBPS_DISTDIR" ]; then
+	[ -z "$pkg" ] && pkg=$(basename "$PWD")
+
+	if [ -f "$pkg" ]; then
+		template="$pkg"
+	elif [ -f "$pkg/template" ]; then
+		template="$pkg/template"
+	elif [ -f "$XBPS_DISTDIR/srcpkgs/$pkg/template" ]; then
+		template="$XBPS_DISTDIR/srcpkgs/$pkg/template"
+	else
+		echo "No such template: $pkg" >&2
+		exit 1
+	fi
+
+	. "$template"
 else
-	echo "No such template: $pkg" >&2
-	exit 1
+	changelog="$(xbps-query -Rp changelog "$pkg")"
 fi
 
-. "$template"
-
 if [ -z "$changelog" ]; then
-	echo "No changelog defined in template" >&2
+	echo "No changelog found for $pkg" >&2
 	exit 1
 fi
 
