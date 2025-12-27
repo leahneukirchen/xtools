@@ -15,7 +15,7 @@ get_deps() {
 	if [ "${cache[$pkg]+_}" ]; then
 		read -r -a deps <<< "${cache[$pkg]}"
 	else
-		mapfile -t deps < <( xbps-query ${REPO:+$ADDREPO} -x "$pkg" | xargs -rn1 xbps-uhelper getpkgdepname )
+		mapfile -t deps < <( xbps-query ${REPO:+$ADDREPO} -x "$pkg" | xargs -rn1 xbps-uhelper getname )
 		cache[$pkg]="${deps[*]}"
 	fi
 
