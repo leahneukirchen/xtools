@@ -97,6 +97,7 @@ variables_order() {
 			pycompile_dirs=*) curr_index=12;;
 			pycompile_module=*) curr_index=12;;
 			python_versions=*) curr_index=12;;
+			qmake_default_version=*) curr_index=12;;
 			scons_use_destdir=*) curr_index=12;;
 			stackage=*) curr_index=12;;
 			cabal_index_state=*) curr_index=12;;
@@ -262,6 +263,7 @@ pycompile_dirs
 pycompile_module
 python_extras
 python_version
+qmake_default_version
 register_shell
 replaces
 repository
