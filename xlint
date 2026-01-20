@@ -6,17 +6,21 @@
 export LC_ALL=C
 
 scan() {
-	local rx="$1" msg="$(printf '%s\n' "$2" | sed 's,/,\\/,g')"
+	local rx="$1" msg="$(printf '%s\n' "$2" | sed 's,/,\\/,g')" sev="${3:-$defaultsev}"
 	grep -P -hn -e "$rx" "$template" |
 		grep -v -P -e "[^:]*:\s*#" |
 		sed "s/^\([^:]*\):\(.*\)/\1: $msg/" |
-		while read line; do
-			echo "$argument:$line"
+		while read -r line; do
+			echo "$argument:$sev:$line"
 		done
 }
 
+scan_warn() {
+	scan "$@" warning
+}
+
 check_old_vars() {
-	sed -E 's/^([^:]+:[0-9]+:).*: ('"$old_variables"')=.*$/\1 \2 is deprecated and should not be used/'
+	sed -E 's/^([^:]+:[^:]+:[0-9]+:).*: ('"$old_variables"')=.*$/\1 \2 is deprecated and should not be used/'
 }
 
 regex_escape() {
@@ -29,7 +33,7 @@ once() {
 
 header() {
 	if [ "$(head -n1 "$template")" != "# Template file for '$pkgname'" ]; then
-		echo "$argument:1: Header should be: # Template file for '$pkgname'"
+		echo "$argument:$defaultsev:1: Header should be: # Template file for '$pkgname'"
 	fi
 }
 
@@ -37,11 +41,11 @@ exists_once() {
 	for var in pkgname version revision short_desc maintainer license \
 		   homepage; do
 		case "$(grep -c "^${var}=" "$template")" in
-			0) echo "$argument:1: '$var' missing!";;
+			0) echo "$argument:$defaultsev:1: '$var' missing!";;
 			1) ;;
 			*)
 				lines="$(grep -n "^${var}=" "$template" | awk -F: 'NR>1 { printf ", " } { printf "%s", $1 }')"
-				echo "$argument:${lines##*, }: '$var' defined more than once: previously on line(s) ${lines%,*}"
+				echo "$argument:$defaultsev:${lines##*, }: '$var' defined more than once: previously on line(s) ${lines%,*}"
 				;;
 		esac
 	done
@@ -130,7 +134,7 @@ variables_order() {
 		if [ "$variables_end" ]; then
 			break
 		elif [ "$curr_index" -lt "$max_index" ]; then
-			message="$argument:$max_index_line_number: Place $max_index_line= after ${line%%=*}="
+			message="$argument:$defaultsev:$max_index_line_number: Place $max_index_line= after ${line%%=*}="
 		elif [ "$curr_index" -gt "$max_index" ]; then
 			max_index="$curr_index"
 			max_index_line="${line%%=*}"
@@ -145,12 +149,14 @@ variables_order() {
 }
 
 file_end() {
-	if [ "$(tail -c 1 $template)" ]; then
-		echo "$argument:$(( $(wc -l < $template) + 1 )): File does not end with newline character"
-	elif [ -z "$(tail -c 2 $template)" ]; then
-		echo "$argument:$(wc -l < $template): Last line is empty"
+	if [ "$(tail -c 1 "$template")" ]; then
+		echo "$argument:$defaultsev:$(( $(wc -l < "$template") + 1 )): File does not end with newline character"
+	elif [ -z "$(tail -c 2 "$template")" ]; then
+		echo "$argument:$defaultsev:$(wc -l < "$template"): Last line is empty"
 	fi
 }
+
+defaultsev="error"
 
 variables=$(echo -n "#.*
 _.*
@@ -468,7 +474,8 @@ for argument; do
 	scan 'maintainer=(?!.*<.*@.*>).*' "maintainer needs email address"
 	scan 'maintainer=.*<.*@users.noreply.github.com>.*' "maintainer needs a valid address for sending mail"
 	scan '^(?!\s*('"$variables"'))[^\s=-]+=' "custom variables should use _ prefix: \\2" | check_old_vars
-	scan '^[^ =]*=(""|''|)$' "variable set to empty string: \\2"
+	scan '^[^_ =][^ =]*=(""|''|)$' "variable set to empty string: \\2"
+	scan_warn '^_[^ =]*=(""|''|)$' "custom variable set to empty string: \\2"
 	scan '^(.*)-docs_package().*' 'use <pkgname>-doc subpackage for documentation'
 	scan 'distfiles=.*github.com.*/archive/.*\.zip[\"]?$' 'Use the distfile .tar.gz instead of .zip'
 	scan 'distfiles=.*downloads\.sourceforge\.net' 'use $SOURCEFORGE_SITE'
