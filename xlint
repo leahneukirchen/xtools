@@ -501,6 +501,8 @@ for argument; do
 	scan "cargo update (--package|-p) [A-Za-z_][A-Za-z0-9_]*(?!\:[0-9]+\.[0-9]+\.[0-9]+)(\s.+)?$" '"cargo update" commands should include the specific version we are updating from in the --package SPEC' 
 	scan "cargo update (--package|-p) [A-Za-z_][A-Za-z0-9_-]*\:[0-9]+\.[0-9]+\.[0-9]+(?!--precise [0-9]+\.[0-9]+\.[0-9]+)$" '"cargo update" commands should include the specific version we are updating to, using --precise' 
 	scan '-D([[:alnum:]_-]+)=\$\(vopt_if \1 true false\)' 'use $(vopt_bool ...) instead of -D...=$(vopt_if ...)'
+	scan "nocross=[\"']?yes[\"']?" 'nocross should briefly describe the build failure or link to a buildlog'
+	scan "broken=[\"']?yes[\"']?" 'broken should briefly describe the build failure or link to a buildlog'
 	variables_order | grep -Pv "($old_variables)="
 	header
 	file_end
