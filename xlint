@@ -503,6 +503,8 @@ for argument; do
 	scan '-D([[:alnum:]_-]+)=\$\(vopt_if \1 true false\)' 'use $(vopt_bool ...) instead of -D...=$(vopt_if ...)'
 	scan 'changelog=.*\$\{?(pkgname)\}?' 'do not use ${pkgname} in changelog'
 	scan 'changelog=.*\$\{?(homepage)\}?' 'do not use ${homepage} in changelog'
+	scan '^\s+(pre|do|post)_\w+\(' 'functions should be at the top level (not in a conditional)'
+	scan '^\s+[A-Za-z0-9+._-]+_package\(' 'subpackage functions should be at the top level (not in a conditional), use subpackages="..." to make subpackages conditional'
 	variables_order | grep -Pv "($old_variables)="
 	header
 	file_end
