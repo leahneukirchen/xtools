@@ -169,6 +169,10 @@ fi
 
 rv=0
 
+if [ "$1" = ':' ]; then
+	set -- $(git -C "$XBPS_DISTDIR" diff --name-only | grep 'srcpkgs/[^/]*/template')
+fi
+
 for template; do
 	if [ -f "$template" ]; then
 		:

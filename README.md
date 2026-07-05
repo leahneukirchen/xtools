@@ -134,7 +134,7 @@ XTOOLS(1) - General Commands Manual
 > > (same as
 > > **-t** *UUID*)
 
-**xgensum** \[**-f**] \[**-c**] \[**-i**] \[**-a** *arch*] \[**-H** *hostdir*] *templates&#160;...*
+**xgensum** \[**-f**] \[**-c**] \[**-i**] \[**-a** *arch*] \[**-H** *hostdir*] *template&#160;...*
 
 > \- update SHA256 sum in templates
 
@@ -157,6 +157,12 @@ XTOOLS(1) - General Commands Manual
 > **-H**
 
 > > absolute path to hostdir
+
+> If
+> *template*
+> is
+> '**:**',
+> checksums will be updated for each template unstaged in the git index.
 
 **xgrep** *pattern* *pkgs ...*
 
