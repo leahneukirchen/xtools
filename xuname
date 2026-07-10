@@ -22,3 +22,7 @@ REPO=$(xbps-query --regex -p repository -s '.' | cut -d/ -f2- | sort -u | awk '
 
 printf '%s %s %s %s %s%s %s\n' \
 	"$OS" "$KVER" "$MACH" "${CPU:-Unknown}${VM:+/$VM}" "${OUTDATED:+not}uptodate" "${HOLD:+ hold}" "$REPO"
+
+if [ "$1" = '-v' ]; then
+	xbps-query --regex -p repository -s '.' | cut -d' ' -f2- | sort -u | grep -v 'repo-.*\.voidlinux\.org/'
+fi

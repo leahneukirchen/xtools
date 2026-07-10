@@ -405,9 +405,13 @@ XTOOLS(1) - General Commands Manual
 > is not installed, falls back to
 > **xls**.
 
-**xuname**
+**xuname** \[**-v**]
 
 > \- display system info relevant for debugging Void
+
+> **-v**
+
+> > Show extra debugging information
 
 **xvoidstrap** *dir* \[*packages*]
 
