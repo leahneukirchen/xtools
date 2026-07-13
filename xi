@@ -27,15 +27,31 @@ if BRANCH=$(git symbolic-ref -q --short HEAD 2>/dev/null) && [ -n "$BRANCH" ]; t
 fi
 
 which_sudo() {
+	# Tries to avoid prompting for password unless absolutely necessary
 	if [ "$(id -u)" = "0" ]; then
 		return
-	elif command -v sudo >/dev/null && sudo -l | grep -q -e ' ALL$' -e xbps-install; then
-		echo sudo
-	elif command -v doas >/dev/null && [ -f /etc/doas.conf ]; then
-		echo doas
-	else
-		echo su
 	fi
+	xi_sudo=0 xi_doas=0
+	if command -v sudo >/dev/null; then
+		xi_sudo=1
+	fi
+	if command -v doas >/dev/null && [ -f /etc/doas.conf ] && [ "$(doas -C /etc/doas.conf xbps-install)" != deny ]; then
+		xi_doas=1
+	fi
+	case "$xi_sudo$xi_doas" in
+		(00) echo su ;;
+		(01) echo doas ;;
+		(10) echo sudo ;;
+		(11)
+			if [ "$(doas -C /etc/doas.conf xbps-install)" = "permit nopass" ]; then
+				echo doas
+			elif sudo -l xbps-install >/dev/null; then
+				echo sudo
+			else
+				echo su
+			fi
+	esac
+	unset -v xi_sudo xi_doas
 }
 
 do_install() {
