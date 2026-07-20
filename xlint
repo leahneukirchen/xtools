@@ -54,6 +54,20 @@ explain_make_check() {
 	' $template
 }
 
+check_multiline() {
+	msg="variable set continuation should start with a single space"
+	awk -v msg="$msg" -v argument="$argument" -e '
+	!multiline && /^[^[:space:]=-]+=["'\''][^"'\'']*$/ {
+		quote = substr($0, index($0, "=")+1, 1);
+		multiline = 1; next;
+	}
+	multiline && ! /^ [^[:space:]]/ {
+		printf "%s:%d: %s\n", argument, NR, msg
+	}
+	multiline && match($0, quote) { multiline = 0; next; }
+	' "$template"
+}
+
 variables_order() {
 	local curr_index max_index max_index_line variables_end message line
 	local line_number max_index_line_number
@@ -507,6 +521,7 @@ for argument; do
 	scan '^\s+[A-Za-z0-9+._-]+_package\(' 'subpackage functions should be at the top level (not in a conditional), use subpackages="..." to make subpackages conditional'
 	variables_order | grep -Pv "($old_variables)="
 	header
+	check_multiline
 	file_end
 	explain_make_check
 	else
